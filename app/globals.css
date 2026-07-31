@@ -1,0 +1,298 @@
+html,
+body {
+
+  margin:0;
+
+  padding:0;
+
+  background:#050505;
+
+  color:white;
+
+  font-family:Arial, Helvetica, sans-serif;
+
+}
+
+
+*{
+
+  box-sizing:border-box;
+
+}
+
+
+a{
+
+  text-decoration:none;
+
+  color:inherit;
+
+}
+
+
+
+/* =========================
+   ÖĞRENCİ MOBİL MENÜ
+========================= */
+
+
+.hamburger{
+
+  display:none;
+
+  position:fixed;
+
+  top:15px;
+
+  left:15px;
+
+  z-index:2000;
+
+  background:#d4af37;
+
+  color:#000;
+
+  border:0;
+
+  border-radius:12px;
+
+  padding:12px 16px;
+
+  font-size:22px;
+
+  font-weight:900;
+
+  cursor:pointer;
+
+}
+
+
+
+/* =========================
+   ADMİN MOBİL MENÜ
+========================= */
+
+
+.adminHamburger{
+
+  display:none;
+
+  position:fixed;
+
+  top:15px;
+
+  left:15px;
+
+  z-index:2000;
+
+  background:#d4af37;
+
+  color:#000;
+
+  border:0;
+
+  border-radius:12px;
+
+  padding:12px 16px;
+
+  font-size:22px;
+
+  font-weight:900;
+
+  cursor:pointer;
+
+}
+
+
+
+
+
+/* =========================
+   MOBİL
+========================= */
+
+
+@media(max-width:768px){
+
+
+
+  .hamburger{
+
+    display:block;
+
+  }
+
+
+
+  .adminHamburger{
+
+    display:block;
+
+  }
+
+
+
+
+
+  aside{
+
+    transform:translateX(-100%);
+
+    width:240px !important;
+
+    z-index:1500;
+
+  }
+
+
+
+
+
+
+  main{
+
+    margin-left:0 !important;
+
+    padding:20px !important;
+
+  }
+
+
+
+
+
+
+
+  h1{
+
+    font-size:32px !important;
+
+  }
+
+
+
+
+
+
+  h2{
+
+    font-size:24px !important;
+
+  }
+
+
+
+
+
+
+  button{
+
+    max-width:100%;
+
+  }
+
+
+
+
+
+
+
+  iframe{
+
+    width:100% !important;
+
+    aspect-ratio:16/9;
+
+    height:auto !important;
+
+  }
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+/* =========================
+   MASAÜSTÜ
+========================= */
+
+
+@media(min-width:769px){
+
+
+
+  .hamburger{
+
+    display:none;
+
+  }
+
+
+
+
+
+  .adminHamburger{
+
+    display:none;
+
+  }
+
+
+
+
+
+
+  aside{
+
+    transform:translateX(0);
+
+  }
+
+
+
+}
+@media(max-width:768px){
+
+.hamburger{
+
+display:block;
+
+}
+
+
+aside{
+
+box-shadow:0 0 40px #000;
+
+}
+
+
+main{
+
+margin-left:0 !important;
+
+padding:20px !important;
+
+}
+
+
+}
+
+
+@media(min-width:769px){
+
+.hamburger{
+
+display:none;
+
+}
+
+}
