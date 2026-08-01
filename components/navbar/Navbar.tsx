@@ -5,84 +5,55 @@ import { useState } from "react";
 
 export default function Navbar(){
 
-const [menu,setMenu]=useState(false);
+const [open,setOpen]=useState(false);
 
 
 return(
 
-<header
-className="
-fixed
-top-0
-left-0
-right-0
-z-50
-bg-black/80
-backdrop-blur-xl
-border-b
-border-yellow-500/20
-"
->
+<header className="fixed top-0 left-0 w-full z-50">
 
 
-<div
-className="
-max-w-7xl
-mx-auto
+<div className="
+h-20
+px-5
 flex
 items-center
 justify-between
-px-5
-py-4
-"
->
+bg-black/90
+backdrop-blur-xl
+border-b
+border-yellow-500/20
+">
 
 
 {/* LOGO */}
 
-<Link
-href="/"
-className="flex items-center gap-3"
->
+<Link href="/" className="flex items-center gap-3">
 
 
 <img
-
 src="/helix-logo.png"
-
-alt="Helix"
-
-className="
-w-12
-h-12
-object-contain
-"
-
+className="w-10 h-10 object-contain"
 />
 
 
 <div>
 
-
-<h1
-className="
+<h1 className="
 text-white
 font-black
 tracking-[4px]
 text-xl
-"
->
+">
 HELIX
 </h1>
 
 
-<p
-className="
+<p className="
 text-yellow-400
-text-[10px]
+text-[9px]
 tracking-[5px]
-"
->
+">
 AKADEMİ
 </p>
 
@@ -96,67 +67,34 @@ AKADEMİ
 
 
 
+{/* DESKTOP */}
 
-
-{/* DESKTOP MENU */}
-
-<nav
-className="
+<nav className="
 hidden
 md:flex
 items-center
 gap-8
-"
->
+">
 
 
-<Link
-href="/"
-className="
-text-white
-font-semibold
-hover:text-yellow-400
-"
->
+<Link href="/" className="text-white">
 Ana Sayfa
 </Link>
 
 
-<Link
-href="/egitimler"
-className="
-text-white
-font-semibold
-hover:text-yellow-400
-"
->
+<Link href="/egitimler" className="text-white">
 Eğitimler
 </Link>
 
 
-<Link
-href="/hakkimizda"
-className="
-text-white
-font-semibold
-hover:text-yellow-400
-"
->
+<Link href="/hakkimizda" className="text-white">
 Hakkımızda
 </Link>
 
 
-<Link
-href="/iletisim"
-className="
-text-white
-font-semibold
-hover:text-yellow-400
-"
->
+<Link href="/iletisim" className="text-white">
 İletişim
 </Link>
-
 
 
 <Link
@@ -164,23 +102,16 @@ hover:text-yellow-400
 href="/ogrenci-giris"
 
 className="
-bg-gradient-to-r
-from-yellow-200
-via-yellow-500
-to-yellow-700
+bg-yellow-500
 text-black
-font-black
-px-7
+px-6
 py-3
-rounded-2xl
-shadow-lg
-shadow-yellow-500/40
+rounded-xl
+font-bold
 "
 
 >
-
 ÖĞRENCİ GİRİŞ
-
 </Link>
 
 
@@ -191,26 +122,23 @@ shadow-yellow-500/40
 
 
 
-
-{/* MOBİL HAMBURGER */}
+{/* MOBILE */}
 
 <button
-
-onClick={()=>setMenu(!menu)}
 
 className="
 md:hidden
 text-yellow-400
-text-4xl
+text-3xl
 "
+
+onClick={()=>setOpen(!open)}
 
 >
 
-{menu ? "×":"☰"}
+☰
 
 </button>
-
-
 
 
 </div>
@@ -220,80 +148,53 @@ text-4xl
 
 
 
-
-{/* MOBİL MENU */}
-
-
 {
-
-menu &&
+open &&
 
 <div
 
 className="
 md:hidden
+absolute
+top-20
+right-4
+w-64
 bg-black
-border-t
-border-yellow-500/20
-px-6
-py-8
+border
+border-yellow-500/30
+rounded-2xl
+p-6
+shadow-xl
 "
 
 >
 
 
-<div
-
-className="
+<div className="
 flex
 flex-col
-gap-6
-"
-
->
+gap-5
+">
 
 
-<Link
-href="/"
-onClick={()=>setMenu(false)}
-className="text-white text-lg"
->
+<Link href="/" className="text-white">
 Ana Sayfa
 </Link>
 
 
-
-<Link
-href="/egitimler"
-onClick={()=>setMenu(false)}
-className="text-white text-lg"
->
+<Link href="/egitimler" className="text-white">
 Eğitimler
 </Link>
 
 
-
-
-<Link
-href="/hakkimizda"
-onClick={()=>setMenu(false)}
-className="text-white text-lg"
->
+<Link href="/hakkimizda" className="text-white">
 Hakkımızda
 </Link>
 
 
-
-
-<Link
-href="/iletisim"
-onClick={()=>setMenu(false)}
-className="text-white text-lg"
->
+<Link href="/iletisim" className="text-white">
 İletişim
 </Link>
-
-
 
 
 <Link
@@ -304,15 +205,13 @@ className="
 bg-yellow-500
 text-black
 text-center
-font-bold
 py-3
 rounded-xl
+font-bold
 "
 
 >
-
 ÖĞRENCİ GİRİŞ
-
 </Link>
 
 
@@ -328,6 +227,5 @@ rounded-xl
 </header>
 
 )
-
 
 }

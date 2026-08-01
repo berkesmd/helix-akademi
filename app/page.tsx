@@ -9,7 +9,7 @@ export default function Home(){
 
 const router = useRouter();
 
-const [video,setVideo]=useState(true);
+const [videoAcik,setVideoAcik]=useState(true);
 
 
 
@@ -21,17 +21,13 @@ return(
 {/* VIDEO */}
 
 {
-video &&
+videoAcik &&
 
 <div style={videoBox}>
 
-
 <button
-
 style={close}
-
-onClick={()=>setVideo(false)}
-
+onClick={()=>setVideoAcik(false)}
 >
 ×
 </button>
@@ -42,11 +38,8 @@ onClick={()=>setVideo(false)}
 src="/helix-tanitim.mp4"
 
 autoPlay
-
 muted
-
 loop
-
 playsInline
 
 style={videoStyle}
@@ -71,13 +64,15 @@ src="/helix-logo.png"
 
 alt="Helix Akademi"
 
-width={180}
+width={160}
 
-height={180}
+height={160}
 
 style={logo}
 
 />
+
+
 
 
 
@@ -89,6 +84,8 @@ HELIX AKADEMİ
 
 
 
+
+
 <h2 style={subtitle}>
 
 GELECEĞİNİ EĞİTİMLE ŞEKİLLENDİR
@@ -97,13 +94,18 @@ GELECEĞİNİ EĞİTİMLE ŞEKİLLENDİR
 
 
 
-<p style={description}>
+
+
+<p style={desc}>
 
 Profesyonel eğitim programları ile kendini geliştir,
 
 kariyerinde fark yarat.
 
 </p>
+
+
+
 
 
 
@@ -123,16 +125,27 @@ onClick={()=>router.push("/ogrenci-giris")}
 
 
 
+
+
 <div style={stats}>
 
 
-<Stat number="10.000+" text="ÖĞRENCİ"/>
+<Stat
+number="10.000+"
+text="ÖĞRENCİ"
+/>
 
 
-<Stat number="50+" text="EĞİTİM"/>
+<Stat
+number="50+"
+text="EĞİTİM"
+/>
 
 
-<Stat number="%98" text="MEMNUNİYET"/>
+<Stat
+number="%98"
+text="MEMNUNİYET"
+/>
 
 
 </div>
@@ -147,16 +160,14 @@ onClick={()=>router.push("/ogrenci-giris")}
 
 
 
-
 <section style={section}>
 
 
-<h2 style={heading}>
+<h2 style={sectionTitle}>
 
 NEDEN HELIX AKADEMİ?
 
 </h2>
-
 
 
 <div style={cards}>
@@ -166,7 +177,7 @@ NEDEN HELIX AKADEMİ?
 
 title="UZMAN EĞİTMENLER"
 
-text="Alanında uzman eğitmenlerden profesyonel eğitim"
+text="Alanında uzman eğitmenlerle kaliteli eğitim"
 
 />
 
@@ -176,7 +187,7 @@ text="Alanında uzman eğitmenlerden profesyonel eğitim"
 
 title="ONLINE EĞİTİM"
 
-text="Dilediğin yerden kolay erişim"
+text="Her yerden kolay erişim"
 
 />
 
@@ -191,6 +202,7 @@ text="Başarılarını belgeleyen eğitim sistemi"
 />
 
 
+
 </div>
 
 
@@ -203,11 +215,10 @@ text="Başarılarını belgeleyen eğitim sistemi"
 
 
 
-
 <section style={section}>
 
 
-<h2 style={heading}>
+<h2 style={sectionTitle}>
 
 ÖĞRENCİ YORUMLARI
 
@@ -222,16 +233,17 @@ text="Başarılarını belgeleyen eğitim sistemi"
 
 title="⭐⭐⭐⭐⭐"
 
-text="Hasta kayıt kabul eğitimini aldım. Kısa sürede sertifikamı tamamladım."
+text="Hasta kayıt kabul eğitimini tamamladım. Eğitim süreci çok başarılıydı."
 
 />
+
 
 
 <Card
 
 title="⭐⭐⭐⭐⭐"
 
-text="Makam şoförlüğü eğitimi sayesinde kendime yeni bir kariyer yolu açtım."
+text="Makam şoförlüğü eğitimi ile kendimi geliştirdim. Teşekkürler Helix Akademi."
 
 />
 
@@ -249,12 +261,12 @@ text="Makam şoförlüğü eğitimi sayesinde kendime yeni bir kariyer yolu açt
 
 
 
-<section style={contact}>
+<section style={cta}>
 
 
 <h2>
 
-GELECEĞİNE YATIRIM YAP
+GELECEĞİNİ BUGÜN ŞEKİLLENDİR
 
 </h2>
 
@@ -275,12 +287,13 @@ onClick={()=>router.push("/ogrenci-giris")}
 
 >
 
-BAŞLA
+BAŞVURU YAP
 
 </button>
 
 
 </section>
+
 
 
 
@@ -299,16 +312,12 @@ HELIX AKADEMİ
 
 
 <p>
-
 +90 530 508 62 69
-
 </p>
 
 
 <p>
-
 helix_akademi@gmail.com
-
 </p>
 
 
@@ -317,11 +326,9 @@ helix_akademi@gmail.com
 
 </main>
 
-
 )
 
 }
-
 
 
 
@@ -335,19 +342,9 @@ return(
 
 <div style={stat}>
 
-<h2>
+<h2>{number}</h2>
 
-{number}
-
-</h2>
-
-
-<p>
-
-{text}
-
-</p>
-
+<p>{text}</p>
 
 </div>
 
@@ -367,18 +364,13 @@ return(
 
 <div style={card}>
 
-
 <h3 style={cardTitle}>
-
 {title}
-
 </h3>
 
 
 <p>
-
 {text}
-
 </p>
 
 
@@ -401,8 +393,7 @@ const page={
 minHeight:"100vh",
 
 background:
-
-"radial-gradient(circle at top,#604000,#080808 55%,#000)",
+"radial-gradient(circle at top,#5b3b00,#080808 60%,#000)",
 
 color:"#fff",
 
@@ -415,13 +406,11 @@ overflow:"hidden"
 
 
 
-
-
 const hero={
 
 minHeight:"100vh",
 
-paddingTop:"120px",
+paddingTop:"110px",
 
 paddingLeft:"20px",
 
@@ -431,9 +420,9 @@ display:"flex",
 
 flexDirection:"column" as const,
 
-alignItems:"center",
-
 justifyContent:"center",
+
+alignItems:"center",
 
 textAlign:"center" as const
 
@@ -444,13 +433,10 @@ textAlign:"center" as const
 
 
 
-
-
 const logo={
 
 filter:
-
-"drop-shadow(0 0 40px #d4af37)"
+"drop-shadow(0 0 35px #d4af37)"
 
 };
 
@@ -459,21 +445,18 @@ filter:
 
 
 
-
-
 const title={
 
-fontSize:"clamp(40px,8vw,75px)",
+fontSize:"clamp(38px,7vw,75px)",
 
 fontWeight:900,
 
-letterSpacing:"8px",
+letterSpacing:"6px",
 
-margin:"20px 0",
+margin:"20px",
 
 background:
-
-"linear-gradient(#fff4b0,#d4af37,#8a6500)",
+"linear-gradient(#fff3a6,#d4af37,#806000)",
 
 WebkitBackgroundClip:"text",
 
@@ -486,15 +469,14 @@ WebkitTextFillColor:"transparent"
 
 
 
-
-
 const subtitle={
 
-fontSize:"clamp(20px,4vw,38px)",
+fontSize:"clamp(20px,4vw,36px)",
 
 fontWeight:900,
 
-textShadow:"0 0 25px #d4af37"
+textShadow:
+"0 0 20px #d4af37"
 
 };
 
@@ -503,13 +485,11 @@ textShadow:"0 0 25px #d4af37"
 
 
 
-
-
-const description={
+const desc={
 
 maxWidth:"650px",
 
-fontSize:"20px",
+fontSize:"18px",
 
 lineHeight:"1.8",
 
@@ -522,31 +502,29 @@ color:"#ddd"
 
 
 
-
-
 const button={
 
-marginTop:"35px",
+marginTop:"30px",
 
-padding:"18px 60px",
+padding:"18px 55px",
 
 borderRadius:"20px",
 
-border:"0",
-
-background:
-
-"linear-gradient(135deg,#fff2a0,#d4af37,#8a6500)",
+border:"none",
 
 fontWeight:900,
 
 letterSpacing:"3px",
 
-boxShadow:"0 0 40px #d4af37"
+background:
+"linear-gradient(135deg,#fff0a0,#d4af37,#8a6500)",
+
+boxShadow:
+"0 0 35px rgba(212,175,55,.8)",
+
+cursor:"pointer"
 
 };
-
-
 
 
 
@@ -572,23 +550,19 @@ marginTop:"60px"
 
 
 
-
-
 const stat={
 
 width:"150px",
 
-padding:"30px",
+padding:"25px",
 
 borderRadius:"25px",
 
-background:"rgba(255,255,255,.06)",
+background:"rgba(255,255,255,.07)",
 
 border:"1px solid rgba(212,175,55,.4)"
 
 };
-
-
 
 
 
@@ -608,11 +582,11 @@ textAlign:"center" as const
 
 
 
+const sectionTitle={
 
+fontSize:"38px",
 
-const heading={
-
-fontSize:"40px",
+fontWeight:900,
 
 color:"#d4af37"
 
@@ -623,13 +597,11 @@ color:"#d4af37"
 
 
 
-
-
 const cards={
 
 display:"grid",
 
-gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",
+gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))",
 
 gap:"25px",
 
@@ -642,21 +614,17 @@ marginTop:"40px"
 
 
 
-
-
 const card={
 
 padding:"35px",
 
 borderRadius:"30px",
 
-background:"rgba(255,255,255,.07)",
+background:"rgba(255,255,255,.06)",
 
-border:"1px solid rgba(212,175,55,.4)"
+border:"1px solid rgba(212,175,55,.35)"
 
 };
-
-
 
 
 
@@ -674,17 +642,13 @@ color:"#d4af37"
 
 
 
-
-
-const contact={
+const cta={
 
 padding:"80px 20px",
 
 textAlign:"center" as const
 
 };
-
-
 
 
 
@@ -706,15 +670,11 @@ color:"#aaa"
 
 
 
-
-
 const footerTitle={
 
 color:"#d4af37"
 
 };
-
-
 
 
 
@@ -729,23 +689,21 @@ right:"20px",
 
 bottom:"20px",
 
-width:"260px",
+width:"230px",
 
-height:"150px",
+height:"130px",
 
-borderRadius:"25px",
+borderRadius:"20px",
 
 overflow:"hidden",
 
 border:"2px solid #d4af37",
 
-zIndex:100,
+zIndex:30,
 
-boxShadow:"0 0 40px rgba(212,175,55,.7)"
+boxShadow:"0 0 30px rgba(212,175,55,.6)"
 
 };
-
-
 
 
 
@@ -767,21 +725,19 @@ objectFit:"cover" as const
 
 
 
-
-
 const close={
 
 position:"absolute" as const,
 
-right:"10px",
+right:"8px",
 
-top:"10px",
+top:"8px",
 
 zIndex:5,
 
-width:"35px",
+width:"32px",
 
-height:"35px",
+height:"32px",
 
 borderRadius:"50%",
 
