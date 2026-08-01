@@ -50,7 +50,6 @@ user
 
 
 
-
 if(!user){
 
 router.push("/admin-giris");
@@ -107,7 +106,6 @@ setKontrol(true);
 
 
 kontrolEt();
-
 
 
 },[]);
@@ -219,12 +217,11 @@ link:"/admin/ayarlar"
 
 
 
+
 return(
 
 
 <div style={page}>
-
-
 
 
 <button
@@ -238,7 +235,6 @@ onClick={()=>setMenuAcik(!menuAcik)}
 ☰
 
 </button>
-
 
 
 
@@ -293,6 +289,7 @@ height={130}
 
 
 
+
 <h1>
 
 HELIX
@@ -300,12 +297,12 @@ HELIX
 </h1>
 
 
+
 <p>
 
 ADMIN PANEL
 
 </p>
-
 
 
 </div>
@@ -344,7 +341,9 @@ setMenuAcik(false);
 
 >
 
+
 {item.isim}
+
 
 </button>
 
@@ -392,8 +391,6 @@ router.push("/admin-giris");
 
 
 
-
-
 </aside>
 
 
@@ -404,10 +401,7 @@ router.push("/admin-giris");
 
 
 
-
-
 <main style={content}>
-
 
 
 <div style={header}>
@@ -434,15 +428,12 @@ Helix Akademi Yönetim Merkezi
 
 
 
-
 {children}
 
 
 
 
 </main>
-
-
 
 
 
@@ -494,17 +485,19 @@ width:"270px",
 
 height:"100vh",
 
-padding:"30px",
+padding:"25px",
 
-background:"rgba(0,0,0,.90)",
+background:"rgba(0,0,0,.95)",
 
-borderRight:
-
-"1px solid rgba(212,175,55,.4)",
+borderRight:"1px solid rgba(212,175,55,.3)",
 
 zIndex:1000,
 
-overflowY:"auto" as const
+overflowY:"auto" as const,
+
+display:"flex",
+
+flexDirection:"column" as const
 
 };
 
@@ -530,14 +523,15 @@ color:"#d4af37"
 
 const menuAlan={
 
-marginTop:"35px",
+marginTop:"30px",
 
 display:"grid",
 
-gap:"12px"
+gap:"12px",
+
+flex:1
 
 };
-
 
 
 
@@ -551,13 +545,9 @@ padding:"15px",
 
 borderRadius:"15px",
 
-background:
+background:"rgba(212,175,55,.08)",
 
-"rgba(212,175,55,.08)",
-
-border:
-
-"1px solid rgba(212,175,55,.3)",
+border:"1px solid rgba(212,175,55,.3)",
 
 color:"white",
 
@@ -576,18 +566,13 @@ textAlign:"left" as const
 
 
 
-
 const logout={
 
-position:"absolute" as const,
+marginTop:"25px",
 
-bottom:"25px",
+width:"100%",
 
-left:"30px",
-
-right:"30px",
-
-padding:"15px",
+padding:"16px",
 
 borderRadius:"15px",
 
@@ -609,15 +594,13 @@ cursor:"pointer"
 
 
 
-
 const content={
 
-marginLeft:"310px",
+marginLeft:"320px",
 
 padding:"40px"
 
 };
-
 
 
 
@@ -631,18 +614,13 @@ padding:"25px",
 
 borderRadius:"25px",
 
-background:
+background:"rgba(255,255,255,.05)",
 
-"rgba(255,255,255,.05)",
-
-border:
-
-"1px solid rgba(212,175,55,.3)",
+border:"1px solid rgba(212,175,55,.3)",
 
 marginBottom:"30px"
 
 };
-
 
 
 
@@ -655,7 +633,6 @@ const hamburger={
 display:"none"
 
 };
-
 
 
 
