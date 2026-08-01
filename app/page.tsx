@@ -2,37 +2,14 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 
 export default function Home(){
 
-const router=useRouter();
+const router = useRouter();
 
-const [videoAcik,setVideoAcik]=useState(true);
-const [mobil,setMobil]=useState(false);
-
-
-
-useEffect(()=>{
-
-const kontrol=()=>{
-
-setMobil(window.innerWidth < 768);
-
-};
-
-
-kontrol();
-
-window.addEventListener("resize",kontrol);
-
-
-return()=>window.removeEventListener("resize",kontrol);
-
-
-},[]);
-
+const [video,setVideo]=useState(true);
 
 
 return(
@@ -40,28 +17,15 @@ return(
 <main style={page}>
 
 
-{
-videoAcik &&
+{video &&
 
-<div style={{
-...videoBox,
-right:mobil ? "15px":"30px",
-bottom:mobil ? "15px":"30px",
-width:mobil ? "260px":"330px",
-height:mobil ? "150px":"190px"
-}}>
-
+<div style={videoBox}>
 
 <button
-
 style={close}
-
-onClick={()=>setVideoAcik(false)}
-
+onClick={()=>setVideo(false)}
 >
-
 ×
-
 </button>
 
 
@@ -70,17 +34,13 @@ onClick={()=>setVideoAcik(false)}
 src="/helix-tanitim.mp4"
 
 autoPlay
-
 muted
-
 loop
-
 playsInline
 
-style={video}
+style={videoStyle}
 
 />
-
 
 </div>
 
@@ -88,51 +48,18 @@ style={video}
 
 
 
-
-
-{
-!videoAcik &&
-
-<button
-
-style={openVideo}
-
-onClick={()=>setVideoAcik(true)}
-
->
-
-▶
-
-</button>
-
-}
-
-
-
-
-
-
-
-<section
-
-style={{
-...hero,
-padding:mobil ? "20px 15px":"50px"
-}}
-
->
-
+<section style={hero}>
 
 
 <Image
 
 src="/helix-logo.png"
 
-alt="Helix Akademi"
+alt="Helix"
 
-width={mobil?150:230}
+width={180}
 
-height={mobil?150:230}
+height={180}
 
 style={logo}
 
@@ -140,132 +67,109 @@ style={logo}
 
 
 
-
-
-
-
-<h1
-
-style={{
-...title,
-fontSize:mobil?"38px":"78px",
-letterSpacing:mobil?"4px":"12px"
-}}
-
->
-
+<h1 style={title}>
 HELIX AKADEMİ
-
 </h1>
 
 
 
-
-
-
-
-
-<h2
-
-style={{
-...subtitle,
-fontSize:mobil?"20px":"38px"
-}}
-
->
-
+<h2 style={subtitle}>
 GELECEĞİNİ EĞİTİMLE ŞEKİLLENDİR
-
 </h2>
 
 
 
-
-
-
-
-<p
-
-style={{
-...text,
-fontSize:mobil?"15px":"22px"
-}}
-
->
-
-Profesyonel eğitim programları ile
-
-kendini geliştir,
-
+<p style={desc}>
+Profesyonel eğitim programları ile kendini geliştir,
 kariyerinde fark yarat.
-
 </p>
-
-
-
-
 
 
 
 <button
 
-style={{
-...button,
-padding:mobil?"16px 45px":"20px 70px",
-fontSize:mobil?"14px":"18px"
-}}
+style={button}
 
 onClick={()=>router.push("/ogrenci-giris")}
 
 >
-
 ÖĞRENCİ GİRİŞİ
-
 </button>
 
 
 
 
 
-
-
-<div
-
-style={{
-...stats,
-flexDirection:mobil?"column":"row",
-width:mobil?"90%":"auto",
-gap:mobil?"15px":"30px",
-marginTop:mobil?"40px":"70px"
-}}
-
->
-
+<div style={stats}>
 
 
 <Stat
-
 number="10.000+"
-
 text="ÖĞRENCİ"
-
 />
 
 
 <Stat
-
 number="50+"
-
 text="EĞİTİM"
-
 />
 
 
 <Stat
-
 number="%98"
-
 text="MEMNUNİYET"
+/>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<section style={section}>
+
+
+<h2 style={sectionTitle}>
+NEDEN HELIX AKADEMİ?
+</h2>
+
+
+
+<div style={cards}>
+
+
+<Card
+
+title="UZMAN EĞİTMENLER"
+
+text="Alanında deneyimli profesyonel eğitim kadrosu"
+
+/>
+
+
+
+<Card
+
+title="ONLINE EĞİTİM"
+
+text="Her yerden kolay ve kaliteli eğitim"
+
+/>
+
+
+
+<Card
+
+title="SERTİFİKA"
+
+text="Başarılarını resmi olarak belgele"
 
 />
 
@@ -273,9 +177,8 @@ text="MEMNUNİYET"
 </div>
 
 
-
-
 </section>
+
 
 
 
@@ -289,46 +192,33 @@ text="MEMNUNİYET"
 
 
 <h2 style={sectionTitle}>
-
-NEDEN HELIX AKADEMİ?
-
+ÖĞRENCİ YORUMLARI
 </h2>
 
 
 
-<div
-
-style={{
-...cards,
-gridTemplateColumns:mobil?"1fr":"repeat(3,1fr)"
-}}
-
->
+<div style={cards}>
 
 
-<Card
+<Comment
 
-title="UZMAN EĞİTMENLER"
+name="Ahmet Yılmaz"
 
-text="Alanında deneyimli eğitim kadrosu"
+job="Hasta Kayıt Kabul Eğitimi"
+
+text="Helix Akademi sayesinde eğitimimi tamamladım. Sistem çok başarılı ve destek ekibi çok ilgiliydi."
 
 />
 
 
-<Card
 
-title="ONLINE EĞİTİM"
+<Comment
 
-text="Dilediğin yerden kaliteli eğitim"
+name="Mehmet Kaya"
 
-/>
+job="Makam Şoförlüğü Eğitimi"
 
-
-<Card
-
-title="SERTİFİKA"
-
-text="Başarılarını resmi olarak belgelendir"
+text="Aldığım eğitim sayesinde kendimi geliştirdim ve yeni fırsatlar yakaladım."
 
 />
 
@@ -351,18 +241,13 @@ text="Başarılarını resmi olarak belgelendir"
 
 
 <h2>
-
-ÖĞRENME YOLCULUĞUNUZA BAŞLAYIN
-
+EĞİTİMİNİZE HEMEN BAŞLAYIN
 </h2>
 
 
 <p>
-
-Öğrenci hesabınız ile eğitimlerinize hemen erişin.
-
+Öğrenci hesabınız ile eğitimlerinize erişebilirsiniz.
 </p>
-
 
 
 <button
@@ -378,7 +263,6 @@ onClick={()=>router.push("/ogrenci-giris")}
 </button>
 
 
-
 </section>
 
 
@@ -392,32 +276,25 @@ onClick={()=>router.push("/ogrenci-giris")}
 
 
 <h2 style={footerTitle}>
-
 HELIX AKADEMİ
-
 </h2>
 
 
 <p>
-
 +90 530 508 62 69
-
 </p>
 
 
 <p>
-
 helix_akademi@gmail.com
-
 </p>
-
 
 
 </footer>
 
 
-
 </main>
+
 
 )
 
@@ -437,18 +314,12 @@ return(
 <div style={stat}>
 
 <h2>
-
 {number}
-
 </h2>
 
-
 <p>
-
 {text}
-
 </p>
-
 
 </div>
 
@@ -470,17 +341,53 @@ return(
 <div style={card}>
 
 
-<h2 style={cardTitle}>
-
+<h2 style={gold}>
 {title}
-
 </h2>
 
 
 <p>
-
 {text}
+</p>
 
+
+</div>
+
+)
+
+}
+
+
+
+
+
+
+
+
+function Comment({name,job,text}:any){
+
+return(
+
+<div style={card}>
+
+
+<div style={stars}>
+★★★★★
+</div>
+
+
+<h3>
+{name}
+</h3>
+
+
+<p style={gold}>
+{job}
+</p>
+
+
+<p>
+"{text}"
 </p>
 
 
@@ -503,12 +410,9 @@ const page={
 minHeight:"100vh",
 
 background:
+"radial-gradient(circle at top,#5a3d00,#090909 55%,#000)",
 
-"radial-gradient(circle at top,#5a3d00,#080808 55%,#000)",
-
-color:"white",
-
-overflow:"hidden"
+color:"white"
 
 };
 
@@ -527,9 +431,12 @@ alignItems:"center",
 
 justifyContent:"center",
 
-textAlign:"center" as const
+textAlign:"center" as const,
+
+padding:"30px"
 
 };
+
 
 
 
@@ -537,7 +444,6 @@ textAlign:"center" as const
 const logo={
 
 filter:
-
 "drop-shadow(0 0 50px #d4af37)"
 
 };
@@ -545,51 +451,49 @@ filter:
 
 
 
+
 const title={
+
+fontSize:"clamp(40px,8vw,80px)",
+
+letterSpacing:"8px",
 
 fontWeight:900,
 
-margin:"25px",
-
 background:
-
-"linear-gradient(180deg,#fff5b8,#d4af37,#7a5600)",
+"linear-gradient(#fff,#d4af37)",
 
 WebkitBackgroundClip:"text",
 
-WebkitTextFillColor:"transparent",
-
-textShadow:
-
-"0 0 25px rgba(212,175,55,.9)"
+color:"transparent"
 
 };
+
 
 
 
 
 const subtitle={
 
-fontWeight:900,
+fontSize:"clamp(20px,4vw,40px)",
 
 color:"#fff",
 
-textShadow:
-
-"0 0 15px #d4af37"
+textShadow:"0 0 20px #d4af37"
 
 };
 
 
 
 
-const text={
 
-fontWeight:600,
-
-color:"#ddd",
+const desc={
 
 maxWidth:"700px",
+
+fontSize:"20px",
+
+color:"#ddd",
 
 lineHeight:"1.8"
 
@@ -598,17 +502,19 @@ lineHeight:"1.8"
 
 
 
+
 const button={
 
-marginTop:"35px",
+marginTop:"30px",
 
-background:
+padding:"18px 60px",
 
-"linear-gradient(135deg,#fff1a6,#d4af37,#8a6500)",
+borderRadius:"20px",
 
 border:"0",
 
-borderRadius:"20px",
+background:
+"linear-gradient(135deg,#fff1a6,#d4af37)",
 
 fontWeight:900,
 
@@ -617,19 +523,28 @@ letterSpacing:"3px",
 cursor:"pointer",
 
 boxShadow:
-
-"0 0 30px rgba(212,175,55,.8)"
+"0 0 40px #d4af37"
 
 };
+
 
 
 
 
 const stats={
 
-display:"flex"
+display:"flex",
+
+gap:"25px",
+
+marginTop:"60px",
+
+flexWrap:"wrap" as const,
+
+justifyContent:"center"
 
 };
+
 
 
 
@@ -638,24 +553,28 @@ const stat={
 
 padding:"30px",
 
-background:"rgba(255,255,255,.07)",
+minWidth:"150px",
+
+background:"rgba(255,255,255,.08)",
 
 borderRadius:"25px",
 
-border:"1px solid rgba(212,175,55,.4)"
+border:"1px solid #d4af37"
 
 };
+
 
 
 
 
 const section={
 
-padding:"100px 30px",
+padding:"80px 30px",
 
 textAlign:"center" as const
 
 };
+
 
 
 
@@ -671,39 +590,57 @@ color:"#d4af37"
 
 
 
+
 const cards={
 
 display:"grid",
 
+gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))",
+
 gap:"30px",
 
-marginTop:"50px"
+marginTop:"40px"
 
 };
+
 
 
 
 
 const card={
 
-padding:"40px",
+padding:"35px",
 
-background:"rgba(255,255,255,.06)",
+background:"rgba(255,255,255,.07)",
 
-border:"1px solid rgba(212,175,55,.4)",
+borderRadius:"25px",
 
-borderRadius:"30px"
+border:"1px solid rgba(212,175,55,.5)"
 
 };
 
 
 
 
-const cardTitle={
+
+const gold={
 
 color:"#d4af37"
 
 };
+
+
+
+
+
+const stars={
+
+color:"#d4af37",
+
+fontSize:"25px"
+
+};
+
 
 
 
@@ -719,13 +656,17 @@ textAlign:"center" as const
 
 
 
+
 const footer={
 
 padding:"50px",
 
-textAlign:"center" as const
+textAlign:"center" as const,
+
+color:"#aaa"
 
 };
+
 
 
 
@@ -739,28 +680,34 @@ color:"#d4af37"
 
 
 
+
 const videoBox={
 
 position:"fixed" as const,
 
-overflow:"hidden",
+right:"25px",
+
+bottom:"25px",
+
+width:"320px",
+
+height:"180px",
 
 borderRadius:"25px",
 
+overflow:"hidden",
+
 border:"2px solid #d4af37",
 
-zIndex:99,
-
-boxShadow:
-
-"0 0 50px rgba(212,175,55,.7)"
+zIndex:99
 
 };
 
 
 
 
-const video={
+
+const videoStyle={
 
 width:"100%",
 
@@ -769,6 +716,7 @@ height:"100%",
 objectFit:"cover" as const
 
 };
+
 
 
 
@@ -783,43 +731,16 @@ top:"10px",
 
 zIndex:2,
 
+borderRadius:"50%",
+
 width:"35px",
 
 height:"35px",
 
-borderRadius:"50%",
+background:"#d4af37",
 
 border:"0",
 
-background:"#d4af37",
-
-fontWeight:900
-
-};
-
-
-
-
-const openVideo={
-
-position:"fixed" as const,
-
-right:"20px",
-
-bottom:"20px",
-
-width:"60px",
-
-height:"60px",
-
-borderRadius:"50%",
-
-background:"#050505",
-
-color:"#d4af37",
-
-border:"2px solid #d4af37",
-
-zIndex:99
+fontSize:"22px"
 
 };
