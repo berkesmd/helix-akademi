@@ -1,118 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 
 export default function EgitimDetayPage(){
 
-const supabase = createClient();
-
-const params = useParams();
 
 const router = useRouter();
 
 
-const [egitim,setEgitim] = useState<any>(null);
 
-const [loading,setLoading] = useState(true);
+const dersler = [
 
+{
+id:1,
+baslik:"Koçluğa Giriş"
+},
 
-
-useEffect(()=>{
-
-getir();
-
-},[]);
-
-
-
-async function getir(){
-
-
-const id = params.id;
-
-
-
-const {
-
-data,
-
-error
-
-}= await supabase
-
-.from("courses")
-
-.select("*")
-
-.eq("id",id)
-
-.single();
-
-
-
-console.log(error);
-
-
-
-if(data){
-
-setEgitim(data);
-
+{
+id:2,
+baslik:"İletişim Teknikleri"
 }
 
-
-setLoading(false);
-
-
-
-}
-
-
-
-
-if(loading){
-
-return(
-
-<main style={page}>
-
-<div style={loadingBox}>
-
-Yükleniyor...
-
-</div>
-
-</main>
-
-)
-
-}
-
-
-
-
-
-if(!egitim){
-
-return(
-
-<main style={page}>
-
-<div style={loadingBox}>
-
-Eğitim bulunamadı.
-
-</div>
-
-</main>
-
-)
-
-}
-
+];
 
 
 
@@ -123,28 +33,24 @@ return(
 <main style={page}>
 
 
-<div style={card}>
+<div style={kart}>
 
 
 <h1 style={title}>
 
-{egitim.title}
+Profesyonel Yaşam Koçluğu
 
 </h1>
 
 
 
-<p style={desc}>
+<p style={aciklama}>
 
-{egitim.description}
+Uluslararası sertifikalı eğitim programı
 
 </p>
 
 
-
-
-
-<div style={section}>
 
 
 <h2>
@@ -155,61 +61,70 @@ DERSLER
 
 
 
-<div style={lesson}>
+
+
+{
+
+dersler.map((ders)=>(
+
+
+<div
+
+key={ders.id}
+
+style={dersKart}
+
+>
 
 
 <h3>
 
-1. Koçluğa Giriş
+{ders.id}. {ders.baslik}
 
 </h3>
 
-
-<button style={button}>
-
-DERSE GİR
-
-</button>
-
-
-</div>
-
-
-
-
-
-<div style={lesson}>
-
-
-<h3>
-
-2. İletişim Teknikleri
-
-</h3>
-
-
-<button style={button}>
-
-DERSE GİR
-
-</button>
-
-
-</div>
-
-
-
-
-
-</div>
 
 
 
 <button
 
-style={back}
+style={button}
 
-onClick={()=>router.back()}
+onClick={()=>{
+
+router.push(
+
+`/ogrenci/ders/${ders.id}`
+
+);
+
+}}
+
+>
+
+DERSE GİR
+
+</button>
+
+
+
+</div>
+
+
+))
+
+
+}
+
+
+
+
+
+<button
+
+style={geri}
+
+onClick={()=>router.push("/ogrenci/egitimler")}
 
 >
 
@@ -219,8 +134,9 @@ onClick={()=>router.back()}
 
 
 
-</div>
 
+
+</div>
 
 
 </main>
@@ -234,98 +150,73 @@ onClick={()=>router.back()}
 
 
 
-const page = {
-
+const page={
 
 minHeight:"100vh",
 
-padding:"25px 15px",
+padding:"30px",
 
 background:
 
-"radial-gradient(circle at top,#3b2800,#050505 70%)",
+"radial-gradient(circle,#3b2600,#050505)",
 
 color:"white"
-
-
 
 };
 
 
 
-const card={
 
+const kart={
 
 maxWidth:"700px",
 
-margin:"auto",
+margin:"40px auto",
 
-padding:"25px",
+padding:"35px",
 
 borderRadius:"30px",
 
 background:
 
-"rgba(255,255,255,.06)",
+"rgba(255,255,255,.05)",
 
 border:
 
-"1px solid rgba(212,175,55,.4)",
-
-backdropFilter:"blur(20px)"
+"1px solid #d4af37"
 
 };
+
 
 
 
 const title={
 
+fontSize:"42px",
 
-fontSize:"clamp(28px,7vw,45px)",
-
-lineHeight:"1.2",
-
-color:"#d4af37",
-
-fontWeight:900,
-
-marginBottom:"20px"
-
+color:"#d4af37"
 
 };
 
 
 
-const desc={
 
+const aciklama={
 
-fontSize:"17px",
+color:"#ddd",
 
-lineHeight:"1.7",
-
-color:"#ddd"
-
+marginBottom:"30px"
 
 };
 
 
 
-const section={
 
-
-marginTop:"35px"
-
-
-};
-
-
-
-const lesson={
-
-
-marginTop:"20px",
+const dersKart={
 
 padding:"20px",
+
+marginTop:"20px",
 
 borderRadius:"20px",
 
@@ -333,48 +224,45 @@ background:"#111",
 
 border:
 
-"1px solid rgba(212,175,55,.3)"
-
-
+"1px solid rgba(212,175,55,.4)"
 
 };
+
 
 
 
 const button={
 
+width:"100%",
+
+padding:"15px",
 
 marginTop:"15px",
 
-width:"100%",
-
-padding:"14px",
+borderRadius:"15px",
 
 border:"0",
 
-borderRadius:"15px",
-
 background:
 
-"linear-gradient(135deg,#fff1a8,#d4af37)",
+"linear-gradient(90deg,#fff1a8,#d4af37)",
 
 fontWeight:900,
 
 cursor:"pointer"
 
-
 };
 
 
 
-const back={
 
-
-marginTop:"30px",
+const geri={
 
 width:"100%",
 
-padding:"14px",
+marginTop:"25px",
+
+padding:"15px",
 
 borderRadius:"15px",
 
@@ -386,25 +274,6 @@ border:
 
 color:"#d4af37",
 
-fontWeight:900,
-
 cursor:"pointer"
-
-
-};
-
-
-
-const loadingBox={
-
-
-padding:"50px",
-
-textAlign:"center" as const,
-
-color:"#d4af37",
-
-fontSize:"22px"
-
 
 };
