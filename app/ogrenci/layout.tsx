@@ -7,13 +7,9 @@ import { createClient } from "@/lib/supabase/client";
 
 
 export default function OgrenciLayout({
-
 children
-
 }:{
-
 children:React.ReactNode
-
 }){
 
 
@@ -24,7 +20,8 @@ const supabase = createClient();
 
 const [isim,setIsim] = useState("Öğrenci");
 
-const [menu,setMenu] = useState(false);
+const [menuAcik,setMenuAcik] = useState(false);
+
 
 
 
@@ -61,11 +58,8 @@ const {data:profil}=await supabase
 
 
 setIsim(
-
 profil?.full_name || "Öğrenci"
-
 );
-
 
 
 }
@@ -81,7 +75,9 @@ kontrol();
 
 
 
+
 return(
+
 
 <div style={page}>
 
@@ -90,7 +86,7 @@ return(
 
 style={hamburger}
 
-onClick={()=>setMenu(!menu)}
+onClick={()=>setMenuAcik(!menuAcik)}
 
 >
 
@@ -112,7 +108,7 @@ style={{
 
 transform:
 
-menu
+menuAcik
 
 ?
 
@@ -137,12 +133,11 @@ src="/helix-logo.png"
 
 alt="Helix Akademi"
 
-width={120}
+width={110}
 
-height={120}
+height={110}
 
 />
-
 
 
 <h2>
@@ -167,25 +162,24 @@ HELIX
 
 
 
-
-<div style={links}>
+<div style={menuArea}>
 
 
 <button
 
-style={linkButton}
+style={menuButton}
 
 onClick={()=>{
 
 router.push("/ogrenci");
 
-setMenu(false);
+setMenuAcik(false);
 
 }}
 
 >
 
-Ana Sayfa
+🏠 Ana Sayfa
 
 </button>
 
@@ -197,19 +191,19 @@ Ana Sayfa
 
 <button
 
-style={linkButton}
+style={menuButton}
 
 onClick={()=>{
 
 router.push("/ogrenci/egitimler");
 
-setMenu(false);
+setMenuAcik(false);
 
 }}
 
 >
 
-Eğitimlerim
+🎓 Eğitimlerim
 
 </button>
 
@@ -219,22 +213,21 @@ Eğitimlerim
 
 
 
-
 <button
 
-style={linkButton}
+style={menuButton}
 
 onClick={()=>{
 
 router.push("/ogrenci/bildirimler");
 
-setMenu(false);
+setMenuAcik(false);
 
 }}
 
 >
 
-Bildirimler
+🔔 Bildirimler
 
 </button>
 
@@ -246,24 +239,21 @@ Bildirimler
 
 <button
 
-style={linkButton}
+style={menuButton}
 
 onClick={()=>{
 
 router.push("/ogrenci/profil");
 
-setMenu(false);
+setMenuAcik(false);
 
 }}
 
 >
 
-Profilim
+👤 Profilim
 
 </button>
-
-
-
 
 
 
@@ -311,7 +301,6 @@ GÜVENLİ ÇIKIŞ
 
 
 
-
 <main style={content}>
 
 
@@ -347,6 +336,7 @@ BİLDİRİMLER
 
 
 
+
 {children}
 
 
@@ -354,7 +344,6 @@ BİLDİRİMLER
 
 
 </main>
-
 
 
 
@@ -392,6 +381,8 @@ color:"white"
 
 
 
+
+
 const sidebar={
 
 position:"fixed" as const,
@@ -404,9 +395,9 @@ width:"260px",
 
 height:"100vh",
 
-background:"#050505",
-
 padding:"30px 20px",
+
+background:"#050505",
 
 borderRight:
 
@@ -414,13 +405,10 @@ borderRight:
 
 zIndex:1000,
 
-transition:"0.3s",
-
-display:"flex",
-
-flexDirection:"column" as const
+transition:"0.3s"
 
 };
+
 
 
 
@@ -442,7 +430,8 @@ color:"#d4af37"
 
 
 
-const links={
+
+const menuArea={
 
 marginTop:"40px",
 
@@ -458,7 +447,8 @@ gap:"15px"
 
 
 
-const linkButton={
+
+const menuButton={
 
 padding:"16px",
 
@@ -486,11 +476,18 @@ cursor:"pointer"
 
 
 
+
 const logout={
 
-marginTop:"auto",
+position:"absolute" as const,
 
-padding:"16px",
+bottom:"30px",
+
+left:"20px",
+
+right:"20px",
+
+padding:"15px",
 
 borderRadius:"18px",
 
@@ -514,15 +511,15 @@ cursor:"pointer"
 
 
 
-const content={
 
-marginLeft:"0px",
+const content={
 
 padding:"30px",
 
 minHeight:"100vh"
 
 };
+
 
 
 
@@ -538,7 +535,7 @@ justifyContent:"space-between",
 
 alignItems:"center",
 
-padding:"20px 25px",
+padding:"20px",
 
 borderRadius:"25px",
 
@@ -560,11 +557,12 @@ marginBottom:"30px"
 
 
 
+
 const notification={
 
-padding:"12px 22px",
+padding:"12px 20px",
 
-borderRadius:"30px",
+borderRadius:"20px",
 
 background:"transparent",
 
@@ -579,6 +577,7 @@ fontWeight:900,
 cursor:"pointer"
 
 };
+
 
 
 
@@ -602,7 +601,7 @@ height:"50px",
 
 borderRadius:"15px",
 
-border:"0",
+border:"none",
 
 background:
 
