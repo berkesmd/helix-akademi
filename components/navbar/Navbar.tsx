@@ -3,105 +3,37 @@
 import Link from "next/link";
 import { useState } from "react";
 
+export default function Navbar() {
 
-export default function Navbar(){
-
-const [open,setOpen]=useState(false);
-
+const [menu,setMenu]=useState(false);
 
 
-return(
+return (
 
-<header className="
-fixed
-top-0
-left-0
-right-0
-z-[999]
-bg-black/80
-backdrop-blur-xl
-border-b
-border-yellow-500/20
-">
+<header style={header}>
 
 
-<div className="
-max-w-7xl
-mx-auto
-h-20
-px-6
-flex
-items-center
-justify-between
-">
+<div style={wrapper}>
 
 
+<Link href="/" style={brand}>
 
 
-
-{/* LOGO */}
-
-<Link 
-href="/"
-onClick={()=>setOpen(false)}
-className="flex items-center gap-3"
->
-
-
-<div className="
-w-12
-h-12
-rounded-xl
-flex
-items-center
-justify-center
-bg-yellow-500/10
-border
-border-yellow-500/40
-shadow-lg
-shadow-yellow-500/20
-">
-
-
-<span className="
-text-3xl
-font-black
-text-yellow-400
-">
-
+<div style={logoBox}>
 H
-
-</span>
-
-
 </div>
-
 
 
 <div>
 
-
-<h1 className="
-text-white
-font-black
-text-xl
-tracking-[4px]
-">
-
+<div style={logoText}>
 HELIX
+</div>
 
-</h1>
 
-
-<p className="
-text-yellow-400
-text-[10px]
-tracking-[5px]
-">
-
+<div style={academy}>
 AKADEMİ
-
-</p>
+</div>
 
 
 </div>
@@ -114,68 +46,32 @@ AKADEMİ
 
 
 
+<nav style={desktopMenu}>
 
 
-
-{/* MASAÜSTÜ MENÜ */}
-
-
-<nav className="
-hidden
-md:flex
-items-center
-gap-8
-">
-
-
-<Link
-href="/"
-className="
-text-white
-hover:text-yellow-400
-transition
-"
->
+<Link href="/" style={navLink}>
 Ana Sayfa
 </Link>
 
 
-
-<Link
-href="/egitimler"
-className="
-text-gray-300
-hover:text-yellow-400
-transition
-"
->
+<Link href="/egitimler" style={navLink}>
 Eğitimler
 </Link>
 
 
-
-<Link
-href="/hakkimizda"
-className="
-text-gray-300
-hover:text-yellow-400
-transition
-"
->
+<Link href="/hakkimizda" style={navLink}>
 Hakkımızda
 </Link>
 
 
-
-<Link
-href="/iletisim"
-className="
-text-gray-300
-hover:text-yellow-400
-transition
-"
->
+<Link href="/iletisim" style={navLink}>
 İletişim
+</Link>
+
+
+
+<Link href="/ogrenci-giris" style={button}>
+ÖĞRENCİ GİRİŞ
 </Link>
 
 
@@ -188,114 +84,15 @@ transition
 
 
 
-
-{/* PC BUTON */}
-
-
-<div className="
-hidden
-md:flex
-gap-3
-">
-
-
-<Link
-
-href="/ogrenci-giris"
-
-className="
-px-6
-py-3
-rounded-xl
-bg-yellow-500
-text-black
-font-bold
-shadow-lg
-shadow-yellow-500/30
-hover:bg-yellow-400
-transition
-"
-
->
-
-ÖĞRENCİ GİRİŞ
-
-</Link>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-
-{/* HAMBURGER */}
-
-
-
 <button
 
-onClick={()=>setOpen(!open)}
+style={hamburger}
 
-className="
-md:hidden
-w-12
-h-12
-rounded-xl
-border
-border-yellow-500/40
-flex
-flex-col
-items-center
-justify-center
-gap-1.5
-bg-black
-"
+onClick={()=>setMenu(!menu)}
 
 >
 
-
-<span className={`
-block
-w-6
-h-0.5
-bg-yellow-400
-transition
-
-${open ? "rotate-45 translate-y-2":""}
-
-`}/>
-
-
-<span className={`
-block
-w-6
-h-0.5
-bg-yellow-400
-transition
-
-${open ? "opacity-0":""}
-
-`}/>
-
-
-<span className={`
-block
-w-6
-h-0.5
-bg-yellow-400
-transition
-
-${open ? "-rotate-45 -translate-y-2":""}
-
-`}/>
-
-
+☰
 
 </button>
 
@@ -309,150 +106,39 @@ ${open ? "-rotate-45 -translate-y-2":""}
 
 
 
-
-
-
-
-{/* MOBİL MENÜ */}
-
-
-
 {
 
-open &&
+menu &&
 
-<div className="
-md:hidden
-bg-black
-border-t
-border-yellow-500/20
-px-6
-py-8
-">
+<div style={mobileMenu}>
 
 
-<nav className="
-flex
-flex-col
-gap-6
-">
-
-
-<Link
-
-onClick={()=>setOpen(false)}
-
-href="/"
-
-className="
-text-white
-text-lg
-font-semibold
-"
-
->
-
+<Link href="/" style={mobileLink}>
 Ana Sayfa
-
 </Link>
 
 
-
-<Link
-
-onClick={()=>setOpen(false)}
-
-href="/egitimler"
-
-className="
-text-gray-300
-text-lg
-font-semibold
-"
-
->
-
+<Link href="/egitimler" style={mobileLink}>
 Eğitimler
-
 </Link>
 
 
-
-<Link
-
-onClick={()=>setOpen(false)}
-
-href="/hakkimizda"
-
-className="
-text-gray-300
-text-lg
-font-semibold
-"
-
->
-
+<Link href="/hakkimizda" style={mobileLink}>
 Hakkımızda
-
 </Link>
 
 
-
-<Link
-
-onClick={()=>setOpen(false)}
-
-href="/iletisim"
-
-className="
-text-gray-300
-text-lg
-font-semibold
-"
-
->
-
+<Link href="/iletisim" style={mobileLink}>
 İletişim
-
 </Link>
 
 
-
-
-
-<Link
-
-onClick={()=>setOpen(false)}
-
-href="/ogrenci-giris"
-
-className="
-mt-3
-text-center
-rounded-xl
-py-4
-bg-gradient-to-r
-from-yellow-200
-via-yellow-500
-to-yellow-700
-text-black
-font-black
-tracking-widest
-"
-
->
-
-ÖĞRENCİ GİRİŞİ
-
+<Link href="/ogrenci-giris" style={button}>
+ÖĞRENCİ GİRİŞ
 </Link>
-
-
-
-</nav>
 
 
 </div>
-
 
 }
 
@@ -464,3 +150,241 @@ tracking-widest
 )
 
 }
+
+
+
+
+
+
+const header={
+
+position:"fixed" as const,
+
+top:0,
+
+left:0,
+
+right:0,
+
+height:"85px",
+
+zIndex:999,
+
+background:"rgba(0,0,0,0.85)",
+
+backdropFilter:"blur(20px)",
+
+borderBottom:"1px solid rgba(212,175,55,.3)"
+
+};
+
+
+
+
+const wrapper={
+
+height:"100%",
+
+display:"flex",
+
+alignItems:"center",
+
+justifyContent:"space-between",
+
+padding:"0 40px"
+
+};
+
+
+
+
+const brand={
+
+display:"flex",
+
+alignItems:"center",
+
+gap:"15px",
+
+textDecoration:"none"
+
+};
+
+
+
+
+const logoBox={
+
+width:"45px",
+
+height:"45px",
+
+borderRadius:"15px",
+
+display:"flex",
+
+alignItems:"center",
+
+justifyContent:"center",
+
+fontSize:"25px",
+
+fontWeight:900,
+
+color:"#d4af37",
+
+border:"1px solid #d4af37",
+
+background:"rgba(212,175,55,.15)",
+
+boxShadow:"0 0 25px rgba(212,175,55,.5)"
+
+};
+
+
+
+
+const logoText={
+
+color:"#fff",
+
+fontSize:"20px",
+
+fontWeight:900,
+
+letterSpacing:"5px"
+
+};
+
+
+
+
+const academy={
+
+fontSize:"10px",
+
+letterSpacing:"6px",
+
+color:"#d4af37",
+
+marginTop:"-5px"
+
+};
+
+
+
+
+const desktopMenu={
+
+display:"flex",
+
+alignItems:"center",
+
+gap:"35px"
+
+};
+
+
+
+
+const navLink={
+
+color:"#ddd",
+
+textDecoration:"none",
+
+fontWeight:700,
+
+fontSize:"15px"
+
+};
+
+
+
+
+const button={
+
+padding:"13px 25px",
+
+borderRadius:"18px",
+
+background:
+
+"linear-gradient(135deg,#fff2a8,#d4af37,#8a6500)",
+
+color:"#000",
+
+fontWeight:900,
+
+textDecoration:"none",
+
+boxShadow:
+
+"0 0 25px rgba(212,175,55,.6)"
+
+};
+
+
+
+
+const hamburger={
+
+display:"none",
+
+background:"transparent",
+
+border:"1px solid #d4af37",
+
+color:"#d4af37",
+
+fontSize:"28px",
+
+borderRadius:"12px",
+
+padding:"5px 12px",
+
+cursor:"pointer"
+
+};
+
+
+
+
+const mobileMenu={
+
+position:"absolute" as const,
+
+top:"85px",
+
+left:0,
+
+right:0,
+
+background:"#050505",
+
+padding:"30px",
+
+display:"flex",
+
+flexDirection:"column" as const,
+
+gap:"25px",
+
+borderBottom:"1px solid rgba(212,175,55,.3)"
+
+};
+
+
+
+
+const mobileLink={
+
+color:"white",
+
+fontSize:"18px",
+
+textDecoration:"none",
+
+fontWeight:700
+
+};

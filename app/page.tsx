@@ -9,7 +9,8 @@ export default function Home(){
 
 const router = useRouter();
 
-const [video,setVideo]=useState(true);
+const [videoAcik,setVideoAcik]=useState(true);
+
 
 
 return(
@@ -17,13 +18,17 @@ return(
 <main style={page}>
 
 
-{video &&
+{/* TANITIM VİDEOSU */}
+
+{
+videoAcik &&
 
 <div style={videoBox}>
 
+
 <button
 style={close}
-onClick={()=>setVideo(false)}
+onClick={()=>setVideoAcik(false)}
 >
 ×
 </button>
@@ -34,17 +39,43 @@ onClick={()=>setVideo(false)}
 src="/helix-tanitim.mp4"
 
 autoPlay
+
 muted
+
 loop
+
 playsInline
 
-style={videoStyle}
+style={video}
 
 />
+
 
 </div>
 
 }
+
+
+
+
+{
+!videoAcik &&
+
+<button
+
+style={openVideo}
+
+onClick={()=>setVideoAcik(true)}
+
+>
+
+▶
+
+</button>
+
+}
+
+
 
 
 
@@ -55,7 +86,7 @@ style={videoStyle}
 
 src="/helix-logo.png"
 
-alt="Helix"
+alt="Helix Akademi"
 
 width={180}
 
@@ -68,21 +99,31 @@ style={logo}
 
 
 <h1 style={title}>
+
 HELIX AKADEMİ
+
 </h1>
 
 
 
+
 <h2 style={subtitle}>
+
 GELECEĞİNİ EĞİTİMLE ŞEKİLLENDİR
+
 </h2>
 
 
 
-<p style={desc}>
+<p style={text}>
+
 Profesyonel eğitim programları ile kendini geliştir,
+
 kariyerinde fark yarat.
+
 </p>
+
+
 
 
 
@@ -93,8 +134,12 @@ style={button}
 onClick={()=>router.push("/ogrenci-giris")}
 
 >
+
 ÖĞRENCİ GİRİŞİ
+
 </button>
+
+
 
 
 
@@ -133,12 +178,16 @@ text="MEMNUNİYET"
 
 
 
+
 <section style={section}>
 
 
 <h2 style={sectionTitle}>
+
 NEDEN HELIX AKADEMİ?
+
 </h2>
+
 
 
 
@@ -149,7 +198,7 @@ NEDEN HELIX AKADEMİ?
 
 title="UZMAN EĞİTMENLER"
 
-text="Alanında deneyimli profesyonel eğitim kadrosu"
+text="Alanında uzman eğitim kadrosu"
 
 />
 
@@ -159,19 +208,21 @@ text="Alanında deneyimli profesyonel eğitim kadrosu"
 
 title="ONLINE EĞİTİM"
 
-text="Her yerden kolay ve kaliteli eğitim"
+text="Her yerden kolay erişim"
 
 />
+
 
 
 
 <Card
 
-title="SERTİFİKA"
+title="SERTİFİKALI EĞİTİM"
 
-text="Başarılarını resmi olarak belgele"
+text="Başarılarını belgeye dönüştür"
 
 />
+
 
 
 </div>
@@ -186,13 +237,13 @@ text="Başarılarını resmi olarak belgele"
 
 
 
-
-
-<section style={section}>
+<section style={yorum}>
 
 
 <h2 style={sectionTitle}>
-ÖĞRENCİ YORUMLARI
+
+ÖĞRENCİLERİMİZ NE DİYOR?
+
 </h2>
 
 
@@ -200,25 +251,21 @@ text="Başarılarını resmi olarak belgele"
 <div style={cards}>
 
 
-<Comment
+<Card
 
-name="Ahmet Yılmaz"
+title="⭐⭐⭐⭐⭐"
 
-job="Hasta Kayıt Kabul Eğitimi"
-
-text="Helix Akademi sayesinde eğitimimi tamamladım. Sistem çok başarılı ve destek ekibi çok ilgiliydi."
+text="Hasta kayıt kabul eğitimini tamamladım. Kısa sürede sertifikamı aldım ve iş görüşmesine başladım."
 
 />
 
 
 
-<Comment
+<Card
 
-name="Mehmet Kaya"
+title="⭐⭐⭐⭐⭐"
 
-job="Makam Şoförlüğü Eğitimi"
-
-text="Aldığım eğitim sayesinde kendimi geliştirdim ve yeni fırsatlar yakaladım."
+text="Makam şoförlüğü eğitiminden çok memnun kaldım. Profesyonel ve kaliteli bir eğitimdi."
 
 />
 
@@ -227,7 +274,9 @@ text="Aldığım eğitim sayesinde kendimi geliştirdim ve yeni fırsatlar yakal
 </div>
 
 
+
 </section>
+
 
 
 
@@ -241,13 +290,19 @@ text="Aldığım eğitim sayesinde kendimi geliştirdim ve yeni fırsatlar yakal
 
 
 <h2>
-EĞİTİMİNİZE HEMEN BAŞLAYIN
+
+KARİYERİNE BUGÜN BAŞLA
+
 </h2>
 
 
 <p>
-Öğrenci hesabınız ile eğitimlerinize erişebilirsiniz.
+
+Helix Akademi ile geleceğini şekillendir.
+
 </p>
+
+
 
 
 <button
@@ -263,8 +318,8 @@ onClick={()=>router.push("/ogrenci-giris")}
 </button>
 
 
-</section>
 
+</section>
 
 
 
@@ -276,25 +331,33 @@ onClick={()=>router.push("/ogrenci-giris")}
 
 
 <h2 style={footerTitle}>
+
 HELIX AKADEMİ
+
 </h2>
 
 
 <p>
+
 +90 530 508 62 69
+
 </p>
 
 
 <p>
+
 helix_akademi@gmail.com
+
 </p>
 
 
 </footer>
 
 
-</main>
 
+
+
+</main>
 
 )
 
@@ -314,20 +377,24 @@ return(
 <div style={stat}>
 
 <h2>
+
 {number}
+
 </h2>
 
+
 <p>
+
 {text}
+
 </p>
+
 
 </div>
 
 )
 
 }
-
-
 
 
 
@@ -341,53 +408,17 @@ return(
 <div style={card}>
 
 
-<h2 style={gold}>
+<h3 style={cardTitle}>
+
 {title}
-</h2>
 
-
-<p>
-{text}
-</p>
-
-
-</div>
-
-)
-
-}
-
-
-
-
-
-
-
-
-function Comment({name,job,text}:any){
-
-return(
-
-<div style={card}>
-
-
-<div style={stars}>
-★★★★★
-</div>
-
-
-<h3>
-{name}
 </h3>
 
 
-<p style={gold}>
-{job}
-</p>
-
-
 <p>
-"{text}"
+
+{text}
+
 </p>
 
 
@@ -410,32 +441,38 @@ const page={
 minHeight:"100vh",
 
 background:
-"radial-gradient(circle at top,#5a3d00,#090909 55%,#000)",
 
-color:"white"
+"radial-gradient(circle at top,#5b4000,#080808 45%,#000)",
+
+color:"#fff",
+
+paddingTop:"80px"
 
 };
+
+
 
 
 
 
 const hero={
 
-minHeight:"100vh",
+minHeight:"90vh",
 
 display:"flex",
 
 flexDirection:"column" as const,
 
-alignItems:"center",
-
 justifyContent:"center",
+
+alignItems:"center",
 
 textAlign:"center" as const,
 
-padding:"30px"
+padding:"30px 20px"
 
 };
+
 
 
 
@@ -444,7 +481,8 @@ padding:"30px"
 const logo={
 
 filter:
-"drop-shadow(0 0 50px #d4af37)"
+
+"drop-shadow(0 0 45px #d4af37)"
 
 };
 
@@ -454,18 +492,21 @@ filter:
 
 const title={
 
-fontSize:"clamp(40px,8vw,80px)",
-
-letterSpacing:"8px",
+fontSize:"clamp(38px,8vw,80px)",
 
 fontWeight:900,
 
+letterSpacing:"8px",
+
+margin:"20px",
+
 background:
-"linear-gradient(#fff,#d4af37)",
+
+"linear-gradient(#fff5b8,#d4af37,#8a6500)",
 
 WebkitBackgroundClip:"text",
 
-color:"transparent"
+WebkitTextFillColor:"transparent"
 
 };
 
@@ -477,9 +518,9 @@ const subtitle={
 
 fontSize:"clamp(20px,4vw,40px)",
 
-color:"#fff",
+fontWeight:900,
 
-textShadow:"0 0 20px #d4af37"
+textShadow:"0 0 25px #d4af37"
 
 };
 
@@ -487,7 +528,7 @@ textShadow:"0 0 20px #d4af37"
 
 
 
-const desc={
+const text={
 
 maxWidth:"700px",
 
@@ -507,14 +548,15 @@ const button={
 
 marginTop:"30px",
 
-padding:"18px 60px",
+padding:"18px 55px",
 
 borderRadius:"20px",
 
 border:"0",
 
 background:
-"linear-gradient(135deg,#fff1a6,#d4af37)",
+
+"linear-gradient(135deg,#fff0a0,#d4af37,#806000)",
 
 fontWeight:900,
 
@@ -522,8 +564,7 @@ letterSpacing:"3px",
 
 cursor:"pointer",
 
-boxShadow:
-"0 0 40px #d4af37"
+boxShadow:"0 0 35px #d4af37"
 
 };
 
@@ -535,7 +576,7 @@ const stats={
 
 display:"flex",
 
-gap:"25px",
+gap:"20px",
 
 marginTop:"60px",
 
@@ -551,15 +592,13 @@ justifyContent:"center"
 
 const stat={
 
-padding:"30px",
-
-minWidth:"150px",
-
-background:"rgba(255,255,255,.08)",
+padding:"25px 40px",
 
 borderRadius:"25px",
 
-border:"1px solid #d4af37"
+background:"rgba(255,255,255,.08)",
+
+border:"1px solid rgba(212,175,55,.4)"
 
 };
 
@@ -569,7 +608,19 @@ border:"1px solid #d4af37"
 
 const section={
 
-padding:"80px 30px",
+padding:"80px 20px",
+
+textAlign:"center" as const
+
+};
+
+
+
+
+
+const yorum={
+
+padding:"80px 20px",
 
 textAlign:"center" as const
 
@@ -581,9 +632,11 @@ textAlign:"center" as const
 
 const sectionTitle={
 
-fontSize:"45px",
+fontSize:"40px",
 
-color:"#d4af37"
+color:"#d4af37",
+
+fontWeight:900
 
 };
 
@@ -597,7 +650,7 @@ display:"grid",
 
 gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))",
 
-gap:"30px",
+gap:"25px",
 
 marginTop:"40px"
 
@@ -611,21 +664,13 @@ const card={
 
 padding:"35px",
 
-background:"rgba(255,255,255,.07)",
+borderRadius:"30px",
 
-borderRadius:"25px",
+background:"rgba(255,255,255,.06)",
 
-border:"1px solid rgba(212,175,55,.5)"
+border:"1px solid rgba(212,175,55,.35)",
 
-};
-
-
-
-
-
-const gold={
-
-color:"#d4af37"
+boxShadow:"0 0 30px rgba(212,175,55,.15)"
 
 };
 
@@ -633,11 +678,11 @@ color:"#d4af37"
 
 
 
-const stars={
+const cardTitle={
 
 color:"#d4af37",
 
-fontSize:"25px"
+fontWeight:900
 
 };
 
@@ -649,7 +694,9 @@ const cta={
 
 padding:"80px 20px",
 
-textAlign:"center" as const
+textAlign:"center" as const,
+
+background:"rgba(212,175,55,.08)"
 
 };
 
@@ -681,17 +728,20 @@ color:"#d4af37"
 
 
 
+
 const videoBox={
 
 position:"fixed" as const,
 
-right:"25px",
+right:"20px",
 
-bottom:"25px",
+bottom:"20px",
 
 width:"320px",
 
 height:"180px",
+
+zIndex:100,
 
 borderRadius:"25px",
 
@@ -699,7 +749,7 @@ overflow:"hidden",
 
 border:"2px solid #d4af37",
 
-zIndex:99
+boxShadow:"0 0 40px #d4af37"
 
 };
 
@@ -707,7 +757,7 @@ zIndex:99
 
 
 
-const videoStyle={
+const video={
 
 width:"100%",
 
@@ -731,6 +781,8 @@ top:"10px",
 
 zIndex:2,
 
+border:"0",
+
 borderRadius:"50%",
 
 width:"35px",
@@ -739,8 +791,34 @@ height:"35px",
 
 background:"#d4af37",
 
-border:"0",
+fontWeight:900
 
-fontSize:"22px"
+};
+
+
+
+
+
+const openVideo={
+
+position:"fixed" as const,
+
+right:"20px",
+
+bottom:"20px",
+
+width:"60px",
+
+height:"60px",
+
+borderRadius:"50%",
+
+background:"#000",
+
+color:"#d4af37",
+
+border:"2px solid #d4af37",
+
+zIndex:100
 
 };
