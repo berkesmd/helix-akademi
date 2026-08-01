@@ -6,8 +6,7 @@ import { useState } from "react";
 
 export default function Navbar(){
 
-const [menuOpen,setMenuOpen]=useState(false);
-
+const [open,setOpen]=useState(false);
 
 
 return(
@@ -16,7 +15,6 @@ return(
 
 
 <div style={container}>
-
 
 
 <Link href="/" style={brand}>
@@ -39,33 +37,77 @@ style={logo}
 
 
 
-<nav style={desktopNav}>
 
 
-<Link href="/" style={link}>
+<nav
+
+className="desktop-menu"
+
+style={desktop}
+
+>
+
+
+<Link href="/" style={navLink}>
 Ana Sayfa
 </Link>
 
 
-<Link href="/egitimler" style={link}>
+
+<Link href="/egitimler" style={navLink}>
 Eğitimler
 </Link>
 
 
-<Link href="/hakkimizda" style={link}>
+
+
+<Link href="/hakkimizda" style={navLink}>
 Hakkımızda
 </Link>
 
 
-<Link href="/iletisim" style={link}>
+
+
+<Link href="/iletisim" style={navLink}>
 İletişim
 </Link>
 
 
 
-<Link href="/ogrenci-giris" style={loginButton}>
+
+
+
+<Link
+
+href="/ogrenci-giris"
+
+style={login}
+
+>
+
 ÖĞRENCİ GİRİŞ
+
 </Link>
+
+
+
+
+
+
+
+<Link
+
+href="/kayit"
+
+style={register}
+
+>
+
+KAYIT OL
+
+</Link>
+
+
 
 
 </nav>
@@ -78,15 +120,23 @@ Hakkımızda
 
 <button
 
-style={menuButton}
 
-onClick={()=>setMenuOpen(!menuOpen)}
+className="mobile-menu-btn"
+
+
+style={hamburger}
+
+
+onClick={()=>setOpen(!open)}
+
 
 >
 
 ☰
 
 </button>
+
+
 
 
 
@@ -102,9 +152,10 @@ onClick={()=>setMenuOpen(!menuOpen)}
 
 
 
+
 {
 
-menuOpen &&
+open &&
 
 <div style={mobileMenu}>
 
@@ -115,7 +166,7 @@ href="/"
 
 style={mobileLink}
 
-onClick={()=>setMenuOpen(false)}
+onClick={()=>setOpen(false)}
 
 >
 
@@ -126,13 +177,14 @@ Ana Sayfa
 
 
 
+
 <Link
 
 href="/egitimler"
 
 style={mobileLink}
 
-onClick={()=>setMenuOpen(false)}
+onClick={()=>setOpen(false)}
 
 >
 
@@ -150,7 +202,7 @@ href="/hakkimizda"
 
 style={mobileLink}
 
-onClick={()=>setMenuOpen(false)}
+onClick={()=>setOpen(false)}
 
 >
 
@@ -168,7 +220,7 @@ href="/iletisim"
 
 style={mobileLink}
 
-onClick={()=>setMenuOpen(false)}
+onClick={()=>setOpen(false)}
 
 >
 
@@ -184,9 +236,9 @@ onClick={()=>setMenuOpen(false)}
 
 href="/ogrenci-giris"
 
-style={loginButton}
+style={login}
 
-onClick={()=>setMenuOpen(false)}
+onClick={()=>setOpen(false)}
 
 >
 
@@ -194,6 +246,23 @@ onClick={()=>setMenuOpen(false)}
 
 </Link>
 
+
+
+
+
+<Link
+
+href="/kayit"
+
+style={register}
+
+onClick={()=>setOpen(false)}
+
+>
+
+KAYIT OL
+
+</Link>
 
 
 
@@ -205,14 +274,12 @@ onClick={()=>setMenuOpen(false)}
 
 
 
-
 </header>
 
 
 )
 
 }
-
 
 
 
@@ -238,16 +305,13 @@ background:
 
 "rgba(0,0,0,.88)",
 
-backdropFilter:
-
-"blur(20px)",
+backdropFilter:"blur(20px)",
 
 borderBottom:
 
-"1px solid rgba(212,175,55,.25)"
+"1px solid rgba(212,175,55,.3)"
 
 };
-
 
 
 
@@ -273,7 +337,6 @@ padding:"0 40px"
 
 
 
-
 const brand={
 
 display:"flex",
@@ -289,18 +352,17 @@ textDecoration:"none"
 
 
 
-
 const logo={
 
-width:"160px",
+width:"170px",
 
-height:"65px",
+height:"70px",
 
 objectFit:"contain" as const,
 
 filter:
 
-"drop-shadow(0 0 20px rgba(212,175,55,.8))"
+"drop-shadow(0 0 25px rgba(212,175,55,.8))"
 
 };
 
@@ -309,14 +371,13 @@ filter:
 
 
 
-
-const desktopNav={
+const desktop={
 
 display:"flex",
 
 alignItems:"center",
 
-gap:"35px"
+gap:"28px"
 
 };
 
@@ -325,8 +386,7 @@ gap:"35px"
 
 
 
-
-const link={
+const navLink={
 
 color:"#eee",
 
@@ -334,9 +394,7 @@ textDecoration:"none",
 
 fontSize:"15px",
 
-fontWeight:700,
-
-transition:"0.3s"
+fontWeight:700
 
 };
 
@@ -345,10 +403,9 @@ transition:"0.3s"
 
 
 
+const login={
 
-const loginButton={
-
-padding:"14px 30px",
+padding:"14px 25px",
 
 borderRadius:"20px",
 
@@ -362,11 +419,11 @@ fontWeight:900,
 
 textDecoration:"none",
 
-letterSpacing:"1px",
+fontSize:"14px",
 
 boxShadow:
 
-"0 0 30px rgba(212,175,55,.7)"
+"0 0 25px rgba(212,175,55,.6)"
 
 };
 
@@ -375,18 +432,40 @@ boxShadow:
 
 
 
+const register={
 
-const menuButton={
+padding:"14px 25px",
 
-display:"none",
+borderRadius:"20px",
 
-fontSize:"30px",
+border:"1px solid #d4af37",
 
 color:"#d4af37",
 
-background:"transparent",
+fontWeight:900,
+
+textDecoration:"none",
+
+fontSize:"14px"
+
+};
+
+
+
+
+
+
+const hamburger={
+
+display:"none",
+
+background:"#050505",
 
 border:"1px solid #d4af37",
+
+color:"#d4af37",
+
+fontSize:"28px",
 
 borderRadius:"12px",
 
@@ -395,7 +474,6 @@ padding:"5px 12px",
 cursor:"pointer"
 
 };
-
 
 
 
@@ -424,10 +502,9 @@ gap:"25px",
 
 borderBottom:
 
-"1px solid rgba(212,175,55,.3)"
+"1px solid rgba(212,175,55,.4)"
 
 };
-
 
 
 
