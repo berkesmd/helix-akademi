@@ -2,138 +2,75 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 
 
 export default function OgrenciGirisPage(){
 
-  const router = useRouter();
+const [email,setEmail]=useState("");
+const [sifre,setSifre]=useState("");
 
-  const [email,setEmail] = useState("");
-  const [sifre,setSifre] = useState("");
+const [hata,setHata]=useState("");
+const [loading,setLoading]=useState(false);
 
-  const [hata,setHata] = useState("");
-  const [loading,setLoading] = useState(false);
 
 
+async function girisYap(e:React.FormEvent){
 
-  async function giris(e:React.FormEvent){
+e.preventDefault();
 
-    e.preventDefault();
+setLoading(true);
+setHata("");
 
-    setLoading(true);
-    setHata("");
 
 
+const supabase=createClient();
 
-    try{
 
 
-      const supabase = createClient();
+if(!supabase){
 
+setHata("Supabase bağlantısı yok");
 
+setLoading(false);
 
-      if(!supabase){
+return;
 
-        setHata(
-          "Supabase bağlantısı yok"
-        );
+}
 
-        setLoading(false);
 
-        return;
 
-      }
+const {data,error}=await supabase.auth.signInWithPassword({
 
+email,
 
+password:sifre
 
+});
 
-      const {
-        data,
-        error
-      } = await supabase.auth.signInWithPassword({
 
-        email,
 
-        password:sifre
+console.log(data);
+console.log(error);
 
-      });
 
 
+if(error){
 
+setHata(error.message);
 
+setLoading(false);
 
-      console.log(
-        "LOGIN DATA",
-        data
-      );
+return;
 
+}
 
-      console.log(
-        "LOGIN ERROR",
-        error
-      );
 
 
+window.location.href="/ogrenci";
 
 
 
-      if(error){
-
-        setHata(error.message);
-
-        setLoading(false);
-
-        return;
-
-      }
-
-
-
-
-      if(!data.user){
-
-        setHata(
-          "Kullanıcı bulunamadı"
-        );
-
-        setLoading(false);
-
-        return;
-
-      }
-
-
-
-
-      // direkt yönlendir
-
-      window.location.href="/ogrenci";
-
-
-
-    }
-
-    catch(err:any){
-
-
-      console.log(err);
-
-
-      setHata(
-        err.message
-      );
-
-
-      setLoading(false);
-
-
-    }
-
-
-
-  }
-
+}
 
 
 
@@ -143,28 +80,22 @@ return(
 <div className="min-h-screen bg-black flex items-center justify-center">
 
 
-<div className="bg-white p-8 rounded-2xl w-full max-w-md">
+<div className="bg-white p-8 rounded-xl">
 
 
-<h1 className="text-3xl font-bold mb-6 text-center">
+<h1 className="text-3xl font-bold mb-5">
 
 Öğrenci Giriş
 
 </h1>
 
 
-
-
-<form
-onSubmit={giris}
-className="space-y-4"
->
-
+<form onSubmit={girisYap}>
 
 
 <input
 
-type="email"
+className="border p-3 block mb-3"
 
 placeholder="E-posta"
 
@@ -174,14 +105,13 @@ onChange={
 e=>setEmail(e.target.value)
 }
 
-className="w-full border p-3 rounded"
-
 />
 
 
 
-
 <input
+
+className="border p-3 block mb-3"
 
 type="password"
 
@@ -193,26 +123,16 @@ onChange={
 e=>setSifre(e.target.value)
 }
 
-className="w-full border p-3 rounded"
-
 />
-
-
 
 
 
 {
 hata &&
-
-<p className="text-red-600">
-
+<p className="text-red-600 mb-3">
 {hata}
-
 </p>
-
 }
-
-
 
 
 
@@ -220,10 +140,9 @@ hata &&
 
 disabled={loading}
 
-className="w-full bg-black text-white p-3 rounded font-bold"
+className="bg-black text-white px-5 py-3"
 
 >
-
 
 {
 loading
@@ -233,24 +152,17 @@ loading
 "Giriş Yap"
 }
 
-
 </button>
-
-
 
 
 </form>
 
 
-
 </div>
 
 
-
 </div>
-
 
 )
-
 
 }
