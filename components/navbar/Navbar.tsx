@@ -3,40 +3,34 @@
 import Link from "next/link";
 import { useState } from "react";
 
-export default function Navbar() {
 
-const [menu,setMenu]=useState(false);
+export default function Navbar(){
+
+const [menuOpen,setMenuOpen]=useState(false);
 
 
-return (
+
+return(
 
 <header style={header}>
 
 
-<div style={wrapper}>
+<div style={container}>
+
 
 
 <Link href="/" style={brand}>
 
 
-<div style={logoBox}>
-H
-</div>
+<img
 
+src="/helix-logo.png"
 
-<div>
+alt="Helix Akademi"
 
-<div style={logoText}>
-HELIX
-</div>
+style={logo}
 
-
-<div style={academy}>
-AKADEMİ
-</div>
-
-
-</div>
+/>
 
 
 </Link>
@@ -45,35 +39,33 @@ AKADEMİ
 
 
 
+<nav style={desktopNav}>
 
-<nav style={desktopMenu}>
 
-
-<Link href="/" style={navLink}>
+<Link href="/" style={link}>
 Ana Sayfa
 </Link>
 
 
-<Link href="/egitimler" style={navLink}>
+<Link href="/egitimler" style={link}>
 Eğitimler
 </Link>
 
 
-<Link href="/hakkimizda" style={navLink}>
+<Link href="/hakkimizda" style={link}>
 Hakkımızda
 </Link>
 
 
-<Link href="/iletisim" style={navLink}>
+<Link href="/iletisim" style={link}>
 İletişim
 </Link>
 
 
 
-<Link href="/ogrenci-giris" style={button}>
+<Link href="/ogrenci-giris" style={loginButton}>
 ÖĞRENCİ GİRİŞ
 </Link>
-
 
 
 </nav>
@@ -86,9 +78,9 @@ Hakkımızda
 
 <button
 
-style={hamburger}
+style={menuButton}
 
-onClick={()=>setMenu(!menu)}
+onClick={()=>setMenuOpen(!menuOpen)}
 
 >
 
@@ -106,41 +98,111 @@ onClick={()=>setMenu(!menu)}
 
 
 
+
+
+
+
 {
 
-menu &&
+menuOpen &&
 
 <div style={mobileMenu}>
 
 
-<Link href="/" style={mobileLink}>
+<Link
+
+href="/"
+
+style={mobileLink}
+
+onClick={()=>setMenuOpen(false)}
+
+>
+
 Ana Sayfa
+
 </Link>
 
 
-<Link href="/egitimler" style={mobileLink}>
+
+
+<Link
+
+href="/egitimler"
+
+style={mobileLink}
+
+onClick={()=>setMenuOpen(false)}
+
+>
+
 Eğitimler
+
 </Link>
 
 
-<Link href="/hakkimizda" style={mobileLink}>
+
+
+
+<Link
+
+href="/hakkimizda"
+
+style={mobileLink}
+
+onClick={()=>setMenuOpen(false)}
+
+>
+
 Hakkımızda
+
 </Link>
 
 
-<Link href="/iletisim" style={mobileLink}>
+
+
+
+<Link
+
+href="/iletisim"
+
+style={mobileLink}
+
+onClick={()=>setMenuOpen(false)}
+
+>
+
 İletişim
+
 </Link>
 
 
-<Link href="/ogrenci-giris" style={button}>
+
+
+
+<Link
+
+href="/ogrenci-giris"
+
+style={loginButton}
+
+onClick={()=>setMenuOpen(false)}
+
+>
+
 ÖĞRENCİ GİRİŞ
+
 </Link>
+
+
 
 
 </div>
 
+
 }
+
+
 
 
 
@@ -150,6 +212,8 @@ Hakkımızda
 )
 
 }
+
+
 
 
 
@@ -170,18 +234,27 @@ height:"85px",
 
 zIndex:999,
 
-background:"rgba(0,0,0,0.85)",
+background:
 
-backdropFilter:"blur(20px)",
+"rgba(0,0,0,.88)",
 
-borderBottom:"1px solid rgba(212,175,55,.3)"
+backdropFilter:
+
+"blur(20px)",
+
+borderBottom:
+
+"1px solid rgba(212,175,55,.25)"
 
 };
 
 
 
 
-const wrapper={
+
+
+
+const container={
 
 height:"100%",
 
@@ -198,13 +271,14 @@ padding:"0 40px"
 
 
 
+
+
+
 const brand={
 
 display:"flex",
 
 alignItems:"center",
-
-gap:"15px",
 
 textDecoration:"none"
 
@@ -213,68 +287,30 @@ textDecoration:"none"
 
 
 
-const logoBox={
 
-width:"45px",
 
-height:"45px",
 
-borderRadius:"15px",
+const logo={
 
-display:"flex",
+width:"160px",
 
-alignItems:"center",
+height:"65px",
 
-justifyContent:"center",
+objectFit:"contain" as const,
 
-fontSize:"25px",
+filter:
 
-fontWeight:900,
-
-color:"#d4af37",
-
-border:"1px solid #d4af37",
-
-background:"rgba(212,175,55,.15)",
-
-boxShadow:"0 0 25px rgba(212,175,55,.5)"
+"drop-shadow(0 0 20px rgba(212,175,55,.8))"
 
 };
 
 
 
 
-const logoText={
-
-color:"#fff",
-
-fontSize:"20px",
-
-fontWeight:900,
-
-letterSpacing:"5px"
-
-};
 
 
 
-
-const academy={
-
-fontSize:"10px",
-
-letterSpacing:"6px",
-
-color:"#d4af37",
-
-marginTop:"-5px"
-
-};
-
-
-
-
-const desktopMenu={
+const desktopNav={
 
 display:"flex",
 
@@ -287,30 +323,38 @@ gap:"35px"
 
 
 
-const navLink={
 
-color:"#ddd",
+
+
+const link={
+
+color:"#eee",
 
 textDecoration:"none",
 
+fontSize:"15px",
+
 fontWeight:700,
 
-fontSize:"15px"
+transition:"0.3s"
 
 };
 
 
 
 
-const button={
 
-padding:"13px 25px",
 
-borderRadius:"18px",
+
+const loginButton={
+
+padding:"14px 30px",
+
+borderRadius:"20px",
 
 background:
 
-"linear-gradient(135deg,#fff2a8,#d4af37,#8a6500)",
+"linear-gradient(135deg,#fff1a8,#d4af37,#8a6500)",
 
 color:"#000",
 
@@ -318,26 +362,31 @@ fontWeight:900,
 
 textDecoration:"none",
 
+letterSpacing:"1px",
+
 boxShadow:
 
-"0 0 25px rgba(212,175,55,.6)"
+"0 0 30px rgba(212,175,55,.7)"
 
 };
 
 
 
 
-const hamburger={
+
+
+
+const menuButton={
 
 display:"none",
+
+fontSize:"30px",
+
+color:"#d4af37",
 
 background:"transparent",
 
 border:"1px solid #d4af37",
-
-color:"#d4af37",
-
-fontSize:"28px",
 
 borderRadius:"12px",
 
@@ -346,6 +395,9 @@ padding:"5px 12px",
 cursor:"pointer"
 
 };
+
+
+
 
 
 
@@ -370,21 +422,26 @@ flexDirection:"column" as const,
 
 gap:"25px",
 
-borderBottom:"1px solid rgba(212,175,55,.3)"
+borderBottom:
+
+"1px solid rgba(212,175,55,.3)"
 
 };
 
 
 
 
+
+
+
 const mobileLink={
 
-color:"white",
+color:"#fff",
 
 fontSize:"18px",
 
-textDecoration:"none",
+fontWeight:700,
 
-fontWeight:700
+textDecoration:"none"
 
 };
