@@ -1,53 +1,89 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-
 export default function Navbar(){
 
-const [open,setOpen]=useState(false);
+const [menu,setMenu]=useState(false);
 
 
 return(
 
-<header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-yellow-500/20">
+<header
+className="
+fixed
+top-0
+left-0
+right-0
+z-50
+bg-black/80
+backdrop-blur-xl
+border-b
+border-yellow-500/20
+"
+>
 
 
-<div className="max-w-7xl mx-auto h-20 px-5 flex items-center justify-between">
+<div
+className="
+max-w-7xl
+mx-auto
+flex
+items-center
+justify-between
+px-5
+py-4
+"
+>
 
 
 {/* LOGO */}
 
-<Link href="/" className="flex items-center gap-3">
+<Link
+href="/"
+className="flex items-center gap-3"
+>
 
-<Image
+
+<img
 
 src="/helix-logo.png"
 
-alt="Helix Akademi"
+alt="Helix"
 
-width={55}
-
-height={55}
+className="
+w-12
+h-12
+object-contain
+"
 
 />
 
 
 <div>
 
-<h1 className="text-white font-black tracking-widest text-lg">
 
+<h1
+className="
+text-white
+font-black
+tracking-[4px]
+text-xl
+"
+>
 HELIX
-
 </h1>
 
 
-<p className="text-yellow-400 text-[10px] tracking-[5px]">
-
+<p
+className="
+text-yellow-400
+text-[10px]
+tracking-[5px]
+"
+>
 AKADEMİ
-
 </p>
 
 
@@ -60,44 +96,86 @@ AKADEMİ
 
 
 
-{/* DESKTOP */}
-
-<nav className="hidden md:flex items-center gap-8">
 
 
-<Link href="/" className="text-white hover:text-yellow-400">
+{/* DESKTOP MENU */}
 
+<nav
+className="
+hidden
+md:flex
+items-center
+gap-8
+"
+>
+
+
+<Link
+href="/"
+className="
+text-white
+font-semibold
+hover:text-yellow-400
+"
+>
 Ana Sayfa
-
 </Link>
 
 
-<Link href="/egitimler" className="text-gray-300 hover:text-yellow-400">
-
+<Link
+href="/egitimler"
+className="
+text-white
+font-semibold
+hover:text-yellow-400
+"
+>
 Eğitimler
-
 </Link>
 
 
-<Link href="/hakkimizda" className="text-gray-300 hover:text-yellow-400">
-
+<Link
+href="/hakkimizda"
+className="
+text-white
+font-semibold
+hover:text-yellow-400
+"
+>
 Hakkımızda
-
 </Link>
 
 
-<Link href="/iletisim" className="text-gray-300 hover:text-yellow-400">
-
+<Link
+href="/iletisim"
+className="
+text-white
+font-semibold
+hover:text-yellow-400
+"
+>
 İletişim
-
 </Link>
+
 
 
 <Link
 
 href="/ogrenci-giris"
 
-className="bg-gradient-to-r from-yellow-200 via-yellow-500 to-yellow-700 text-black font-bold px-6 py-3 rounded-xl shadow-lg"
+className="
+bg-gradient-to-r
+from-yellow-200
+via-yellow-500
+to-yellow-700
+text-black
+font-black
+px-7
+py-3
+rounded-2xl
+shadow-lg
+shadow-yellow-500/40
+"
 
 >
 
@@ -113,24 +191,22 @@ className="bg-gradient-to-r from-yellow-200 via-yellow-500 to-yellow-700 text-bl
 
 
 
-{/* HAMBURGER */}
 
+{/* MOBİL HAMBURGER */}
 
 <button
 
-onClick={()=>setOpen(!open)}
+onClick={()=>setMenu(!menu)}
 
-className="md:hidden flex flex-col gap-1.5 p-3 border border-yellow-500/40 rounded-xl"
+className="
+md:hidden
+text-yellow-400
+text-4xl
+"
 
 >
 
-
-<span className="w-7 h-0.5 bg-yellow-400"></span>
-
-<span className="w-7 h-0.5 bg-yellow-400"></span>
-
-<span className="w-7 h-0.5 bg-yellow-400"></span>
-
+{menu ? "×":"☰"}
 
 </button>
 
@@ -145,90 +221,93 @@ className="md:hidden flex flex-col gap-1.5 p-3 border border-yellow-500/40 round
 
 
 
-{/* MOBİL MENÜ */}
+{/* MOBİL MENU */}
 
 
 {
 
-open &&
+menu &&
 
-<div className="md:hidden bg-black border-t border-yellow-500/20 px-6 py-6">
+<div
+
+className="
+md:hidden
+bg-black
+border-t
+border-yellow-500/20
+px-6
+py-8
+"
+
+>
 
 
-<div className="flex flex-col gap-5">
+<div
+
+className="
+flex
+flex-col
+gap-6
+"
+
+>
 
 
 <Link
-
-onClick={()=>setOpen(false)}
-
 href="/"
-
-className="text-white"
-
+onClick={()=>setMenu(false)}
+className="text-white text-lg"
 >
-
 Ana Sayfa
-
 </Link>
 
 
 
 <Link
-
-onClick={()=>setOpen(false)}
-
 href="/egitimler"
-
-className="text-white"
-
+onClick={()=>setMenu(false)}
+className="text-white text-lg"
 >
-
 Eğitimler
-
 </Link>
 
 
 
+
 <Link
-
-onClick={()=>setOpen(false)}
-
 href="/hakkimizda"
-
-className="text-white"
-
+onClick={()=>setMenu(false)}
+className="text-white text-lg"
 >
-
 Hakkımızda
-
 </Link>
 
 
 
+
 <Link
-
-onClick={()=>setOpen(false)}
-
 href="/iletisim"
-
-className="text-white"
-
+onClick={()=>setMenu(false)}
+className="text-white text-lg"
 >
-
 İletişim
-
 </Link>
 
 
 
-<Link
 
-onClick={()=>setOpen(false)}
+<Link
 
 href="/ogrenci-giris"
 
-className="bg-yellow-500 text-black text-center py-3 rounded-xl font-bold"
+className="
+bg-yellow-500
+text-black
+text-center
+font-bold
+py-3
+rounded-xl
+"
 
 >
 
@@ -242,12 +321,13 @@ className="bg-yellow-500 text-black text-center py-3 rounded-xl font-bold"
 
 </div>
 
+
 }
 
 
 </header>
 
-
 )
+
 
 }
