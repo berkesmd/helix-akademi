@@ -8,7 +8,6 @@ export default function OgrenciGirisPage(){
 
 const [email,setEmail]=useState("");
 const [sifre,setSifre]=useState("");
-
 const [hata,setHata]=useState("");
 const [loading,setLoading]=useState(false);
 
@@ -28,11 +27,9 @@ const supabase=createClient();
 const {error}=await supabase.auth.signInWithPassword({
 
 email,
-
 password:sifre
 
 });
-
 
 
 if(error){
@@ -46,7 +43,6 @@ return;
 }
 
 
-
 window.location.href="/ogrenci";
 
 
@@ -54,85 +50,29 @@ window.location.href="/ogrenci";
 
 
 
-
 return(
 
-
-<div className="
-min-h-screen
-bg-black
-flex
-items-center
-justify-center
-px-5
-overflow-hidden
-">
+<div className="login-page">
 
 
-
-<div className="
-absolute
-w-96
-h-96
-bg-yellow-500/20
-blur-3xl
-rounded-full
-">
-</div>
+<div className="login-box">
 
 
-
-
-
-<div className="
-relative
-w-full
-max-w-md
-bg-white/10
-backdrop-blur-xl
-border
-border-yellow-500/40
-rounded-3xl
-p-10
-shadow-2xl
-">
-
-
-
-
-
-<div className="text-center mb-8">
-
-
-<h1 className="
-text-5xl
-font-black
-tracking-widest
-text-yellow-400
-">
+<div className="logo">
 
 HELIX
 
-</h1>
+</div>
 
 
-<h2 className="
-text-white
-text-xl
-mt-2
-tracking-widest
-">
+<div className="academy">
 
 AKADEMİ
 
-</h2>
+</div>
 
 
-
-<p className="
-text-gray-400
-mt-4
-">
+<p className="desc">
 
 Öğrenci Paneli
 
@@ -140,114 +80,38 @@ mt-4
 
 
 
-</div>
-
-
-
-
-
-
-
-<form
-onSubmit={girisYap}
-className="space-y-5"
->
-
-
-
-<div>
-
-
-<label className="
-text-gray-300
-text-sm
-">
-
-E-POSTA
-
-</label>
+<form onSubmit={girisYap}>
 
 
 <input
 
-type="email"
+className="login-input"
 
-placeholder="mail@example.com"
+placeholder="E-posta"
+
+type="email"
 
 value={email}
 
 onChange={(e)=>setEmail(e.target.value)}
 
-className="
-mt-2
-w-full
-bg-black/60
-border
-border-yellow-500/30
-rounded-xl
-p-4
-text-white
-outline-none
-focus:border-yellow-400
-transition
-"
-
 />
 
-
-</div>
-
-
-
-
-
-
-<div>
-
-
-<label className="
-text-gray-300
-text-sm
-">
-
-ŞİFRE
-
-</label>
 
 
 <input
 
+className="login-input"
+
+placeholder="Şifre"
 
 type="password"
-
-placeholder="••••••••"
 
 value={sifre}
 
 onChange={(e)=>setSifre(e.target.value)}
 
-className="
-mt-2
-w-full
-bg-black/60
-border
-border-yellow-500/30
-rounded-xl
-p-4
-text-white
-outline-none
-focus:border-yellow-400
-transition
-"
-
 />
-
-
-
-</div>
-
-
-
 
 
 
@@ -255,15 +119,7 @@ transition
 {
 hata &&
 
-<div className="
-bg-red-500/20
-border
-border-red-500/50
-text-red-300
-rounded-xl
-p-3
-text-center
-">
+<div className="error">
 
 {hata}
 
@@ -273,47 +129,14 @@ text-center
 
 
 
-
-
-
-
-<button
-
-
-disabled={loading}
-
-
-className="
-w-full
-mt-5
-bg-gradient-to-r
-from-yellow-500
-to-yellow-300
-text-black
-font-black
-py-4
-rounded-xl
-hover:scale-105
-transition
-shadow-lg
-"
-
-
->
-
+<button className="login-button">
 
 {
-
 loading
-
 ?
-
 "GİRİŞ YAPILIYOR..."
-
 :
-
 "ÖĞRENCİ GİRİŞ"
-
 }
 
 
@@ -321,39 +144,21 @@ loading
 
 
 
-
-
 </form>
 
 
-
-
-
-
-
-<div className="
-mt-8
-text-center
-text-gray-500
-text-sm
-">
+<div className="footer">
 
 HELIX AKADEMİ © 2026
 
 </div>
 
 
-
-
-
-
 </div>
 
 
 </div>
-
 
 )
-
 
 }
