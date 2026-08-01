@@ -1,14 +1,431 @@
 "use client";
 
-export default function OgrenciHome(){
+
+import {useEffect,useState} from "react";
+import {createClient} from "@/lib/supabase/client";
+import {useRouter} from "next/navigation";
+
+
+
+export default function OgrenciPage(){
+
+
+const supabase=createClient();
+
+const router=useRouter();
+
+
+
+const [isim,setIsim]=useState("");
+
+const [video,setVideo]=useState("");
+
+const [egitimler,setEgitimler]=useState<any[]>([]);
+
+const [loading,setLoading]=useState(true);
+
+
+
+
+
+
+
+
+
+useEffect(()=>{
+
+
+yukle();
+
+
+},[]);
+
+
+
+
+
+
+
+
+
+async function yukle(){
+
+
+
+const {
+
+data:userData
+
+}=await supabase.auth.getUser();
+
+
+
+const user=userData.user;
+
+
+
+
+if(!user){
+
+router.push("/ogrenci-giris");
+
+return;
+
+}
+
+
+
+
+
+
+
+
+
+// öğrenci adı
+
+const {data:profil}=await supabase
+
+.from("profiles")
+
+.select("*")
+
+.eq("id",user.id)
+
+.single();
+
+
+
+setIsim(
+
+profil?.full_name || "Öğrenci"
+
+);
+
+
+
+
+
+
+
+
+
+// tanıtım videosu
+
+const {data:ayar}=await supabase
+
+.from("site_settings")
+
+.select("*")
+
+.single();
+
+
+
+setVideo(
+
+ayar?.intro_video || ""
+
+);
+
+
+
+
+
+
+
+
+
+// eğitimler
+
+const {data:kayitlar}=await supabase
+
+.from("enrollments")
+
+.select(`
+
+courses(
+
+id,
+
+title,
+
+description
+
+)
+
+`)
+
+.eq("user_id",user.id);
+
+
+
+
+
+
+
+
+
+let liste:any[]=[];
+
+
+
+
+
+
+
+for(const item of kayitlar || []){
+
+
+
+const course=
+
+Array.isArray(item.courses)
+
+?
+
+item.courses[0]
+
+:
+
+item.courses;
+
+
+
+if(!course) continue;
+
+
+
+
+
+
+
+const {data:dersler}=await supabase
+
+.from("lessons")
+
+.select("id")
+
+.eq("course_id",course.id);
+
+
+
+
+
+const ids=
+
+(dersler || [])
+
+.map((d:any)=>d.id);
+
+
+
+
+
+let tamam=0;
+
+
+
+
+
+
+if(ids.length){
+
+
+
+const {data:progress}=await supabase
+
+.from("lesson_progress")
+
+.select("lesson_id")
+
+.eq("user_id",user.id)
+
+.eq("completed",true)
+
+.in(
+
+"lesson_id",
+
+ids
+
+);
+
+
+
+tamam=progress?.length || 0;
+
+
+
+}
+
+
+
+
+
+
+
+const toplam=ids.length;
+
+
+
+const yuzde=
+
+toplam===0
+
+?
+
+0
+
+:
+
+Math.round(
+
+(tamam/toplam)*100
+
+);
+
+
+
+
+
+
+
+
+liste.push({
+
+...course,
+
+tamam,
+
+toplam,
+
+yuzde
+
+});
+
+
+
+
+}
+
+
+
+
+
+
+
+setEgitimler(liste);
+
+
+setLoading(false);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+function youtube(url:string){
+
+
+if(!url){
+
+return "";
+
+}
+
+
+
+if(url.includes("watch?v=")){
+
+
+const id=
+
+url.split("watch?v=")[1]
+
+.split("&")[0];
+
+
+
+return `https://www.youtube.com/embed/${id}`;
+
+
+}
+
+
+
+
+if(url.includes("youtu.be")){
+
+
+const id=
+
+url.split("youtu.be/")[1]
+
+.split("?")[0];
+
+
+
+return `https://www.youtube.com/embed/${id}`;
+
+
+}
+
+
+
+
+return url;
+
+
+}
+
+
+
+
+
+
+
+
+
+if(loading){
 
 
 return(
 
 <main style={page}>
 
+Yükleniyor...
 
-<section style={welcome}>
+</main>
+
+)
+
+}
+
+
+
+
+
+
+
+
+return(
+
+
+<main style={page}>
+
+
+
+
+
+
+<div style={welcome}>
 
 
 <h1>
@@ -18,93 +435,229 @@ Hoş Geldin 👋
 </h1>
 
 
-<p>
 
-Helix Akademi ailesine hoş geldin.
-Eğitimlerine ulaşmak için menüyü kullanabilirsin.
+<h2 style={gold}>
 
-</p>
-
-
-
-</section>
-
-
-
-
-
-<section style={videoCard}>
-
-
-<video
-
-src="/helix-tanitim.mp4"
-
-autoPlay
-
-muted
-
-loop
-
-playsInline
-
-style={video}
-
->
-
-
-</video>
-
-
-
-<div style={overlay}>
-
-
-<h2>
-
-HELIX AKADEMİ
+{isim}
 
 </h2>
 
 
+
 <p>
 
-Geleceğini eğitimle şekillendir.
+Helix Akademi eğitim platformuna hoş geldin.
 
 </p>
+
 
 
 </div>
 
 
 
-</section>
 
 
 
 
 
 
-<section style={info}>
+{
+
+video &&
 
 
-<h2>
+<div style={box}>
 
-Eğitimlerine ulaşmak için
+
+<h2 style={gold}>
+
+🎬 Tanıtım Videomuz
 
 </h2>
 
 
+
+
+<iframe
+
+src={youtube(video)}
+
+style={iframe}
+
+allowFullScreen
+
+/>
+
+
+
+
+</div>
+
+
+}
+
+
+
+
+
+
+
+
+
+<div style={box}>
+
+
+<h2 style={gold}>
+
+📚 Eğitimlerim
+
+</h2>
+
+
+
+
+
+
+
+
+
+{
+
+egitimler.length===0 ?
+
+
 <p>
 
-Sol üstteki menü ☰ butonuna basarak
-"Eğitimlerim" bölümüne gidebilirsin.
+Henüz atanmış eğitim yok.
 
 </p>
 
 
 
-</section>
+:
+
+
+egitimler.map((e)=>(
+
+
+<div
+
+key={e.id}
+
+style={card}
+
+>
+
+
+
+<h2>
+
+{e.title}
+
+</h2>
+
+
+
+<p>
+
+{e.description}
+
+</p>
+
+
+
+
+
+<p>
+
+🎥 Ders:
+
+{e.tamam}
+
+/
+
+{e.toplam}
+
+</p>
+
+
+
+
+
+
+<div style={bar}>
+
+
+<div
+
+style={{
+
+...fill,
+
+width:`${e.yuzde}%`
+
+}}
+
+/>
+
+
+</div>
+
+
+
+
+
+<h3 style={gold}>
+
+İlerleme %{e.yuzde}
+
+</h3>
+
+
+
+
+
+
+<button
+
+style={button}
+
+onClick={()=>router.push(
+
+`/ogrenci/egitim/${e.id}`
+
+)}
+
+>
+
+▶ Eğitime Devam Et
+
+</button>
+
+
+
+
+
+</div>
+
+
+))
+
+
+}
+
+
+
+
+
+
+
+
+</div>
+
+
+
 
 
 
@@ -120,16 +673,14 @@ Sol üstteki menü ☰ butonuna basarak
 
 
 
-const page={
 
+
+
+const page={
 
 minHeight:"100vh",
 
 padding:"30px",
-
-background:
-
-"radial-gradient(circle at top,#3b2600,#050505)",
 
 color:"white"
 
@@ -139,24 +690,33 @@ color:"white"
 
 
 
-
 const welcome={
 
+padding:"35px",
+
+borderRadius:"30px",
+
+background:"rgba(255,255,255,.05)",
+
+border:"1px solid rgba(212,175,55,.3)"
+
+};
+
+
+
+
+
+const box={
+
+marginTop:"30px",
 
 padding:"30px",
 
 borderRadius:"30px",
 
-background:
+background:"rgba(255,255,255,.05)",
 
-"rgba(255,255,255,.05)",
-
-border:
-
-"1px solid rgba(212,175,55,.35)",
-
-marginBottom:"30px"
-
+border:"1px solid rgba(212,175,55,.3)"
 
 };
 
@@ -164,26 +724,9 @@ marginBottom:"30px"
 
 
 
+const gold={
 
-const videoCard={
-
-
-position:"relative" as const,
-
-height:"450px",
-
-borderRadius:"35px",
-
-overflow:"hidden",
-
-border:
-
-"1px solid rgba(212,175,55,.5)",
-
-boxShadow:
-
-"0 0 40px rgba(212,175,55,.2)"
-
+color:"#d4af37"
 
 };
 
@@ -191,45 +734,15 @@ boxShadow:
 
 
 
-
-const video={
-
+const iframe={
 
 width:"100%",
 
-height:"100%",
+aspectRatio:"16/9",
 
-objectFit:"cover" as const
+border:"0",
 
-
-};
-
-
-
-
-
-
-const overlay={
-
-
-position:"absolute" as const,
-
-bottom:"30px",
-
-left:"30px",
-
-padding:"20px 30px",
-
-borderRadius:"20px",
-
-background:
-
-"rgba(0,0,0,.6)",
-
-border:
-
-"1px solid rgba(212,175,55,.3)"
-
+borderRadius:"20px"
 
 };
 
@@ -237,22 +750,66 @@ border:
 
 
 
+const card={
 
-const info={
-
-
-marginTop:"30px",
+marginTop:"20px",
 
 padding:"25px",
 
 borderRadius:"25px",
 
-background:
+background:"rgba(255,255,255,.06)",
 
-"rgba(255,255,255,.04)",
+border:"1px solid rgba(212,175,55,.3)"
 
-border:
+};
 
-"1px solid rgba(212,175,55,.25)"
+
+
+
+
+const bar={
+
+height:"12px",
+
+background:"#333",
+
+borderRadius:"20px",
+
+overflow:"hidden"
+
+};
+
+
+
+
+
+const fill={
+
+height:"100%",
+
+background:"#d4af37"
+
+};
+
+
+
+
+
+const button={
+
+marginTop:"20px",
+
+padding:"15px 30px",
+
+borderRadius:"15px",
+
+border:"0",
+
+background:"#d4af37",
+
+fontWeight:900,
+
+cursor:"pointer"
 
 };

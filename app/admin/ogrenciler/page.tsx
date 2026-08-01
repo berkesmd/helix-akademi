@@ -2,35 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 
-export default function OgrenciDetayPage(){
+export default function OgrencilerPage(){
 
 
 const supabase=createClient();
 
-const params=useParams();
-
-const id=params.id as string;
+const router=useRouter();
 
 
+const [ogrenciler,setOgrenciler]=useState<any[]>([]);
 
-const [ogrenci,setOgrenci]=useState<any>(null);
+const [arama,setArama]=useState("");
 
-const [egitimler,setEgitimler]=useState<any[]>([]);
-
-const [tumEgitimler,setTumEgitimler]=useState<any[]>([]);
-
-const [seciliEgitim,setSeciliEgitim]=useState("");
-
-const [mesaj,setMesaj]=useState("");
-
-const [yukleniyor,setYukleniyor]=useState(true);
-
-
-
-
+const [loading,setLoading]=useState(true);
 
 
 
@@ -38,15 +25,9 @@ const [yukleniyor,setYukleniyor]=useState(true);
 
 useEffect(()=>{
 
+listele();
 
-if(id){
-
-yukle();
-
-}
-
-
-},[id]);
+},[]);
 
 
 
@@ -54,267 +35,31 @@ yukle();
 
 
 
+async function listele(){
 
 
-async function yukle(){
-
-
-
-setYukleniyor(true);
+setLoading(true);
 
 
 
-
-
-
-const {data:profile}=await supabase
+const {data,error}=await supabase
 
 .from("profiles")
 
 .select("*")
 
-.eq("id",id)
-
-.maybeSingle();
-
-
-
-
-setOgrenci(profile);
-
-
-
-
-
-
-
-
-const {data:courses}=await supabase
-
-.from("courses")
-
-.select("*")
+.eq("role","student")
 
 .order("created_at",{ascending:false});
-
-
-
-setTumEgitimler(courses || []);
-
-
-
-
-
-
-
-
-const {data:kayitlar}=await supabase
-
-.from("enrollments")
-
-.select("id,course_id")
-
-.eq("user_id",id);
-
-
-
-
-
-
-
-const liste:any[]=[];
-
-
-
-
-
-
-
-for(const kayit of kayitlar || []){
-
-
-const course=courses?.find(
-
-(x:any)=>x.id===kayit.course_id
-
-);
-
-
-
-
-
-if(!course)continue;
-
-
-
-
-
-
-
-const {data:dersler}=await supabase
-
-.from("lessons")
-
-.select("id")
-
-.eq("course_id",course.id);
-
-
-
-
-
-
-
-const ids=(dersler || [])
-
-.map((d:any)=>d.id);
-
-
-
-
-
-
-
-let tamamlanan=0;
-
-
-
-
-
-
-if(ids.length){
-
-
-const {data:progress}=await supabase
-
-.from("lesson_progress")
-
-.select("lesson_id")
-
-.eq("user_id",id)
-
-.in("lesson_id",ids);
-
-
-
-tamamlanan=progress?.length || 0;
-
-
-
-}
-
-
-
-
-
-
-
-
-liste.push({
-
-...course,
-
-kayit_id:kayit.id,
-
-toplam:ids.length,
-
-tamamlanan
-
-});
-
-
-
-
-
-}
-
-
-
-
-
-
-
-setEgitimler(liste);
-
-
-setYukleniyor(false);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-async function egitimAta(){
-
-
-
-if(!seciliEgitim){
-
-setMesaj("Eğitim seçiniz.");
-
-return;
-
-}
-
-
-
-
-
-const varMi=egitimler.find(
-
-(x)=>x.id===seciliEgitim
-
-);
-
-
-
-if(varMi){
-
-setMesaj("Bu eğitim zaten atanmış.");
-
-return;
-
-}
-
-
-
-
-
-
-
-const {error}=await supabase
-
-.from("enrollments")
-
-.insert({
-
-user_id:id,
-
-student_id:id,
-
-course_id:seciliEgitim
-
-});
-
-
-
-
 
 
 
 
 if(error){
 
-setMesaj("❌ Eğitim atanamadı.");
-
 console.log(error);
+
+setLoading(false);
 
 return;
 
@@ -323,17 +68,9 @@ return;
 
 
 
+setOgrenciler(data || []);
 
-
-setMesaj("✅ Eğitim başarıyla atandı.");
-
-
-
-setSeciliEgitim("");
-
-
-
-yukle();
+setLoading(false);
 
 
 
@@ -347,33 +84,35 @@ yukle();
 
 
 
-async function egitimSil(kayitId:string){
+const filtre=ogrenciler.filter((item)=>{
 
 
+const isim=item.full_name || "";
 
-const onay=confirm(
+const email=item.email || "";
 
-"Eğitim kaldırılacak. Emin misiniz?"
+
+return (
+
+isim
+
+.toLowerCase()
+
+.includes(arama.toLowerCase())
+
+
+||
+
+email
+
+.toLowerCase()
+
+.includes(arama.toLowerCase())
 
 );
 
 
-
-if(!onay)return;
-
-
-
-
-
-
-
-await supabase
-
-.from("enrollments")
-
-.delete()
-
-.eq("id",kayitId);
+});
 
 
 
@@ -381,17 +120,25 @@ await supabase
 
 
 
-setMesaj("Eğitim kaldırıldı.");
+
+if(loading){
 
 
+return(
 
-yukle();
+<main style={page}>
 
+<h2>
 
+Yükleniyor...
+
+</h2>
+
+</main>
+
+)
 
 }
-
-
 
 
 
@@ -405,150 +152,42 @@ return(
 <main style={page}>
 
 
-{
-
-yukleniyor ?
-
-
-<h2>
-
-Yükleniyor...
-
-</h2>
-
-
-
-:
-
-
-<>
-
-
 <h1 style={title}>
 
-👤 Öğrenci Detayı
+👨‍🎓 Öğrenci Yönetimi
 
 </h1>
 
 
 
+<p style={desc}>
 
-
-
-
-
-<div style={profileBox}>
-
-
-<h2 style={gold}>
-
-{ogrenci?.full_name || "Öğrenci"}
-
-</h2>
-
-
-
-<p>
-
-📧 {ogrenci?.email || "Email yok"}
+Helix Akademi öğrenci kayıtları
 
 </p>
 
 
 
-<p>
-
-📱 {ogrenci?.phone || "Telefon yok"}
-
-</p>
-
-
-
-</div>
 
 
 
 
 
+<div style={toolbar}>
 
 
-
-
-<div style={section}>
-
-
-<h2 style={gold}>
-
-➕ Eğitim Ata
-
-</h2>
-
-
-
-
-
-
-<select
-
-value={seciliEgitim}
-
-onChange={(e)=>setSeciliEgitim(e.target.value)}
+<input
 
 style={input}
 
->
+placeholder="🔍 Öğrenci ara..."
 
+value={arama}
 
-<option value="">
+onChange={(e)=>setArama(e.target.value)}
 
-Eğitim seçiniz
+/>
 
-</option>
-
-
-
-
-
-{
-
-tumEgitimler
-
-.filter(
-
-(e)=>
-
-!egitimler.some(
-
-(x)=>x.id===e.id
-
-)
-
-)
-
-.map((egitim)=>(
-
-
-<option
-
-key={egitim.id}
-
-value={egitim.id}
-
->
-
-{egitim.title}
-
-</option>
-
-
-))
-
-
-}
-
-
-
-</select>
 
 
 
@@ -557,27 +196,15 @@ value={egitim.id}
 
 <button
 
-onClick={egitimAta}
+style={addButton}
 
-style={button}
+onClick={()=>router.push("/admin/ogrenciler/ekle")}
 
 >
 
-📚 Öğrenciye Ata
+➕ Öğrenci Ekle
 
 </button>
-
-
-
-
-
-
-<p style={message}>
-
-{mesaj}
-
-</p>
-
 
 
 
@@ -591,68 +218,111 @@ style={button}
 
 
 
-<div style={section}>
-
-
-<h2 style={gold}>
-
-📚 Aldığı Eğitimler
-
-</h2>
-
-
-
-
+<div style={grid}>
 
 
 {
 
-egitimler.length===0 ?
+
+filtre.length===0 ?
 
 
-<p>
+<div style={empty}>
 
-Eğitim bulunamadı.
+Öğrenci bulunamadı.
 
-</p>
+</div>
 
 
 
 :
 
 
-egitimler.map((egitim)=>(
+filtre.map((ogrenci)=>(
+
 
 
 <div
 
-key={egitim.id}
+key={ogrenci.id}
 
-style={course}
+style={card}
 
 >
 
 
 
-<h3>
 
-📘 {egitim.title}
 
-</h3>
+<h2 style={gold}>
+
+👤 {ogrenci.full_name || "İsimsiz"}
+
+</h2>
+
+
 
 
 
 <p>
 
-🎥 Ders:
-
-{egitim.tamamlanan}
-
-/
-
-{egitim.toplam}
+📧 {ogrenci.email || "Email yok"}
 
 </p>
+
+
+
+
+
+<p>
+
+📱 {ogrenci.phone || "Telefon yok"}
+
+</p>
+
+
+
+
+
+
+<div style={info}>
+
+
+🎭 Rol:
+
+<b>
+
+{" "}
+
+{ogrenci.role}
+
+</b>
+
+
+<br/>
+
+
+📅 Kayıt:
+
+{" "}
+
+{
+
+new Date(
+
+ogrenci.created_at
+
+)
+
+.toLocaleDateString("tr-TR")
+
+}
+
+
+
+</div>
+
+
 
 
 
@@ -662,15 +332,20 @@ style={course}
 
 <button
 
-onClick={()=>egitimSil(egitim.kayit_id)}
+style={detailButton}
 
-style={deleteButton}
+onClick={()=>router.push(
+
+`/admin/ogrenciler/${ogrenci.id}`
+
+)}
 
 >
 
-🗑 Eğitimi Kaldır
+👁 Detay Gör
 
 </button>
+
 
 
 
@@ -686,15 +361,11 @@ style={deleteButton}
 
 
 
+
+
 </div>
 
 
-
-
-
-</>
-
-}
 
 
 
@@ -717,15 +388,13 @@ const page={
 
 minHeight:"100vh",
 
-background:
+padding:"30px",
 
-"radial-gradient(circle at top,#302300,#050505 60%)",
-
-color:"white",
-
-padding:"40px"
+color:"white"
 
 };
+
+
 
 
 
@@ -733,55 +402,49 @@ const title={
 
 fontSize:"42px",
 
-color:"#d4af37"
+color:"#d4af37",
+
+fontWeight:900
 
 };
 
 
 
-const gold={
 
-color:"#d4af37"
+
+const desc={
+
+color:"#aaa",
+
+fontSize:"18px"
 
 };
 
 
 
-const profileBox={
+
+
+const toolbar={
+
+display:"flex",
+
+gap:"15px",
 
 marginTop:"30px",
 
-padding:"30px",
-
-background:"rgba(255,255,255,.05)",
-
-border:"1px solid rgba(212,175,55,.3)",
-
-borderRadius:"25px"
+flexWrap:"wrap" as const
 
 };
 
 
-
-const section={
-
-marginTop:"35px",
-
-padding:"30px",
-
-background:"rgba(255,255,255,.05)",
-
-border:"1px solid rgba(212,175,55,.3)",
-
-borderRadius:"25px"
-
-};
 
 
 
 const input={
 
-width:"100%",
+flex:1,
+
+minWidth:"250px",
 
 padding:"15px",
 
@@ -791,17 +454,17 @@ color:"white",
 
 border:"1px solid #d4af37",
 
-borderRadius:"12px"
+borderRadius:"15px"
 
 };
 
 
 
-const button={
 
-marginTop:"20px",
 
-padding:"15px 30px",
+const addButton={
+
+padding:"15px 25px",
 
 background:"#d4af37",
 
@@ -817,33 +480,87 @@ cursor:"pointer"
 
 
 
-const course={
 
-marginTop:"20px",
 
-padding:"25px",
+const grid={
 
-background:"rgba(212,175,55,.08)",
+display:"grid",
 
-borderRadius:"20px"
+gridTemplateColumns:
+
+"repeat(auto-fit,minmax(300px,1fr))",
+
+gap:"25px",
+
+marginTop:"40px"
 
 };
 
 
 
-const deleteButton={
+
+
+const card={
+
+padding:"30px",
+
+background:
+
+"rgba(255,255,255,.05)",
+
+border:
+
+"1px solid rgba(212,175,55,.3)",
+
+borderRadius:"25px"
+
+};
+
+
+
+
+
+const gold={
+
+color:"#d4af37"
+
+};
+
+
+
+
+
+const info={
 
 marginTop:"15px",
 
-padding:"12px 25px",
+lineHeight:"2",
 
-background:"#8b0000",
+color:"#ddd"
 
-color:"white",
+};
 
-border:"0",
 
-borderRadius:"12px",
+
+
+
+const detailButton={
+
+width:"100%",
+
+marginTop:"25px",
+
+padding:"14px",
+
+borderRadius:"15px",
+
+background:"transparent",
+
+border:"1px solid #d4af37",
+
+color:"#d4af37",
+
+fontWeight:900,
 
 cursor:"pointer"
 
@@ -851,12 +568,14 @@ cursor:"pointer"
 
 
 
-const message={
 
-color:"#d4af37",
 
-marginTop:"15px",
+const empty={
 
-fontWeight:700
+padding:"30px",
+
+borderRadius:"20px",
+
+background:"rgba(255,255,255,.05)"
 
 };

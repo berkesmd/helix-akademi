@@ -20,7 +20,17 @@ const [ogrenci,setOgrenci]=useState<any>(null);
 
 const [egitimler,setEgitimler]=useState<any[]>([]);
 
+const [tumEgitimler,setTumEgitimler]=useState<any[]>([]);
+
+const [seciliEgitim,setSeciliEgitim]=useState("");
+
+const [rol,setRol]=useState("student");
+
+const [mesaj,setMesaj]=useState("");
+
 const [yukleniyor,setYukleniyor]=useState(true);
+
+
 
 
 
@@ -30,11 +40,31 @@ const [yukleniyor,setYukleniyor]=useState(true);
 useEffect(()=>{
 
 
+if(id){
+
+yukle();
+
+}
+
+
+},[id]);
+
+
+
+
+
+
+
+
+
 async function yukle(){
 
 
+setYukleniyor(true);
 
-// öğrenci bilgisi
+
+
+// öğrenci
 
 const {data:profil}=await supabase
 
@@ -50,6 +80,26 @@ const {data:profil}=await supabase
 
 setOgrenci(profil);
 
+setRol(profil?.role || "student");
+
+
+
+
+
+
+// tüm eğitimler
+
+const {data:courses}=await supabase
+
+.from("courses")
+
+.select("*")
+
+.order("created_at",{ascending:false});
+
+
+
+setTumEgitimler(courses || []);
 
 
 
@@ -57,13 +107,16 @@ setOgrenci(profil);
 
 
 
-// kayıtlı eğitimler
+
+// öğrenci eğitimleri
 
 const {data:kayitlar}=await supabase
 
 .from("enrollments")
 
 .select(`
+
+id,
 
 course_id,
 
@@ -86,20 +139,28 @@ description
 
 
 
-
-
-let sonuc:any[]=[];
+let liste:any[]=[];
 
 
 
 
 
 
-for(const item of kayitlar || []){
+for(const kayit of kayitlar || []){
 
 
 
-const course=item.courses?.[0];
+const course=
+
+Array.isArray(kayit.courses)
+
+?
+
+kayit.courses[0]
+
+:
+
+kayit.courses;
 
 
 
@@ -108,50 +169,40 @@ if(!course) continue;
 
 
 
-const courseId=course.id;
 
 
 
-
-
-
-
-// dersler
 
 const {data:dersler}=await supabase
 
 .from("lessons")
 
-.select("id,title")
+.select("id")
 
-.eq("course_id",courseId);
-
-
+.eq("course_id",course.id);
 
 
 
 
 
+const dersIds=
 
-// tamamlanan dersler
+(dersler || [])
 
-const dersIdleri=
-
-(dersler || []).map(
-
-(d:any)=>d.id
-
-);
+.map((d:any)=>d.id);
 
 
 
 
 
-let tamamlanan:any[]=[];
+let tamamlanan=0;
 
 
 
-if(dersIdleri.length){
+
+
+if(dersIds.length){
+
 
 
 const {data:progress}=await supabase
@@ -168,13 +219,13 @@ const {data:progress}=await supabase
 
 "lesson_id",
 
-dersIdleri
+dersIds
 
 );
 
 
 
-tamamlanan=progress || [];
+tamamlanan=progress?.length || 0;
 
 
 }
@@ -183,18 +234,7 @@ tamamlanan=progress || [];
 
 
 
-
-
-const toplam=
-
-dersler?.length || 0;
-
-
-
-const tamam=
-
-tamamlanan.length;
-
+const toplam=dersIds.length;
 
 
 
@@ -210,7 +250,7 @@ toplam===0
 
 Math.round(
 
-(tamam/toplam)*100
+(tamamlanan/toplam)*100
 
 );
 
@@ -219,20 +259,19 @@ Math.round(
 
 
 
+liste.push({
 
-
-sonuc.push({
+kayitId:kayit.id,
 
 course,
 
 toplam,
 
-tamam,
+tamamlanan,
 
 yuzde
 
 });
-
 
 
 
@@ -243,8 +282,8 @@ yuzde
 
 
 
+setEgitimler(liste);
 
-setEgitimler(sonuc);
 
 setYukleniyor(false);
 
@@ -254,15 +293,188 @@ setYukleniyor(false);
 
 
 
-if(id){
 
-yukle();
+
+
+
+
+
+async function rolGuncelle(){
+
+
+
+const {error}=await supabase
+
+.from("profiles")
+
+.update({
+
+role:rol
+
+})
+
+.eq("id",id);
+
+
+
+
+
+if(error){
+
+console.log(error);
+
+setMesaj("❌ Rol değiştirilemedi.");
+
+return;
 
 }
 
 
 
-},[id]);
+setMesaj("✅ Rol güncellendi.");
+
+
+
+yukle();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+async function egitimAta(){
+
+
+
+if(!seciliEgitim){
+
+setMesaj("Eğitim seçiniz.");
+
+return;
+
+}
+
+
+
+
+
+const varMi=
+
+egitimler.find(
+
+(x)=>x.course.id===seciliEgitim
+
+);
+
+
+
+if(varMi){
+
+setMesaj("Bu eğitim zaten atanmış.");
+
+return;
+
+}
+
+
+
+
+
+
+const {error}=await supabase
+
+.from("enrollments")
+
+.insert({
+
+user_id:id,
+
+student_id:id,
+
+course_id:seciliEgitim
+
+});
+
+
+
+
+
+if(error){
+
+console.log(error);
+
+setMesaj("❌ Eğitim atanamadı.");
+
+return;
+
+}
+
+
+
+setMesaj("✅ Eğitim atandı.");
+
+setSeciliEgitim("");
+
+
+
+yukle();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+async function egitimSil(idKayit:string){
+
+
+
+const onay=confirm(
+
+"Eğitim kaldırılacak. Emin misiniz?"
+
+);
+
+
+
+if(!onay)return;
+
+
+
+
+
+await supabase
+
+.from("enrollments")
+
+.delete()
+
+.eq("id",idKayit);
+
+
+
+
+
+setMesaj("Eğitim kaldırıldı.");
+
+yukle();
+
+
+
+}
 
 
 
@@ -330,7 +542,7 @@ return(
 
 <p>
 
-📧 {ogrenci?.email || "Email yok"}
+📧 {ogrenci?.email}
 
 </p>
 
@@ -342,23 +554,15 @@ return(
 </p>
 
 
+
 <p>
 
-📅 Kayıt:
+🎭 Mevcut Rol:
 
-{" "}
-
-{
-
-new Date(
-
-ogrenci?.created_at
-
-).toLocaleDateString("tr-TR")
-
-}
+{ogrenci?.role}
 
 </p>
+
 
 
 </div>
@@ -376,7 +580,163 @@ ogrenci?.created_at
 
 <h2 style={gold}>
 
-📚 Eğitim İlerlemesi
+🎭 Rol Yönetimi
+
+</h2>
+
+
+
+
+
+<select
+
+style={select}
+
+value={rol}
+
+onChange={(e)=>setRol(e.target.value)}
+
+>
+
+
+<option value="student">
+
+👨‍🎓 Öğrenci
+
+</option>
+
+
+<option value="admin">
+
+👑 Admin
+
+</option>
+
+
+</select>
+
+
+
+
+
+<button
+
+style={button}
+
+onClick={rolGuncelle}
+
+>
+
+💾 Rolü Kaydet
+
+</button>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div style={box}>
+
+
+<h2 style={gold}>
+
+➕ Eğitim Ata
+
+</h2>
+
+
+
+
+
+<select
+
+style={select}
+
+value={seciliEgitim}
+
+onChange={(e)=>setSeciliEgitim(e.target.value)}
+
+>
+
+
+<option value="">
+
+Eğitim seçiniz
+
+</option>
+
+
+
+
+{
+
+tumEgitimler.map((e)=>(
+
+
+<option
+
+key={e.id}
+
+value={e.id}
+
+>
+
+{e.title}
+
+</option>
+
+
+))
+
+}
+
+
+
+</select>
+
+
+
+
+
+<button
+
+style={button}
+
+onClick={egitimAta}
+
+>
+
+📚 Öğrenciye Ata
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div style={box}>
+
+
+<h2 style={gold}>
+
+📚 Eğitimler
 
 </h2>
 
@@ -393,7 +753,7 @@ egitimler.length===0 ?
 
 <p>
 
-Henüz eğitim almamış.
+Henüz eğitim yok.
 
 </p>
 
@@ -402,16 +762,17 @@ Henüz eğitim almamış.
 :
 
 
-egitimler.map((item:any)=>(
+egitimler.map((item)=>(
 
 
 <div
 
-key={item.course.id}
+key={item.kayitId}
 
 style={courseBox}
 
 >
+
 
 
 <h2>
@@ -431,27 +792,17 @@ style={courseBox}
 
 
 
-
-
 <p>
 
-🎬 Tamamlanan Ders:
+🎥 Ders:
 
-{" "}
+{item.tamamlanan}
 
-<b>
-
-{item.tamam}
-
-</b>
-
-/ 
+/
 
 {item.toplam}
 
 </p>
-
-
 
 
 
@@ -477,16 +828,28 @@ width:`${item.yuzde}%`
 
 
 
-
-
-
-
 <h3 style={gold}>
 
 İlerleme %{item.yuzde}
 
 </h3>
 
+
+
+
+
+
+<button
+
+style={deleteBtn}
+
+onClick={()=>egitimSil(item.kayitId)}
+
+>
+
+🗑 Eğitimi Kaldır
+
+</button>
 
 
 
@@ -504,6 +867,19 @@ width:`${item.yuzde}%`
 
 
 </div>
+
+
+
+
+
+
+
+
+<p style={message}>
+
+{mesaj}
+
+</p>
 
 
 
@@ -529,15 +905,16 @@ const page={
 
 minHeight:"100vh",
 
-background:
-
-"radial-gradient(circle at top,#302300,#050505 60%)",
+padding:"40px",
 
 color:"white",
 
-padding:"40px"
+background:
+
+"radial-gradient(circle at top,#302300,#050505)"
 
 };
+
 
 
 
@@ -551,11 +928,13 @@ color:"#d4af37"
 
 
 
+
 const gold={
 
 color:"#d4af37"
 
 };
+
 
 
 
@@ -565,13 +944,56 @@ marginTop:"30px",
 
 padding:"30px",
 
+borderRadius:"25px",
+
 background:"rgba(255,255,255,.05)",
 
-border:"1px solid rgba(212,175,55,.3)",
-
-borderRadius:"25px"
+border:"1px solid rgba(212,175,55,.3)"
 
 };
+
+
+
+
+const select={
+
+width:"100%",
+
+padding:"15px",
+
+marginTop:"15px",
+
+background:"#111",
+
+color:"white",
+
+border:"1px solid #d4af37",
+
+borderRadius:"12px"
+
+};
+
+
+
+
+const button={
+
+marginTop:"20px",
+
+padding:"15px 30px",
+
+background:"#d4af37",
+
+border:"0",
+
+borderRadius:"15px",
+
+fontWeight:900,
+
+cursor:"pointer"
+
+};
+
 
 
 
@@ -589,6 +1011,7 @@ borderRadius:"20px"
 
 
 
+
 const bar={
 
 height:"12px",
@@ -603,10 +1026,45 @@ overflow:"hidden"
 
 
 
+
 const fill={
 
 height:"100%",
 
-background:"linear-gradient(90deg,#d4af37,#ffe58a)"
+background:"#d4af37"
+
+};
+
+
+
+
+const deleteBtn={
+
+marginTop:"20px",
+
+padding:"12px 25px",
+
+background:"#8b0000",
+
+color:"white",
+
+border:"0",
+
+borderRadius:"12px",
+
+cursor:"pointer"
+
+};
+
+
+
+
+const message={
+
+color:"#d4af37",
+
+marginTop:"20px",
+
+fontWeight:900
 
 };

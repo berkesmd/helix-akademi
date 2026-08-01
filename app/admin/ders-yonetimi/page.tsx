@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+
+import {useEffect,useState} from "react";
+import {createClient} from "@/lib/supabase/client";
+
 
 
 export default function DersYonetimi(){
@@ -11,25 +13,31 @@ const supabase=createClient();
 
 
 
-const [dersler,setDersler]=useState<any[]>([]);
-
 const [egitimler,setEgitimler]=useState<any[]>([]);
 
+const [dersler,setDersler]=useState<any[]>([]);
 
 
-const [egitimId,setEgitimId]=useState("");
+const [seciliEgitim,setSeciliEgitim]=useState("");
 
-const [filtreEgitim,setFiltreEgitim]=useState("");
 
-const [baslik,setBaslik]=useState("");
+
+const [title,setTitle]=useState("");
+
+const [description,setDescription]=useState("");
 
 const [videoUrl,setVideoUrl]=useState("");
 
 const [pdfUrl,setPdfUrl]=useState("");
 
-const [sure,setSure]=useState("");
+const [sira,setSira]=useState(1);
 
-const [sira,setSira]=useState("1");
+
+
+const [mesaj,setMesaj]=useState("");
+
+const [loading,setLoading]=useState(true);
+
 
 
 
@@ -38,9 +46,8 @@ const [sira,setSira]=useState("1");
 
 useEffect(()=>{
 
-egitimleriGetir();
 
-getir();
+egitimleriGetir();
 
 
 },[]);
@@ -51,32 +58,34 @@ getir();
 
 
 
-
-async function getir(){
-
+async function egitimleriGetir(){
 
 
-let sorgu=supabase
+const {data,error}=await supabase
 
-.from("lessons")
+.from("courses")
 
 .select("*")
 
-.order("lesson_order",{ascending:true});
+.order("created_at",{ascending:false});
 
 
 
+if(error){
+
+console.log(error);
+
+return;
+
+}
 
 
-if(filtreEgitim){
 
-sorgu=sorgu.eq(
+setEgitimler(data || []);
 
-"course_id",
+setLoading(false);
 
-filtreEgitim
 
-);
 
 }
 
@@ -85,13 +94,38 @@ filtreEgitim
 
 
 
-const {data,error}=await sorgu;
+
+async function dersleriGetir(id:string){
+
+
+if(!id){
+
+setDersler([]);
+
+return;
+
+}
+
+
+
+const {data,error}=await supabase
+
+.from("lessons")
+
+.select("*")
+
+.eq("course_id",id)
+
+.order("lesson_order",{ascending:true});
+
 
 
 
 if(error){
 
 console.log(error);
+
+return;
 
 }
 
@@ -109,33 +143,13 @@ setDersler(data || []);
 
 
 
+function egitimSec(e:string){
 
 
-async function egitimleriGetir(){
+setSeciliEgitim(e);
 
 
-
-const {data,error}=await supabase
-
-.from("courses")
-
-.select("id,title")
-
-.order("created_at",{ascending:false});
-
-
-
-
-
-if(error){
-
-console.log(error);
-
-}
-
-
-
-setEgitimler(data || []);
+dersleriGetir(e);
 
 
 
@@ -148,14 +162,13 @@ setEgitimler(data || []);
 
 
 
-
-async function dersOlustur(){
-
+async function dersEkle(){
 
 
-if(!egitimId){
 
-alert("Önce eğitim seçmelisin");
+if(!seciliEgitim){
+
+setMesaj("Önce eğitim seçiniz.");
 
 return;
 
@@ -163,14 +176,14 @@ return;
 
 
 
+if(!title){
 
-if(!baslik || !videoUrl){
-
-alert("Ders başlığı ve video URL gerekli");
+setMesaj("Ders adı boş olamaz.");
 
 return;
 
 }
+
 
 
 
@@ -184,20 +197,22 @@ const {error}=await supabase
 .insert({
 
 
-course_id:egitimId,
+course_id:seciliEgitim,
 
-title:baslik,
+title:title,
+
+description:description,
 
 video_url:videoUrl,
 
 pdf_url:pdfUrl,
 
-lesson_order:Number(sira),
+lesson_order:sira
 
-duration:sure
 
 
 });
+
 
 
 
@@ -208,7 +223,7 @@ if(error){
 
 console.log(error);
 
-alert("Ders eklenemedi");
+setMesaj("❌ Ders eklenemedi.");
 
 return;
 
@@ -219,25 +234,23 @@ return;
 
 
 
-alert("Ders başarıyla oluşturuldu");
+setMesaj("✅ Ders başarıyla eklendi.");
 
 
 
-setEgitimId("");
+setTitle("");
 
-setBaslik("");
+setDescription("");
 
 setVideoUrl("");
 
 setPdfUrl("");
 
-setSure("");
-
-setSira("1");
+setSira(sira+1);
 
 
 
-getir();
+dersleriGetir(seciliEgitim);
 
 
 
@@ -251,25 +264,24 @@ getir();
 
 
 
-async function sil(id:string){
+async function dersSil(id:string){
 
 
 
-const cevap=confirm(
+const onay=confirm(
 
-"Ders silinsin mi?"
+"Bu ders silinsin mi?"
 
 );
 
 
 
-if(!cevap)return;
+if(!onay)return;
 
 
 
 
-
-await supabase
+const {error}=await supabase
 
 .from("lessons")
 
@@ -281,7 +293,21 @@ await supabase
 
 
 
-getir();
+if(error){
+
+console.log(error);
+
+return;
+
+}
+
+
+
+setMesaj("🗑 Ders silindi.");
+
+
+
+dersleriGetir(seciliEgitim);
 
 
 
@@ -295,13 +321,34 @@ getir();
 
 
 
+if(loading){
+
+
 return(
+
+<div style={page}>
+
+Yükleniyor...
+
+</div>
+
+)
+
+}
+
+
+
+
+
+return(
+
 
 
 <main style={page}>
 
 
-<h1 style={title}>
+
+<h1 style={titleStyle}>
 
 🎥 Ders Yönetimi
 
@@ -309,25 +356,28 @@ return(
 
 
 
+<p style={desc}>
+
+Eğitimlere ders ekleyin ve yönetin.
+
+</p>
 
 
 
 
 
 
-<div style={form}>
 
 
-<h2>
 
-Yeni Ders Ekle
+<div style={box}>
+
+
+<h2 style={gold}>
+
+📚 Eğitim Seç
 
 </h2>
-
-
-
-
-
 
 
 
@@ -335,16 +385,18 @@ Yeni Ders Ekle
 
 style={input}
 
-value={egitimId}
+value={seciliEgitim}
 
-onChange={(e)=>setEgitimId(e.target.value)}
+onChange={(e)=>
+egitimSec(e.target.value)
+}
 
 >
 
 
 <option value="">
 
-🎓 Eğitim Seç
+Eğitim seçiniz
 
 </option>
 
@@ -352,18 +404,18 @@ onChange={(e)=>setEgitimId(e.target.value)}
 
 {
 
-egitimler.map((egitim)=>(
+egitimler.map((e)=>(
 
 
 <option
 
-key={egitim.id}
+key={e.id}
 
-value={egitim.id}
+value={e.id}
 
 >
 
-{egitim.title}
+{e.title}
 
 </option>
 
@@ -378,8 +430,24 @@ value={egitim.id}
 </select>
 
 
+</div>
 
 
+
+
+
+
+
+
+
+<div style={box}>
+
+
+<h2 style={gold}>
+
+➕ Yeni Ders Ekle
+
+</h2>
 
 
 
@@ -391,12 +459,27 @@ style={input}
 
 placeholder="Ders başlığı"
 
-value={baslik}
+value={title}
 
-onChange={(e)=>setBaslik(e.target.value)}
+onChange={(e)=>setTitle(e.target.value)}
 
 />
 
+
+
+
+
+<textarea
+
+style={textarea}
+
+placeholder="Ders açıklaması"
+
+value={description}
+
+onChange={(e)=>setDescription(e.target.value)}
+
+/>
 
 
 
@@ -408,14 +491,13 @@ onChange={(e)=>setBaslik(e.target.value)}
 
 style={input}
 
-placeholder="YouTube Video URL"
+placeholder="Youtube Video URL"
 
 value={videoUrl}
 
 onChange={(e)=>setVideoUrl(e.target.value)}
 
 />
-
 
 
 
@@ -441,26 +523,6 @@ onChange={(e)=>setPdfUrl(e.target.value)}
 
 
 
-
-<input
-
-style={input}
-
-placeholder="Ders süresi"
-
-value={sure}
-
-onChange={(e)=>setSure(e.target.value)}
-
-/>
-
-
-
-
-
-
-
-
 <input
 
 style={input}
@@ -471,10 +533,9 @@ placeholder="Ders sırası"
 
 value={sira}
 
-onChange={(e)=>setSira(e.target.value)}
+onChange={(e)=>setSira(Number(e.target.value))}
 
 />
-
 
 
 
@@ -486,16 +547,23 @@ onChange={(e)=>setSira(e.target.value)}
 
 style={button}
 
-onClick={dersOlustur}
+onClick={dersEkle}
 
 >
 
-DERSİ OLUŞTUR
+💾 Dersi Kaydet
 
 </button>
 
 
 
+
+
+<p style={message}>
+
+{mesaj}
+
+</p>
 
 
 
@@ -509,9 +577,12 @@ DERSİ OLUŞTUR
 
 
 
-<h2 style={title}>
+<div style={box}>
 
-📚 Dersler
+
+<h2 style={gold}>
+
+📖 Ders Listesi
 
 </h2>
 
@@ -519,91 +590,45 @@ DERSİ OLUŞTUR
 
 
 
-
-
-
-<select
-
-style={input}
-
-value={filtreEgitim}
-
-onChange={(e)=>{
-
-
-setFiltreEgitim(e.target.value);
-
-
-setTimeout(()=>{
-
-getir();
-
-},100);
-
-
-
-}}
-
->
-
-
-<option value="">
-
-📚 Tüm Dersler
-
-</option>
-
-
-
 {
 
-egitimler.map((egitim)=>(
+!seciliEgitim ?
 
 
-<option
+<p>
 
-key={egitim.id}
+Ders görmek için eğitim seçiniz.
 
-value={egitim.id}
-
->
-
-{egitim.title}
-
-</option>
-
-
-))
-
-
-}
+</p>
 
 
 
-</select>
+:
+
+
+dersler.length===0 ?
+
+
+<p>
+
+Bu eğitimde ders yok.
+
+</p>
 
 
 
-
-
-
-
-
-
-<div style={list}>
-
-
-{
+:
 
 
 dersler.map((ders,index)=>(
+
 
 
 <div
 
 key={ders.id}
 
-style={card}
+style={dersBox}
 
 >
 
@@ -622,46 +647,42 @@ style={card}
 
 <p>
 
-{
-
-ders.course_id
-
-?
-
-"✅ Eğitime bağlı"
-
-:
-
-"❌ Eğitim yok"
-
-}
+{ders.description}
 
 </p>
 
 
 
+{
+
+ders.video_url &&
 
 <p>
 
-{
+🎥 Video mevcut
 
-ders.video_url
-
-?
-
-"🎥 Video Var"
-
-:
-
-"Video Yok"
+</p>
 
 }
 
+
+
+{
+
+ders.pdf_url &&
+
+<p>
+
+📄 PDF mevcut
+
 </p>
+
+}
 
 
 
 </div>
+
 
 
 
@@ -672,14 +693,15 @@ ders.video_url
 
 style={deleteBtn}
 
-onClick={()=>sil(ders.id)}
+onClick={()=>
+dersSil(ders.id)
+}
 
 >
 
-SİL
+🗑 Sil
 
 </button>
-
 
 
 
@@ -689,10 +711,12 @@ SİL
 </div>
 
 
+
 ))
 
 
 }
+
 
 
 
@@ -722,7 +746,7 @@ const page={
 
 minHeight:"100vh",
 
-padding:"40px",
+padding:"30px",
 
 color:"white"
 
@@ -731,52 +755,63 @@ color:"white"
 
 
 
+const titleStyle={
 
+fontSize:"42px",
 
-const title={
-
-color:"#d4af37",
-
-fontSize:"40px"
+color:"#d4af37"
 
 };
 
 
 
 
+const desc={
+
+color:"#aaa"
+
+};
 
 
-const form={
+
+
+const box={
 
 marginTop:"30px",
 
-padding:"35px",
+padding:"30px",
 
 borderRadius:"25px",
 
 background:"rgba(255,255,255,.05)",
 
-border:"1px solid rgba(212,175,55,.3)",
-
-display:"grid",
-
-gap:"20px"
+border:"1px solid rgba(212,175,55,.3)"
 
 };
 
 
 
+
+const gold={
+
+color:"#d4af37"
+
+};
 
 
 
 
 const input={
 
+width:"100%",
+
+marginTop:"15px",
+
 padding:"15px",
 
-borderRadius:"15px",
+borderRadius:"12px",
 
-background:"#050505",
+background:"#111",
 
 color:"white",
 
@@ -787,12 +822,34 @@ border:"1px solid #d4af37"
 
 
 
+const textarea={
+
+width:"100%",
+
+height:"120px",
+
+marginTop:"15px",
+
+padding:"15px",
+
+borderRadius:"12px",
+
+background:"#111",
+
+color:"white",
+
+border:"1px solid #d4af37"
+
+};
+
 
 
 
 const button={
 
-padding:"15px",
+marginTop:"20px",
+
+padding:"15px 35px",
 
 borderRadius:"15px",
 
@@ -809,59 +866,54 @@ cursor:"pointer"
 
 
 
+const dersBox={
 
+marginTop:"15px",
 
-
-const list={
-
-marginTop:"30px",
-
-display:"grid",
-
-gap:"20px"
-
-};
-
-
-
-
-
-
-
-const card={
-
-padding:"25px",
+padding:"20px",
 
 borderRadius:"20px",
 
-background:"rgba(255,255,255,.06)",
+background:"rgba(212,175,55,.08)",
 
 border:"1px solid rgba(212,175,55,.3)",
 
 display:"flex",
 
-justifyContent:"space-between"
+justifyContent:"space-between",
+
+alignItems:"center"
 
 };
-
-
-
 
 
 
 
 const deleteBtn={
 
-background:"red",
+padding:"12px 20px",
+
+borderRadius:"12px",
+
+background:"#8b0000",
 
 color:"white",
 
 border:"0",
 
-padding:"10px 20px",
-
-borderRadius:"10px",
-
 cursor:"pointer"
+
+};
+
+
+
+
+const message={
+
+marginTop:"15px",
+
+color:"#d4af37",
+
+fontWeight:900
 
 };

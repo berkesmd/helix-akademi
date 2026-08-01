@@ -2,12 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 
 export default function AdminPage(){
 
 
 const supabase=createClient();
+
+const router=useRouter();
+
 
 
 const [istatistik,setIstatistik]=useState({
@@ -31,7 +35,6 @@ const [aktiviteler,setAktiviteler]=useState<any[]>([]);
 async function yukle(){
 
 
-
 const {count:ogrenci}=await supabase
 
 .from("profiles")
@@ -39,8 +42,6 @@ const {count:ogrenci}=await supabase
 .select("*",{count:"exact",head:true})
 
 .eq("role","student");
-
-
 
 
 
@@ -55,13 +56,11 @@ const {count:egitim}=await supabase
 
 
 
-
 const {count:ders}=await supabase
 
 .from("lessons")
 
 .select("*",{count:"exact",head:true});
-
 
 
 
@@ -87,7 +86,6 @@ const {data:sonOgrenciler}=await supabase
 
 
 
-
 const {data:aktivite}=await supabase
 
 .from("activities")
@@ -97,8 +95,6 @@ const {data:aktivite}=await supabase
 .order("created_at",{ascending:false})
 
 .limit(5);
-
-
 
 
 
@@ -117,19 +113,9 @@ ders:ders || 0
 
 
 
-setOgrenciler(
+setOgrenciler(sonOgrenciler || []);
 
-sonOgrenciler || []
-
-);
-
-
-
-setAktiviteler(
-
-aktivite || []
-
-);
+setAktiviteler(aktivite || []);
 
 
 
@@ -139,19 +125,11 @@ aktivite || []
 
 
 
-
-
-
 useEffect(()=>{
-
 
 yukle();
 
-
-
 },[]);
-
-
 
 
 
@@ -173,12 +151,60 @@ HELIX AKADEMİ
 </h1>
 
 
-
 <p style={subtitle}>
 
 Yönetim Merkezi
 
 </p>
+
+
+
+
+
+
+
+
+<div style={quickGrid}>
+
+
+<QuickCard
+
+ikon="👨‍🎓"
+
+text="Öğrenci Ekle"
+
+click={()=>router.push("/admin/ogrenciler")}
+
+/>
+
+
+
+<QuickCard
+
+ikon="🎓"
+
+text="Eğitim Yönetimi"
+
+click={()=>router.push("/admin/egitimler")}
+
+/>
+
+
+
+<QuickCard
+
+ikon="🎥"
+
+text="Ders Yönetimi"
+
+click={()=>router.push("/admin/ders-yonetimi")}
+
+/>
+
+
+
+</div>
+
 
 
 
@@ -202,8 +228,6 @@ text="Toplam Öğrenci"
 
 
 
-
-
 <Card
 
 ikon="📚"
@@ -213,9 +237,6 @@ sayi={istatistik.egitim}
 text="Aktif Eğitim"
 
 />
-
-
-
 
 
 
@@ -231,10 +252,7 @@ text="Toplam Ders"
 
 
 
-
-
 </div>
-
 
 
 
@@ -268,7 +286,6 @@ Henüz öğrenci yok.
 </p>
 
 
-
 :
 
 
@@ -287,25 +304,14 @@ style={itemBox}
 👤 {item.full_name || "Yeni Öğrenci"}
 
 
-
 <p>
 
 Kayıt:
 
-{" "}
-
-{
-
-new Date(
-
-item.created_at
-
-).toLocaleDateString("tr-TR")
-
-}
+{new Date(item.created_at)
+.toLocaleDateString("tr-TR")}
 
 </p>
-
 
 
 </div>
@@ -315,8 +321,6 @@ item.created_at
 
 
 }
-
-
 
 
 
@@ -343,6 +347,7 @@ item.created_at
 
 
 
+
 {
 
 aktiviteler.length===0 ?
@@ -353,7 +358,6 @@ aktiviteler.length===0 ?
 Henüz aktivite yok.
 
 </p>
-
 
 
 :
@@ -374,23 +378,17 @@ style={itemBox}
 ✅ {item.text}
 
 
-
 <p>
 
-{
-
-new Date(
-
-item.created_at
-
-).toLocaleDateString("tr-TR")
-
-}
+{new Date(item.created_at)
+.toLocaleDateString("tr-TR")}
 
 </p>
 
 
+
 </div>
+
 
 
 ))
@@ -400,10 +398,7 @@ item.created_at
 
 
 
-
-
 </div>
-
 
 
 
@@ -425,9 +420,6 @@ item.created_at
 
 
 
-
-
-
 function Card({
 
 ikon,
@@ -440,7 +432,6 @@ text
 
 
 return(
-
 
 <div style={card}>
 
@@ -469,8 +460,58 @@ return(
 
 </div>
 
+)
+
+}
+
+
+
+
+
+
+
+function QuickCard({
+
+ikon,
+
+text,
+
+click
+
+}:any){
+
+
+return(
+
+
+<button
+
+style={quickCard}
+
+onClick={click}
+
+>
+
+
+<h1>
+
+{ikon}
+
+</h1>
+
+
+<h3>
+
+{text}
+
+</h3>
+
+
+</button>
+
 
 )
+
 
 }
 
@@ -492,6 +533,7 @@ padding:"20px"
 
 
 
+
 const title={
 
 fontSize:"55px",
@@ -501,6 +543,7 @@ color:"#d4af37",
 letterSpacing:"5px"
 
 };
+
 
 
 
@@ -514,6 +557,49 @@ color:"#aaa"
 
 
 
+
+
+const quickGrid={
+
+display:"grid",
+
+gridTemplateColumns:"repeat(3,1fr)",
+
+gap:"25px",
+
+marginTop:"35px"
+
+};
+
+
+
+
+
+const quickCard={
+
+padding:"30px",
+
+borderRadius:"25px",
+
+background:
+
+"linear-gradient(145deg,#171000,#050505)",
+
+border:
+
+"1px solid rgba(212,175,55,.4)",
+
+color:"white",
+
+cursor:"pointer"
+
+};
+
+
+
+
+
+
 const grid={
 
 display:"grid",
@@ -522,17 +608,24 @@ gridTemplateColumns:"repeat(3,1fr)",
 
 gap:"25px",
 
-marginTop:"40px"
+marginTop:"35px"
 
 };
 
 
 
+
+
+
 const card={
 
-background:"rgba(255,255,255,.05)",
+background:
 
-border:"1px solid rgba(212,175,55,.3)",
+"rgba(255,255,255,.05)",
+
+border:
+
+"1px solid rgba(212,175,55,.3)",
 
 borderRadius:"25px",
 
@@ -544,19 +637,27 @@ textAlign:"center" as const
 
 
 
+
+
 const section={
 
 marginTop:"40px",
 
-background:"rgba(255,255,255,.05)",
+background:
 
-border:"1px solid rgba(212,175,55,.3)",
+"rgba(255,255,255,.05)",
+
+border:
+
+"1px solid rgba(212,175,55,.3)",
 
 borderRadius:"25px",
 
 padding:"30px"
 
 };
+
+
 
 
 
@@ -568,6 +669,8 @@ color:"#d4af37"
 
 
 
+
+
 const itemBox={
 
 marginTop:"15px",
@@ -576,6 +679,8 @@ padding:"18px",
 
 borderRadius:"15px",
 
-background:"rgba(212,175,55,.08)"
+background:
+
+"rgba(212,175,55,.08)"
 
 };

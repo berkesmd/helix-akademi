@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect,useState } from "react";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+
 
 
 export default function AdminLayout({
@@ -17,9 +19,11 @@ children:React.ReactNode
 }){
 
 
+
 const router=useRouter();
 
 const supabase=createClient();
+
 
 
 const [kontrol,setKontrol]=useState(false);
@@ -33,20 +37,33 @@ const [menuAcik,setMenuAcik]=useState(false);
 
 
 
+
+
 useEffect(()=>{
+
+
+kontrolEt();
+
+
+},[]);
+
+
+
+
+
 
 
 async function kontrolEt(){
 
 
+
 const {
 
-data:{
-user
-
-}
+data:{user}
 
 }=await supabase.auth.getUser();
+
+
 
 
 
@@ -57,6 +74,8 @@ router.push("/admin-giris");
 return;
 
 }
+
+
 
 
 
@@ -75,6 +94,7 @@ const {data:profil}=await supabase
 
 
 
+
 if(!profil || profil.role!=="admin"){
 
 router.push("/ogrenci");
@@ -87,7 +107,11 @@ return;
 
 
 
-setIsim(profil.full_name || "Admin");
+setIsim(
+
+profil.full_name || "Admin"
+
+);
 
 
 setKontrol(true);
@@ -98,12 +122,6 @@ setKontrol(true);
 
 
 
-kontrolEt();
-
-
-},[]);
-
-
 
 
 
@@ -111,6 +129,7 @@ kontrolEt();
 
 
 if(!kontrol){
+
 
 return(
 
@@ -130,43 +149,96 @@ Kontrol ediliyor...
 
 
 
+
+
 const menu=[
 
 
+
 {
-isim:"Dashboard",
+
+isim:"🏠 Dashboard",
+
 link:"/admin"
+
 },
 
 
+
 {
-isim:"Eğitimler",
+
+isim:"👨‍🎓 Öğrenci Yönetimi",
+
+link:"/admin/ogrenciler"
+
+},
+
+
+
+
+{
+
+isim:"🎓 Eğitim Yönetimi",
+
 link:"/admin/egitimler"
+
 },
 
 
+
+
 {
-isim:"Ders Yönetimi",
+
+isim:"🎥 Ders Yönetimi",
+
 link:"/admin/ders-yonetimi"
+
 },
 
 
+
+
 {
-isim:"Öğrenci Takip",
+
+isim:"📊 Öğrenci Takip",
+
 link:"/admin/ogrenci-takip"
+
 },
 
 
+
+
 {
-isim:"Eğitim Ata",
+
+isim:"📚 Eğitim Ata",
+
 link:"/admin/egitim-atama"
+
 },
 
 
+
+
 {
-isim:"Bildirimler",
+
+isim:"🔔 Bildirimler",
+
 link:"/admin/bildirimler"
+
+},
+
+
+
+
+{
+
+isim:"⚙️ Ayarlar",
+
+link:"/admin/ayarlar"
+
 }
+
 
 
 ];
@@ -186,9 +258,14 @@ return(
 
 
 
+
+
+
 <button
 
 className="adminHamburger"
+
+style={hamburger}
 
 onClick={()=>setMenuAcik(!menuAcik)}
 
@@ -197,6 +274,9 @@ onClick={()=>setMenuAcik(!menuAcik)}
 ☰
 
 </button>
+
+
+
 
 
 
@@ -219,13 +299,11 @@ menuAcik
 
 :
 
-undefined
+"translateX(-110%)"
 
 }}
 
 >
-
-
 
 
 
@@ -245,6 +323,8 @@ height={140}
 />
 
 
+
+
 <h1>
 
 HELIX
@@ -252,14 +332,18 @@ HELIX
 </h1>
 
 
+
 <p>
 
-Admin Panel
+ADMIN PANEL
 
 </p>
 
 
+
 </div>
+
+
 
 
 
@@ -272,12 +356,13 @@ Admin Panel
 
 {
 
-menu.map(item=>(
+
+menu.map((item)=>(
 
 
 <button
 
-key={item.isim}
+key={item.link}
 
 style={menuBtn}
 
@@ -324,6 +409,7 @@ onClick={async()=>{
 
 await supabase.auth.signOut();
 
+
 router.push("/admin-giris");
 
 
@@ -331,7 +417,7 @@ router.push("/admin-giris");
 
 >
 
-GÜVENLİ ÇIKIŞ
+🚪 GÜVENLİ ÇIKIŞ
 
 </button>
 
@@ -357,8 +443,6 @@ GÜVENLİ ÇIKIŞ
 <div style={header}>
 
 
-<div>
-
 <h2>
 
 Hoş Geldin {isim}
@@ -373,8 +457,6 @@ Helix Akademi Yönetim Merkezi
 </p>
 
 
-</div>
-
 
 </div>
 
@@ -384,7 +466,6 @@ Helix Akademi Yönetim Merkezi
 
 
 {children}
-
 
 
 
@@ -427,6 +508,8 @@ color:"white"
 
 
 
+
+
 const sidebar={
 
 position:"fixed" as const,
@@ -441,7 +524,7 @@ height:"100vh",
 
 padding:"30px",
 
-background:"rgba(0,0,0,.85)",
+background:"rgba(0,0,0,.95)",
 
 borderRight:
 
@@ -452,6 +535,7 @@ zIndex:1000,
 transition:"0.3s"
 
 };
+
 
 
 
@@ -473,6 +557,7 @@ color:"#d4af37"
 
 
 
+
 const menuAlan={
 
 marginTop:"40px",
@@ -482,6 +567,7 @@ display:"grid",
 gap:"14px"
 
 };
+
 
 
 
@@ -512,6 +598,7 @@ fontWeight:900,
 textAlign:"left" as const
 
 };
+
 
 
 
@@ -551,6 +638,7 @@ cursor:"pointer"
 
 
 
+
 const content={
 
 marginLeft:"310px",
@@ -558,6 +646,7 @@ marginLeft:"310px",
 padding:"40px"
 
 };
+
 
 
 
@@ -582,6 +671,42 @@ padding:"20px 30px",
 marginBottom:"30px"
 
 };
+
+
+
+
+
+
+
+
+const hamburger={
+
+display:"none",
+
+position:"fixed" as const,
+
+top:"20px",
+
+left:"20px",
+
+zIndex:2000,
+
+width:"45px",
+
+height:"45px",
+
+borderRadius:"12px",
+
+background:"#d4af37",
+
+border:"0",
+
+fontSize:"25px",
+
+cursor:"pointer"
+
+};
+
 
 
 
