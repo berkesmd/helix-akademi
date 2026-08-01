@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -11,103 +12,98 @@ const [open,setOpen]=useState(false);
 
 return(
 
-<header style={header}>
+<header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-yellow-500/20">
 
 
-<div style={container}>
+<div className="max-w-7xl mx-auto h-20 px-5 flex items-center justify-between">
 
 
-<Link href="/" style={brand}>
+{/* LOGO */}
 
+<Link href="/" className="flex items-center gap-3">
 
-<img
+<Image
 
 src="/helix-logo.png"
 
 alt="Helix Akademi"
 
-style={logo}
+width={55}
+
+height={55}
 
 />
 
 
+<div>
+
+<h1 className="text-white font-black tracking-widest text-lg">
+
+HELIX
+
+</h1>
+
+
+<p className="text-yellow-400 text-[10px] tracking-[5px]">
+
+AKADEMİ
+
+</p>
+
+
+</div>
+
+
 </Link>
 
 
 
 
 
+{/* DESKTOP */}
+
+<nav className="hidden md:flex items-center gap-8">
 
 
-<nav
+<Link href="/" className="text-white hover:text-yellow-400">
 
-className="desktop-menu"
-
-style={desktop}
-
->
-
-
-<Link href="/" style={navLink}>
 Ana Sayfa
+
 </Link>
 
 
+<Link href="/egitimler" className="text-gray-300 hover:text-yellow-400">
 
-<Link href="/egitimler" style={navLink}>
 Eğitimler
+
 </Link>
 
 
+<Link href="/hakkimizda" className="text-gray-300 hover:text-yellow-400">
 
-
-<Link href="/hakkimizda" style={navLink}>
 Hakkımızda
+
 </Link>
 
 
+<Link href="/iletisim" className="text-gray-300 hover:text-yellow-400">
 
-
-<Link href="/iletisim" style={navLink}>
 İletişim
+
 </Link>
-
-
-
-
 
 
 <Link
 
 href="/ogrenci-giris"
 
-style={login}
+className="bg-gradient-to-r from-yellow-200 via-yellow-500 to-yellow-700 text-black font-bold px-6 py-3 rounded-xl shadow-lg"
 
 >
 
 ÖĞRENCİ GİRİŞ
 
 </Link>
-
-
-
-
-
-
-
-<Link
-
-href="/kayit"
-
-style={register}
-
->
-
-KAYIT OL
-
-</Link>
-
-
 
 
 </nav>
@@ -117,27 +113,26 @@ KAYIT OL
 
 
 
+{/* HAMBURGER */}
+
 
 <button
 
-
-className="mobile-menu-btn"
-
-
-style={hamburger}
-
-
 onClick={()=>setOpen(!open)}
 
+className="md:hidden flex flex-col gap-1.5 p-3 border border-yellow-500/40 rounded-xl"
 
 >
 
-☰
+
+<span className="w-7 h-0.5 bg-yellow-400"></span>
+
+<span className="w-7 h-0.5 bg-yellow-400"></span>
+
+<span className="w-7 h-0.5 bg-yellow-400"></span>
+
 
 </button>
-
-
-
 
 
 
@@ -150,23 +145,26 @@ onClick={()=>setOpen(!open)}
 
 
 
-
+{/* MOBİL MENÜ */}
 
 
 {
 
 open &&
 
-<div style={mobileMenu}>
+<div className="md:hidden bg-black border-t border-yellow-500/20 px-6 py-6">
+
+
+<div className="flex flex-col gap-5">
 
 
 <Link
 
+onClick={()=>setOpen(false)}
+
 href="/"
 
-style={mobileLink}
-
-onClick={()=>setOpen(false)}
+className="text-white"
 
 >
 
@@ -176,15 +174,13 @@ Ana Sayfa
 
 
 
-
-
 <Link
+
+onClick={()=>setOpen(false)}
 
 href="/egitimler"
 
-style={mobileLink}
-
-onClick={()=>setOpen(false)}
+className="text-white"
 
 >
 
@@ -194,15 +190,13 @@ Eğitimler
 
 
 
-
-
 <Link
+
+onClick={()=>setOpen(false)}
 
 href="/hakkimizda"
 
-style={mobileLink}
-
-onClick={()=>setOpen(false)}
+className="text-white"
 
 >
 
@@ -212,15 +206,13 @@ Hakkımızda
 
 
 
-
-
 <Link
+
+onClick={()=>setOpen(false)}
 
 href="/iletisim"
 
-style={mobileLink}
-
-onClick={()=>setOpen(false)}
+className="text-white"
 
 >
 
@@ -230,15 +222,13 @@ onClick={()=>setOpen(false)}
 
 
 
-
-
 <Link
+
+onClick={()=>setOpen(false)}
 
 href="/ogrenci-giris"
 
-style={login}
-
-onClick={()=>setOpen(false)}
+className="bg-yellow-500 text-black text-center py-3 rounded-xl font-bold"
 
 >
 
@@ -247,31 +237,12 @@ onClick={()=>setOpen(false)}
 </Link>
 
 
-
-
-
-<Link
-
-href="/kayit"
-
-style={register}
-
-onClick={()=>setOpen(false)}
-
->
-
-KAYIT OL
-
-</Link>
-
+</div>
 
 
 </div>
 
-
 }
-
-
 
 
 </header>
@@ -280,245 +251,3 @@ KAYIT OL
 )
 
 }
-
-
-
-
-
-
-
-const header={
-
-position:"fixed" as const,
-
-top:0,
-
-left:0,
-
-right:0,
-
-height:"85px",
-
-zIndex:999,
-
-background:
-
-"rgba(0,0,0,.88)",
-
-backdropFilter:"blur(20px)",
-
-borderBottom:
-
-"1px solid rgba(212,175,55,.3)"
-
-};
-
-
-
-
-
-
-const container={
-
-height:"100%",
-
-display:"flex",
-
-alignItems:"center",
-
-justifyContent:"space-between",
-
-padding:"0 40px"
-
-};
-
-
-
-
-
-
-const brand={
-
-display:"flex",
-
-alignItems:"center",
-
-textDecoration:"none"
-
-};
-
-
-
-
-
-
-const logo={
-
-width:"170px",
-
-height:"70px",
-
-objectFit:"contain" as const,
-
-filter:
-
-"drop-shadow(0 0 25px rgba(212,175,55,.8))"
-
-};
-
-
-
-
-
-
-const desktop={
-
-display:"flex",
-
-alignItems:"center",
-
-gap:"28px"
-
-};
-
-
-
-
-
-
-const navLink={
-
-color:"#eee",
-
-textDecoration:"none",
-
-fontSize:"15px",
-
-fontWeight:700
-
-};
-
-
-
-
-
-
-const login={
-
-padding:"14px 25px",
-
-borderRadius:"20px",
-
-background:
-
-"linear-gradient(135deg,#fff1a8,#d4af37,#8a6500)",
-
-color:"#000",
-
-fontWeight:900,
-
-textDecoration:"none",
-
-fontSize:"14px",
-
-boxShadow:
-
-"0 0 25px rgba(212,175,55,.6)"
-
-};
-
-
-
-
-
-
-const register={
-
-padding:"14px 25px",
-
-borderRadius:"20px",
-
-border:"1px solid #d4af37",
-
-color:"#d4af37",
-
-fontWeight:900,
-
-textDecoration:"none",
-
-fontSize:"14px"
-
-};
-
-
-
-
-
-
-const hamburger={
-
-display:"none",
-
-background:"#050505",
-
-border:"1px solid #d4af37",
-
-color:"#d4af37",
-
-fontSize:"28px",
-
-borderRadius:"12px",
-
-padding:"5px 12px",
-
-cursor:"pointer"
-
-};
-
-
-
-
-
-
-const mobileMenu={
-
-position:"absolute" as const,
-
-top:"85px",
-
-left:0,
-
-right:0,
-
-background:"#050505",
-
-padding:"30px",
-
-display:"flex",
-
-flexDirection:"column" as const,
-
-gap:"25px",
-
-borderBottom:
-
-"1px solid rgba(212,175,55,.4)"
-
-};
-
-
-
-
-
-
-const mobileLink={
-
-color:"#fff",
-
-fontSize:"18px",
-
-fontWeight:700,
-
-textDecoration:"none"
-
-};
