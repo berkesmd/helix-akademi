@@ -1,49 +1,47 @@
 "use client";
 
-import {useEffect,useState} from "react";
-import {useParams} from "next/navigation";
-import {createClient} from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useParams, useRouter } from "next/navigation";
 
 
-export default function EgitimPage(){
+export default function EgitimDetayPage(){
 
-const supabase=createClient();
+const supabase = createClient();
 
-const params=useParams();
+const params = useParams();
 
-const id=params.id as string;
+const router = useRouter();
 
 
-const [kurs,setKurs]=useState<any>(null);
-const [dersler,setDersler]=useState<any[]>([]);
-const [loading,setLoading]=useState(true);
+const [egitim,setEgitim] = useState<any>(null);
+
+const [loading,setLoading] = useState(true);
 
 
 
 useEffect(()=>{
 
-if(id){
+getir();
 
-yukle();
-
-}
-
-},[id]);
+},[]);
 
 
 
+async function getir(){
 
 
-async function yukle(){
-
-
-console.log("GELEN ID:",id);
+const id = params.id;
 
 
 
-// EĞİTİM
+const {
 
-const {data:course,error:courseError}=await supabase
+data,
+
+error
+
+}= await supabase
 
 .from("courses")
 
@@ -55,49 +53,22 @@ const {data:course,error:courseError}=await supabase
 
 
 
-console.log("COURSE:",course);
-console.log("COURSE ERROR:",courseError);
+console.log(error);
 
 
 
-setKurs(course);
+if(data){
 
+setEgitim(data);
 
-
-
-
-// DERSLER
-
-
-const {data:lessons,error:lessonError}=await supabase
-
-.from("lessons")
-
-.select("*")
-
-.eq("course_id",id)
-
-.order("lesson_order",{ascending:true});
-
-
-
-
-console.log("LESSONS:",lessons);
-console.log("LESSON ERROR:",lessonError);
-
-
-
-setDersler(lessons || []);
-
+}
 
 
 setLoading(false);
 
 
+
 }
-
-
-
 
 
 
@@ -106,11 +77,37 @@ if(loading){
 
 return(
 
-<div style={page}>
+<main style={page}>
+
+<div style={loadingBox}>
 
 Yükleniyor...
 
 </div>
+
+</main>
+
+)
+
+}
+
+
+
+
+
+if(!egitim){
+
+return(
+
+<main style={page}>
+
+<div style={loadingBox}>
+
+Eğitim bulunamadı.
+
+</div>
+
+</main>
 
 )
 
@@ -131,15 +128,15 @@ return(
 
 <h1 style={title}>
 
-{kurs?.title}
+{egitim.title}
 
 </h1>
 
 
 
-<p>
+<p style={desc}>
 
-{kurs?.description}
+{egitim.description}
 
 </p>
 
@@ -147,8 +144,10 @@ return(
 
 
 
+<div style={section}>
 
-<h2 style={gold}>
+
+<h2>
 
 DERSLER
 
@@ -156,58 +155,65 @@ DERSLER
 
 
 
-
-
-{
-
-dersler.length===0 ?
-
-
-<div>
-
-Ders bulunamadı.
-
-</div>
-
-
-:
-
-dersler.map((ders,index)=>(
-
-
-<div
-
-key={ders.id}
-
-style={dersBox}
-
->
+<div style={lesson}>
 
 
 <h3>
 
-{index+1}. {ders.title}
+1. Koçluğa Giriş
 
 </h3>
+
+
+<button style={button}>
+
+DERSE GİR
+
+</button>
+
+
+</div>
+
+
+
+
+
+<div style={lesson}>
+
+
+<h3>
+
+2. İletişim Teknikleri
+
+</h3>
+
+
+<button style={button}>
+
+DERSE GİR
+
+</button>
+
+
+</div>
+
+
+
+
+
+</div>
 
 
 
 <button
 
-style={button}
+style={back}
 
-onClick={()=>{
-
-window.location.href=
-
-`/ogrenci/ders/${ders.id}`
-
-
-}}
+onClick={()=>router.back()}
 
 >
 
-DERSE GİR
+← Geri Dön
 
 </button>
 
@@ -215,15 +221,6 @@ DERSE GİR
 
 </div>
 
-
-))
-
-
-}
-
-
-
-</div>
 
 
 </main>
@@ -237,15 +234,20 @@ DERSE GİR
 
 
 
+const page = {
 
-
-const page={
 
 minHeight:"100vh",
 
-padding:"40px",
+padding:"25px 15px",
+
+background:
+
+"radial-gradient(circle at top,#3b2800,#050505 70%)",
 
 color:"white"
+
+
 
 };
 
@@ -253,17 +255,24 @@ color:"white"
 
 const card={
 
-maxWidth:"1000px",
+
+maxWidth:"700px",
 
 margin:"auto",
 
-background:"rgba(255,255,255,.06)",
-
-padding:"40px",
+padding:"25px",
 
 borderRadius:"30px",
 
-border:"1px solid rgba(212,175,55,.3)"
+background:
+
+"rgba(255,255,255,.06)",
+
+border:
+
+"1px solid rgba(212,175,55,.4)",
+
+backdropFilter:"blur(20px)"
 
 };
 
@@ -271,35 +280,62 @@ border:"1px solid rgba(212,175,55,.3)"
 
 const title={
 
-fontSize:"45px",
 
-color:"#d4af37"
+fontSize:"clamp(28px,7vw,45px)",
 
-};
-
-
-
-const gold={
+lineHeight:"1.2",
 
 color:"#d4af37",
 
-marginTop:"40px"
+fontWeight:900,
+
+marginBottom:"20px"
+
 
 };
 
 
 
-const dersBox={
+const desc={
 
-padding:"25px",
+
+fontSize:"17px",
+
+lineHeight:"1.7",
+
+color:"#ddd"
+
+
+};
+
+
+
+const section={
+
+
+marginTop:"35px"
+
+
+};
+
+
+
+const lesson={
+
 
 marginTop:"20px",
 
-background:"rgba(0,0,0,.3)",
+padding:"20px",
 
 borderRadius:"20px",
 
-border:"1px solid rgba(212,175,55,.2)"
+background:"#111",
+
+border:
+
+"1px solid rgba(212,175,55,.3)"
+
+
 
 };
 
@@ -307,18 +343,68 @@ border:"1px solid rgba(212,175,55,.2)"
 
 const button={
 
+
 marginTop:"15px",
 
-padding:"14px 30px",
+width:"100%",
 
-background:"#d4af37",
+padding:"14px",
 
 border:"0",
 
 borderRadius:"15px",
 
+background:
+
+"linear-gradient(135deg,#fff1a8,#d4af37)",
+
 fontWeight:900,
 
 cursor:"pointer"
+
+
+};
+
+
+
+const back={
+
+
+marginTop:"30px",
+
+width:"100%",
+
+padding:"14px",
+
+borderRadius:"15px",
+
+background:"transparent",
+
+border:
+
+"1px solid #d4af37",
+
+color:"#d4af37",
+
+fontWeight:900,
+
+cursor:"pointer"
+
+
+};
+
+
+
+const loadingBox={
+
+
+padding:"50px",
+
+textAlign:"center" as const,
+
+color:"#d4af37",
+
+fontSize:"22px"
+
 
 };
