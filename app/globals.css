@@ -666,3 +666,44 @@ font-size:30px;
 
 
 }
+.student-btn{
+
+margin-top:30px;
+
+padding:16px 50px;
+
+border-radius:30px;
+
+border:1px solid #d4af37;
+
+background:linear-gradient(
+135deg,
+#d4af37,
+#ffe58a
+);
+
+color:#050505;
+
+font-size:18px;
+
+font-weight:900;
+
+cursor:pointer;
+
+transition:.3s;
+
+box-shadow:
+0 0 25px rgba(212,175,55,.5);
+
+}
+
+
+
+.student-btn:hover{
+
+transform:translateY(-5px);
+
+box-shadow:
+0 0 40px rgba(212,175,55,.9);
+
+}

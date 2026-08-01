@@ -6,19 +6,15 @@ import { useRouter } from "next/navigation";
 
 export default function Home(){
 
-
 const router = useRouter();
 
 
-return (
+return(
 
 <main className="home">
 
 
-{/* HERO */}
-
 <section className="hero">
-
 
 
 <Image
@@ -64,7 +60,6 @@ GELECEĞİNİ EĞİTİMLE ŞEKİLLENDİR
 <p>
 
 Profesyonel eğitim programları ile kendini geliştir,
-
 kariyerinde fark yarat.
 
 </p>
@@ -74,11 +69,9 @@ kariyerinde fark yarat.
 
 
 
-
-
 <button
 
-className="heroButton"
+className="student-btn"
 
 onClick={()=>router.push("/ogrenci-giris")}
 
@@ -99,7 +92,6 @@ onClick={()=>router.push("/ogrenci-giris")}
 <div className="stats">
 
 
-
 <div className="stat-box">
 
 <strong>
@@ -114,6 +106,7 @@ onClick={()=>router.push("/ogrenci-giris")}
 
 </span>
 
+
 </div>
 
 
@@ -121,7 +114,9 @@ onClick={()=>router.push("/ogrenci-giris")}
 
 
 
+
 <div className="stat-box">
+
 
 <strong>
 
@@ -129,13 +124,16 @@ onClick={()=>router.push("/ogrenci-giris")}
 
 </strong>
 
+
 <span>
 
 EĞİTİM
 
 </span>
 
+
 </div>
+
 
 
 
@@ -144,11 +142,13 @@ EĞİTİM
 
 <div className="stat-box">
 
+
 <strong>
 
 %98
 
 </strong>
+
 
 <span>
 
@@ -156,12 +156,12 @@ MEMNUNİYET
 
 </span>
 
-</div>
-
-
 
 </div>
 
+
+
+</div>
 
 
 
@@ -175,12 +175,7 @@ MEMNUNİYET
 
 
 
-
-{/* ÖZELLİKLER */}
-
-
 <section className="section">
-
 
 
 <h2>
@@ -192,14 +187,11 @@ NEDEN HELIX AKADEMİ?
 
 
 
-
-
 <div className="cards">
 
 
 
 <div className="card">
-
 
 <h3>
 
@@ -210,7 +202,7 @@ Uzman Eğitmenler
 
 <p>
 
-Alanında deneyimli eğitmenlerle kaliteli eğitim deneyimi.
+Alanında deneyimli eğitmenlerle kaliteli eğitim.
 
 </p>
 
@@ -224,7 +216,6 @@ Alanında deneyimli eğitmenlerle kaliteli eğitim deneyimi.
 
 <div className="card">
 
-
 <h3>
 
 Online Eğitim
@@ -234,7 +225,7 @@ Online Eğitim
 
 <p>
 
-Dilediğin yerden kolay erişilebilir eğitim sistemi.
+Dilediğin yerden eğitimlere ulaş.
 
 </p>
 
@@ -259,7 +250,7 @@ Sertifikalı Eğitim
 
 <p>
 
-Başarılarını resmi sertifikalar ile belgele.
+Başarılarını sertifika ile belgele.
 
 </p>
 
@@ -272,7 +263,6 @@ Başarılarını resmi sertifikalar ile belgele.
 </div>
 
 
-
 </section>
 
 
@@ -283,11 +273,7 @@ Başarılarını resmi sertifikalar ile belgele.
 
 
 
-{/* YORUMLAR */}
-
-
 <section className="section">
-
 
 
 <h2>
@@ -300,17 +286,15 @@ Başarılarını resmi sertifikalar ile belgele.
 
 
 
-
 <div className="cards">
 
 
 
 <div className="card">
 
-
 <p>
 
-"Helix Akademi sayesinde kendimi geliştirdim ve yeni fırsatlar yakaladım."
+"Helix Akademi sayesinde kendimi geliştirdim."
 
 </p>
 
@@ -322,11 +306,7 @@ Ahmet K.
 </strong>
 
 
-
 </div>
-
-
-
 
 
 
@@ -334,10 +314,9 @@ Ahmet K.
 
 <div className="card">
 
-
 <p>
 
-"Eğitim sistemi çok kaliteli ve profesyonel."
+"Eğitim sistemi çok kaliteli."
 
 </p>
 
@@ -349,9 +328,7 @@ Zeynep M.
 </strong>
 
 
-
 </div>
-
 
 
 
@@ -360,10 +337,9 @@ Zeynep M.
 
 <div className="card">
 
-
 <p>
 
-"Başarılı ve güvenilir bir eğitim platformu."
+"Profesyonel ve güvenilir platform."
 
 </p>
 
@@ -375,15 +351,11 @@ Mehmet T.
 </strong>
 
 
-
 </div>
 
 
 
-
-
 </div>
-
 
 
 </section>
@@ -396,11 +368,7 @@ Mehmet T.
 
 
 
-{/* İLETİŞİM */}
-
-
 <section className="contact">
-
 
 
 <h2>
@@ -410,8 +378,6 @@ Mehmet T.
 </h2>
 
 
-
-
 <p>
 
 📞 +90 530 508 62 69
@@ -419,14 +385,11 @@ Mehmet T.
 </p>
 
 
-
 <p>
 
 ✉️ helix_akademi@gmail.com
 
 </p>
-
-
 
 
 <p>
@@ -437,9 +400,7 @@ Mehmet T.
 
 
 
-
 </section>
-
 
 
 
@@ -465,18 +426,13 @@ Geleceğin eğitim platformu
 </p>
 
 
-
 </footer>
-
-
-
 
 
 
 
 </main>
 
-);
-
+)
 
 }
