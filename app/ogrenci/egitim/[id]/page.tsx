@@ -1,6 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 
 export default function EgitimDetayPage(){
@@ -8,21 +10,109 @@ export default function EgitimDetayPage(){
 
 const router = useRouter();
 
+const params = useParams();
+
+const supabase = createClient();
 
 
-const dersler = [
+const id = params.id as string;
 
-{
-id:1,
-baslik:"Koçluğa Giriş"
-},
 
-{
-id:2,
-baslik:"İletişim Teknikleri"
+
+const [egitim,setEgitim]=useState<any>(null);
+
+const [dersler,setDersler]=useState<any[]>([]);
+
+const [loading,setLoading]=useState(true);
+
+
+
+
+
+useEffect(()=>{
+
+getir();
+
+},[]);
+
+
+
+
+
+
+async function getir(){
+
+
+
+const {data:course}=await supabase
+
+.from("courses")
+
+.select("*")
+
+.eq("id",id)
+
+.single();
+
+
+
+
+
+setEgitim(course);
+
+
+
+
+
+
+const {data:lessonData}=await supabase
+
+.from("lessons")
+
+.select("*")
+
+.eq("course_id",id)
+
+.order("created_at",{ascending:true});
+
+
+
+
+
+setDersler(lessonData || []);
+
+
+
+
+setLoading(false);
+
+
+
 }
 
-];
+
+
+
+
+
+
+if(loading){
+
+return(
+
+<div style={page}>
+
+Yükleniyor...
+
+</div>
+
+)
+
+}
+
+
+
+
 
 
 
@@ -38,7 +128,7 @@ return(
 
 <h1 style={title}>
 
-Profesyonel Yaşam Koçluğu
+{egitim?.title}
 
 </h1>
 
@@ -46,9 +136,10 @@ Profesyonel Yaşam Koçluğu
 
 <p style={aciklama}>
 
-Uluslararası sertifikalı eğitim programı
+{egitim?.description}
 
 </p>
+
 
 
 
@@ -65,7 +156,22 @@ DERSLER
 
 {
 
+
+dersler.length===0 ?
+
+
+<p>
+
+Bu eğitim için henüz ders eklenmemiş.
+
+</p>
+
+
+:
+
+
 dersler.map((ders)=>(
+
 
 
 <div
@@ -79,7 +185,7 @@ style={dersKart}
 
 <h3>
 
-{ders.id}. {ders.baslik}
+{ders.title}
 
 </h3>
 
@@ -90,25 +196,23 @@ style={dersKart}
 
 style={button}
 
-onClick={()=>{
-
-router.push(
+onClick={()=>router.push(
 
 `/ogrenci/ders/${ders.id}`
 
-);
-
-}}
+)}
 
 >
 
-DERSE GİR
+DERSE GİR →
 
 </button>
 
 
 
+
 </div>
+
 
 
 ))
@@ -124,7 +228,7 @@ DERSE GİR
 
 style={geri}
 
-onClick={()=>router.push("/ogrenci/egitimler")}
+onClick={()=>router.back()}
 
 >
 
@@ -135,8 +239,8 @@ onClick={()=>router.push("/ogrenci/egitimler")}
 
 
 
-
 </div>
+
 
 
 </main>
@@ -145,6 +249,7 @@ onClick={()=>router.push("/ogrenci/egitimler")}
 )
 
 }
+
 
 
 
@@ -166,12 +271,11 @@ color:"white"
 
 
 
-
 const kart={
 
-maxWidth:"700px",
+maxWidth:"800px",
 
-margin:"40px auto",
+margin:"30px auto",
 
 padding:"35px",
 
@@ -179,14 +283,13 @@ borderRadius:"30px",
 
 background:
 
-"rgba(255,255,255,.05)",
+"rgba(255,255,255,.06)",
 
 border:
 
 "1px solid #d4af37"
 
 };
-
 
 
 
@@ -200,7 +303,6 @@ color:"#d4af37"
 
 
 
-
 const aciklama={
 
 color:"#ddd",
@@ -208,7 +310,6 @@ color:"#ddd",
 marginBottom:"30px"
 
 };
-
 
 
 
@@ -227,7 +328,6 @@ border:
 "1px solid rgba(212,175,55,.4)"
 
 };
-
 
 
 
@@ -252,7 +352,6 @@ fontWeight:900,
 cursor:"pointer"
 
 };
-
 
 
 
