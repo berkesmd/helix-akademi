@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 
 export default function AdminGirisPage() {
   const router = useRouter();
-  const supabase = createClient();
 
   const [email, setEmail] = useState("");
   const [sifre, setSifre] = useState("");
@@ -18,6 +17,14 @@ export default function AdminGirisPage() {
 
     setLoading(true);
     setHata("");
+
+    const supabase = createClient();
+
+    if (!supabase) {
+      setHata("Supabase bağlantısı bulunamadı.");
+      setLoading(false);
+      return;
+    }
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -37,7 +44,7 @@ export default function AdminGirisPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
-        
+
         <h1 className="mb-6 text-center text-3xl font-bold">
           Admin Giriş
         </h1>
