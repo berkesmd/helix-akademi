@@ -13,12 +13,19 @@ const supabase=createClient();
 
 
 
+const [siteAdi,setSiteAdi]=useState("");
+
+const [telefon,setTelefon]=useState("");
+
+const [email,setEmail]=useState("");
+
+const [whatsapp,setWhatsapp]=useState("");
+
+const [aciklama,setAciklama]=useState("");
+
 const [video,setVideo]=useState("");
 
 const [mesaj,setMesaj]=useState("");
-
-const [loading,setLoading]=useState(true);
-
 
 
 
@@ -41,7 +48,6 @@ getir();
 async function getir(){
 
 
-
 const {data}=await supabase
 
 .from("site_settings")
@@ -52,15 +58,26 @@ const {data}=await supabase
 
 
 
-setVideo(
-
-data?.intro_video || ""
-
-);
 
 
+if(data){
 
-setLoading(false);
+
+setSiteAdi(data.site_name || "");
+
+setTelefon(data.phone || "");
+
+setEmail(data.email || "");
+
+setWhatsapp(data.whatsapp || "");
+
+setAciklama(data.description || "");
+
+setVideo(data.intro_video || "");
+
+
+}
+
 
 
 }
@@ -89,35 +106,42 @@ const {data}=await supabase
 
 
 
-if(data){
 
 
+const bilgi={
 
-const {error}=await supabase
 
-.from("site_settings")
+site_name:siteAdi,
 
-.update({
+phone:telefon,
+
+email,
+
+whatsapp,
+
+description:aciklama,
 
 intro_video:video
 
-})
+
+};
+
+
+
+
+
+
+
+if(data){
+
+
+await supabase
+
+.from("site_settings")
+
+.update(bilgi)
 
 .eq("id",data.id);
-
-
-
-
-
-if(error){
-
-setMesaj("❌ Güncellenemedi.");
-
-return;
-
-}
-
-
 
 
 
@@ -125,40 +149,11 @@ return;
 
 
 
-const {error}=await supabase
+await supabase
 
 .from("site_settings")
 
-.insert({
-
-intro_video:video
-
-});
-
-
-
-
-if(error){
-
-setMesaj("❌ Kaydedilemedi.");
-
-return;
-
-}
-
-
-}
-
-
-
-
-
-
-setMesaj(
-
-"✅ Tanıtım videosu güncellendi."
-
-);
+.insert(bilgi);
 
 
 
@@ -169,22 +164,12 @@ setMesaj(
 
 
 
+setMesaj("✅ Ayarlar kaydedildi.");
 
 
-
-if(loading){
-
-return(
-
-<main style={page}>
-
-Yükleniyor...
-
-</main>
-
-)
 
 }
+
 
 
 
@@ -207,39 +192,160 @@ return(
 
 
 
+
+
+
 <div style={box}>
 
 
-<h2 style={gold}>
+<label>
 
-🎬 Tanıtım Videosu
+Site Adı
 
-</h2>
-
-
-
-
-<p>
-
-YouTube linkini giriniz.
-
-</p>
-
-
-
+</label>
 
 
 <input
 
+value={siteAdi}
+
+onChange={(e)=>setSiteAdi(e.target.value)}
+
 style={input}
 
-placeholder="https://youtube.com/watch?v="
+placeholder="Helix Akademi"
+
+/>
+
+
+
+
+
+
+
+<label>
+
+Telefon
+
+</label>
+
+
+<input
+
+value={telefon}
+
+onChange={(e)=>setTelefon(e.target.value)}
+
+style={input}
+
+placeholder="+90"
+
+/>
+
+
+
+
+
+
+
+
+<label>
+
+Email
+
+</label>
+
+
+<input
+
+value={email}
+
+onChange={(e)=>setEmail(e.target.value)}
+
+style={input}
+
+placeholder="mail@site.com"
+
+/>
+
+
+
+
+
+
+
+
+<label>
+
+WhatsApp
+
+</label>
+
+
+<input
+
+value={whatsapp}
+
+onChange={(e)=>setWhatsapp(e.target.value)}
+
+style={input}
+
+placeholder="905xxxxxxxxx"
+
+/>
+
+
+
+
+
+
+
+
+<label>
+
+Tanıtım Video Linki
+
+</label>
+
+
+<input
 
 value={video}
 
 onChange={(e)=>setVideo(e.target.value)}
 
+style={input}
+
+placeholder="Youtube linki"
+
 />
+
+
+
+
+
+
+
+
+<label>
+
+Site Açıklaması
+
+</label>
+
+
+<textarea
+
+value={aciklama}
+
+onChange={(e)=>setAciklama(e.target.value)}
+
+style={textarea}
+
+/>
+
+
+
 
 
 
@@ -261,6 +367,8 @@ onClick={kaydet}
 
 
 
+
+
 <p style={message}>
 
 {mesaj}
@@ -272,6 +380,7 @@ onClick={kaydet}
 
 
 </div>
+
 
 
 
@@ -294,13 +403,12 @@ onClick={kaydet}
 
 const page={
 
-minHeight:"100vh",
-
 padding:"40px",
 
 color:"white"
 
 };
+
 
 
 
@@ -316,9 +424,10 @@ color:"#d4af37"
 
 
 
+
 const box={
 
-maxWidth:"700px",
+maxWidth:"800px",
 
 marginTop:"30px",
 
@@ -335,14 +444,6 @@ border:"1px solid rgba(212,175,55,.3)"
 
 
 
-const gold={
-
-color:"#d4af37"
-
-};
-
-
-
 
 const input={
 
@@ -350,7 +451,9 @@ width:"100%",
 
 padding:"15px",
 
-marginTop:"20px",
+marginTop:"10px",
+
+marginBottom:"20px",
 
 background:"#111",
 
@@ -365,11 +468,34 @@ borderRadius:"12px"
 
 
 
+
+const textarea={
+
+width:"100%",
+
+height:"120px",
+
+padding:"15px",
+
+background:"#111",
+
+color:"white",
+
+border:"1px solid #d4af37",
+
+borderRadius:"12px"
+
+};
+
+
+
+
+
 const button={
 
-marginTop:"20px",
+marginTop:"25px",
 
-padding:"15px 35px",
+padding:"16px 40px",
 
 background:"#d4af37",
 
@@ -382,6 +508,7 @@ fontWeight:900,
 cursor:"pointer"
 
 };
+
 
 
 

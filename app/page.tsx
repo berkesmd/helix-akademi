@@ -6,294 +6,477 @@ import { useRouter } from "next/navigation";
 
 export default function Home(){
 
-  const router = useRouter();
 
+const router = useRouter();
 
-  return (
 
-    <main className="home">
+return (
 
+<main className="home">
 
-      {/* HERO */}
-      <section className="hero">
 
+{/* HERO */}
 
-        <Image
-          src="/helix-logo.png"
-          alt="Helix Akademi"
-          width={260}
-          height={260}
-          priority
-          className="logo"
-        />
+<section className="hero">
 
 
-        <h1>
-          HELIX AKADEMİ
-        </h1>
 
+<Image
 
-        <h2>
-          GELECEĞİNİ EĞİTİMLE ŞEKİLLENDİR
-        </h2>
+src="/helix-logo.png"
 
+alt="Helix Akademi"
 
-        <p>
-          Profesyonel eğitim programları ile kendini geliştir,
-          kariyerinde fark yarat.
-        </p>
+width={260}
 
+height={260}
 
+priority
 
-        <button
-          onClick={() => router.push("/ogrenci-giris")}
-        >
-          ÖĞRENCİ GİRİŞİ
-        </button>
+className="logo"
 
+/>
 
 
 
 
-        <div className="stats">
 
+<h1>
 
-          <div className="stat-box">
-            <strong>
-              10.000+
-            </strong>
-            <span>
-              ÖĞRENCİ
-            </span>
-          </div>
+HELIX AKADEMİ
 
+</h1>
 
 
-          <div className="stat-box">
-            <strong>
-              50+
-            </strong>
-            <span>
-              EĞİTİM
-            </span>
-          </div>
 
 
 
+<h2>
 
-          <div className="stat-box">
-            <strong>
-              %98
-            </strong>
-            <span>
-              MEMNUNİYET
-            </span>
-          </div>
+GELECEĞİNİ EĞİTİMLE ŞEKİLLENDİR
 
+</h2>
 
-        </div>
 
 
 
-      </section>
 
+<p>
 
+Profesyonel eğitim programları ile kendini geliştir,
 
+kariyerinde fark yarat.
 
+</p>
 
 
-      {/* ÖZELLİKLER */}
 
-      <section className="section">
 
 
-        <h2>
-          NEDEN HELIX AKADEMİ?
-        </h2>
 
 
 
-        <div className="cards">
+<button
 
+className="heroButton"
 
-          <div className="card">
+onClick={()=>router.push("/ogrenci-giris")}
 
-            <h3>
-              Uzman Eğitmenler
-            </h3>
+>
 
-            <p>
-              Alanında deneyimli eğitmenlerle kaliteli eğitim deneyimi.
-            </p>
+🎓 ÖĞRENCİ GİRİŞİ
 
-          </div>
+</button>
 
 
 
 
-          <div className="card">
 
-            <h3>
-              Online Eğitim
-            </h3>
 
-            <p>
-              Dilediğin yerden kolay erişilebilir eğitim sistemi.
-            </p>
 
-          </div>
 
 
+<div className="stats">
 
 
-          <div className="card">
 
-            <h3>
-              Sertifikalı Eğitim
-            </h3>
+<div className="stat-box">
 
-            <p>
-              Başarılarını resmi sertifikalar ile belgele.
-            </p>
+<strong>
 
-          </div>
+10.000+
 
+</strong>
 
+<span>
 
-        </div>
+ÖĞRENCİ
 
+</span>
 
-      </section>
+</div>
 
 
 
 
 
 
+<div className="stat-box">
 
-      {/* YORUMLAR */}
+<strong>
 
-      <section className="section">
+50+
 
+</strong>
 
-        <h2>
-          ÖĞRENCİ YORUMLARI
-        </h2>
+<span>
 
+EĞİTİM
 
+</span>
 
-        <div className="cards">
+</div>
 
 
-          <div className="card">
 
-            <p>
-              "Helix Akademi sayesinde kendimi geliştirdim ve yeni fırsatlar yakaladım."
-            </p>
 
-            <strong>
-              Ahmet K.
-            </strong>
 
-          </div>
 
+<div className="stat-box">
 
+<strong>
 
+%98
 
+</strong>
 
-          <div className="card">
+<span>
 
-            <p>
-              "Eğitim sistemi çok kaliteli ve profesyonel."
-            </p>
+MEMNUNİYET
 
-            <strong>
-              Zeynep M.
-            </strong>
+</span>
 
-          </div>
+</div>
 
 
 
+</div>
 
 
-          <div className="card">
 
-            <p>
-              "Başarılı ve güvenilir bir eğitim platformu."
-            </p>
 
-            <strong>
-              Mehmet T.
-            </strong>
 
-          </div>
+</section>
 
 
 
-        </div>
 
 
-      </section>
 
 
 
 
+{/* ÖZELLİKLER */}
 
 
+<section className="section">
 
-      {/* İLETİŞİM */}
 
-      <section className="contact">
 
+<h2>
 
-        <h2>
-          İLETİŞİM
-        </h2>
+NEDEN HELIX AKADEMİ?
 
+</h2>
 
 
-        <p>
-          📞 +90 530 508 62 69
-        </p>
 
 
-        <p>
-          ✉️ helix_akademi@gmail.com
-        </p>
 
 
-        <p>
-          🌐 helixakademi.com
-        </p>
+<div className="cards">
 
 
 
-      </section>
+<div className="card">
 
 
+<h3>
 
+Uzman Eğitmenler
 
+</h3>
 
 
+<p>
 
-      <footer>
+Alanında deneyimli eğitmenlerle kaliteli eğitim deneyimi.
 
-        <h3>
-          HELIX AKADEMİ
-        </h3>
+</p>
 
-        <p>
-          Geleceğin eğitim platformu
-        </p>
 
+</div>
 
-      </footer>
 
 
 
-    </main>
 
-  );
+
+<div className="card">
+
+
+<h3>
+
+Online Eğitim
+
+</h3>
+
+
+<p>
+
+Dilediğin yerden kolay erişilebilir eğitim sistemi.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div className="card">
+
+
+<h3>
+
+Sertifikalı Eğitim
+
+</h3>
+
+
+<p>
+
+Başarılarını resmi sertifikalar ile belgele.
+
+</p>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+{/* YORUMLAR */}
+
+
+<section className="section">
+
+
+
+<h2>
+
+ÖĞRENCİ YORUMLARI
+
+</h2>
+
+
+
+
+
+
+<div className="cards">
+
+
+
+<div className="card">
+
+
+<p>
+
+"Helix Akademi sayesinde kendimi geliştirdim ve yeni fırsatlar yakaladım."
+
+</p>
+
+
+<strong>
+
+Ahmet K.
+
+</strong>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div className="card">
+
+
+<p>
+
+"Eğitim sistemi çok kaliteli ve profesyonel."
+
+</p>
+
+
+<strong>
+
+Zeynep M.
+
+</strong>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div className="card">
+
+
+<p>
+
+"Başarılı ve güvenilir bir eğitim platformu."
+
+</p>
+
+
+<strong>
+
+Mehmet T.
+
+</strong>
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+{/* İLETİŞİM */}
+
+
+<section className="contact">
+
+
+
+<h2>
+
+İLETİŞİM
+
+</h2>
+
+
+
+
+<p>
+
+📞 +90 530 508 62 69
+
+</p>
+
+
+
+<p>
+
+✉️ helix_akademi@gmail.com
+
+</p>
+
+
+
+
+<p>
+
+🌐 helixakademi.com
+
+</p>
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<footer>
+
+
+<h3>
+
+HELIX AKADEMİ
+
+</h3>
+
+
+<p>
+
+Geleceğin eğitim platformu
+
+</p>
+
+
+
+</footer>
+
+
+
+
+
+
+
+</main>
+
+);
+
 
 }
