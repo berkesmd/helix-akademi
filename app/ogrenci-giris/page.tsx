@@ -22,24 +22,10 @@ setLoading(true);
 setHata("");
 
 
-
 const supabase=createClient();
 
 
-
-if(!supabase){
-
-setHata("Supabase bağlantısı yok");
-
-setLoading(false);
-
-return;
-
-}
-
-
-
-const {data,error}=await supabase.auth.signInWithPassword({
+const {error}=await supabase.auth.signInWithPassword({
 
 email,
 
@@ -49,14 +35,9 @@ password:sifre
 
 
 
-console.log(data);
-console.log(error);
-
-
-
 if(error){
 
-setHata(error.message);
+setHata("E-posta veya şifre hatalı");
 
 setLoading(false);
 
@@ -69,7 +50,6 @@ return;
 window.location.href="/ogrenci";
 
 
-
 }
 
 
@@ -77,92 +57,303 @@ window.location.href="/ogrenci";
 
 return(
 
-<div className="min-h-screen bg-black flex items-center justify-center">
+
+<div className="
+min-h-screen
+bg-black
+flex
+items-center
+justify-center
+px-5
+overflow-hidden
+">
 
 
-<div className="bg-white p-8 rounded-xl">
+
+<div className="
+absolute
+w-96
+h-96
+bg-yellow-500/20
+blur-3xl
+rounded-full
+">
+</div>
 
 
-<h1 className="text-3xl font-bold mb-5">
 
-Öğrenci Giriş
+
+
+<div className="
+relative
+w-full
+max-w-md
+bg-white/10
+backdrop-blur-xl
+border
+border-yellow-500/40
+rounded-3xl
+p-10
+shadow-2xl
+">
+
+
+
+
+
+<div className="text-center mb-8">
+
+
+<h1 className="
+text-5xl
+font-black
+tracking-widest
+text-yellow-400
+">
+
+HELIX
 
 </h1>
 
 
-<form onSubmit={girisYap}>
+<h2 className="
+text-white
+text-xl
+mt-2
+tracking-widest
+">
+
+AKADEMİ
+
+</h2>
+
+
+
+<p className="
+text-gray-400
+mt-4
+">
+
+Öğrenci Paneli
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
+
+<form
+onSubmit={girisYap}
+className="space-y-5"
+>
+
+
+
+<div>
+
+
+<label className="
+text-gray-300
+text-sm
+">
+
+E-POSTA
+
+</label>
 
 
 <input
 
-className="border p-3 block mb-3"
+type="email"
 
-placeholder="E-posta"
+placeholder="mail@example.com"
 
 value={email}
 
-onChange={
-e=>setEmail(e.target.value)
-}
+onChange={(e)=>setEmail(e.target.value)}
+
+className="
+mt-2
+w-full
+bg-black/60
+border
+border-yellow-500/30
+rounded-xl
+p-4
+text-white
+outline-none
+focus:border-yellow-400
+transition
+"
 
 />
 
+
+</div>
+
+
+
+
+
+
+<div>
+
+
+<label className="
+text-gray-300
+text-sm
+">
+
+ŞİFRE
+
+</label>
 
 
 <input
 
-className="border p-3 block mb-3"
 
 type="password"
 
-placeholder="Şifre"
+placeholder="••••••••"
 
 value={sifre}
 
-onChange={
-e=>setSifre(e.target.value)
-}
+onChange={(e)=>setSifre(e.target.value)}
+
+className="
+mt-2
+w-full
+bg-black/60
+border
+border-yellow-500/30
+rounded-xl
+p-4
+text-white
+outline-none
+focus:border-yellow-400
+transition
+"
 
 />
+
+
+
+</div>
+
+
+
+
 
 
 
 {
 hata &&
-<p className="text-red-600 mb-3">
+
+<div className="
+bg-red-500/20
+border
+border-red-500/50
+text-red-300
+rounded-xl
+p-3
+text-center
+">
+
 {hata}
-</p>
+
+</div>
+
 }
+
+
+
+
 
 
 
 <button
 
+
 disabled={loading}
 
-className="bg-black text-white px-5 py-3"
+
+className="
+w-full
+mt-5
+bg-gradient-to-r
+from-yellow-500
+to-yellow-300
+text-black
+font-black
+py-4
+rounded-xl
+hover:scale-105
+transition
+shadow-lg
+"
+
 
 >
 
+
 {
+
 loading
+
 ?
-"Giriş yapılıyor..."
+
+"GİRİŞ YAPILIYOR..."
+
 :
-"Giriş Yap"
+
+"ÖĞRENCİ GİRİŞ"
+
 }
 
+
 </button>
+
+
+
 
 
 </form>
 
 
+
+
+
+
+
+<div className="
+mt-8
+text-center
+text-gray-500
+text-sm
+">
+
+HELIX AKADEMİ © 2026
+
+</div>
+
+
+
+
+
+
 </div>
 
 
 </div>
+
 
 )
+
 
 }
