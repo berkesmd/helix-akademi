@@ -7,237 +7,163 @@ import { useRouter } from "next/navigation";
 
 export default function OgrenciPage() {
 
-  const router = useRouter();
 
-  const [egitimler, setEgitimler] = useState<any[]>([]);
-  const [mesaj, setMesaj] = useState("Yükleniyor...");
+const router = useRouter();
 
 
-  useEffect(() => {
-    getir();
-  }, []);
+const [egitimler,setEgitimler]=useState<any[]>([]);
 
+const [mesaj,setMesaj]=useState("Yükleniyor...");
 
 
-  async function getir() {
 
-    const supabase = createClient();
 
 
-    if (!supabase) {
-      setMesaj("Supabase bağlantısı kurulamadı.");
-      return;
-    }
+useEffect(()=>{
 
+getir();
 
+},[]);
 
-    const {
-      data:userData,
-      error:userError
-    } = await supabase.auth.getUser();
 
 
 
-    console.log("USER:", userData);
-    console.log("USER ERROR:", userError);
 
 
+async function getir(){
 
-    const user = userData.user;
 
+const supabase=createClient();
 
 
-    if (!user) {
 
-      setMesaj("Kullanıcı bulunamadı");
+const {
+data:userData
+}=await supabase.auth.getUser();
 
-      return;
 
-    }
 
+const user=userData.user;
 
 
 
+if(!user){
 
-    const {
-      data,
-      error
-    } = await supabase
+setMesaj("Kullanıcı bulunamadı");
 
-      .from("enrollments")
+return;
 
-      .select("*")
+}
 
-      .eq("user_id", user.id);
 
 
 
 
+const {
+data,
+error
+}=await supabase
 
-    console.log("ENROLLMENTS:", data);
+.from("enrollments")
 
-    console.log("ENROLLMENT ERROR:", error);
+.select("*")
 
+.eq("user_id",user.id);
 
 
 
-    if (error) {
 
-      setMesaj(
-        "Veri hatası: " + error.message
-      );
+if(error){
 
-      return;
+setMesaj(error.message);
 
-    }
+return;
 
+}
 
 
 
-    if (!data || data.length === 0) {
 
-      setMesaj("Kayıt bulunamadı");
+if(!data || data.length===0){
 
-      return;
+setMesaj("Kayıt bulunamadı");
 
-    }
+return;
 
+}
 
 
 
-    const ids = data.map(
-      item => item.course_id
-    );
 
 
+const ids=data.map(
+(item)=>item.course_id
+);
 
 
 
-    const {
-      data:courses,
-      error:courseError
-    } = await supabase
 
-      .from("courses")
+const {
+data:courses,
+error:courseError
 
-      .select("*")
+}=await supabase
 
-      .in("id", ids);
+.from("courses")
 
+.select("*")
 
+.in("id",ids);
 
 
 
-    console.log("COURSES:", courses);
 
-    console.log("COURSE ERROR:", courseError);
 
+if(courseError){
 
+setMesaj(courseError.message);
 
+return;
 
+}
 
-    if(courseError){
 
-      setMesaj(courseError.message);
 
-      return;
 
-    }
 
+setEgitimler(courses || []);
 
+setMesaj("");
 
+}
 
 
-    setEgitimler(courses || []);
 
-    setMesaj("");
 
-  }
 
+return(
 
 
+<main className="student-page">
 
 
-  return (
 
-    <main style={page}>
+<h1>
+EĞİTİMLERİM
+</h1>
 
 
-      <h1 style={title}>
-        EĞİTİMLERİM
-      </h1>
 
 
 
+{
+mesaj &&
 
-      {
-        mesaj && (
+<div className="student-message">
 
-          <div style={card}>
-            {mesaj}
-          </div>
+{mesaj}
 
-        )
-      }
-
-
-
-
-
-      {
-        egitimler.map((egitim)=>(
-
-
-          <div
-            key={egitim.id}
-            style={card}
-          >
-
-
-            <h2 style={gold}>
-              {egitim.title}
-            </h2>
-
-
-
-            <p>
-              {egitim.description}
-            </p>
-
-
-
-
-            <button
-
-              style={button}
-
-              onClick={()=>
-                router.push(
-                  `/ogrenci/egitim/${egitim.id}`
-                )
-              }
-
-            >
-
-              EĞİTİME GİR
-
-            </button>
-
-
-
-          </div>
-
-
-        ))
-      }
-
-
-
-
-
-    </main>
-
-  );
+</div>
 
 }
 
@@ -246,72 +172,73 @@ export default function OgrenciPage() {
 
 
 
-const page = {
-
-  minHeight:"100vh",
-
-  padding:"40px",
-
-  color:"white"
-
-};
+<div className="student-grid">
 
 
 
+{
 
-const title = {
-
-  color:"#d4af37",
-
-  fontSize:"40px",
-
-  fontWeight:900
-
-};
+egitimler.map((egitim)=>(
 
 
 
+<div 
+key={egitim.id}
+className="student-card"
+>
 
-const card = {
 
-  marginTop:"20px",
 
-  padding:"25px",
+<h2>
 
-  borderRadius:"20px",
+{egitim.title}
 
-  background:"rgba(255,255,255,.06)",
+</h2>
 
-  border:"1px solid #d4af37"
 
-};
+
+<p>
+
+{egitim.description}
+
+</p>
 
 
 
 
-const gold = {
 
-  color:"#d4af37"
+<button
 
-};
+onClick={()=>router.push(
+`/ogrenci/egitim/${egitim.id}`
+)}
+
+>
+
+EĞİTİME GİR
+
+</button>
 
 
 
 
-const button = {
+</div>
 
-  marginTop:"20px",
 
-  padding:"12px 25px",
 
-  background:"#d4af37",
+))
 
-  border:"0",
+}
 
-  borderRadius:"12px",
 
-  fontWeight:900,
 
-  cursor:"pointer"
+</div>
 
-};
+
+
+</main>
+
+
+)
+
+}
