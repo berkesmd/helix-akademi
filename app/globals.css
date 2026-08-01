@@ -1084,3 +1084,20 @@ margin-left:0 !important;
 
 
 }
+@media(max-width:768px){
+
+.student-sidebar{
+
+width:260px !important;
+
+}
+
+
+main{
+
+margin-left:0 !important;
+
+}
+
+
+}
