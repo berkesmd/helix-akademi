@@ -1,78 +1,33 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-
-
-export const metadata: Metadata = {
-
-  title: "Helix Akademi",
-
-  description:
-    "Profesyonel eğitim programları ile geleceğini şekillendir.",
-
-};
-
-
-
-
-export default function RootLayout({
+export default function EgitimlerLayout({
 
   children,
 
-}: Readonly<{
+}: {
 
   children: React.ReactNode;
 
-}>) {
+}) {
 
 
-return (
+  return (
 
-<html
+    <>
 
-lang="tr"
-
-className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-
->
+      <Navbar />
 
 
-<body
+      <main className="pt-20">
 
-className="
-min-h-screen
-bg-black
-text-white
-"
+        {children}
 
->
+      </main>
 
 
-<Navbar />
+    </>
 
-
-{children}
-
-
-</body>
-
-
-</html>
-
-);
+  );
 
 }
