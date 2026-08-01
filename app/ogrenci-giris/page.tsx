@@ -20,7 +20,6 @@ e.preventDefault();
 setLoading(true);
 setHata("");
 
-
 const supabase=createClient();
 
 
@@ -34,7 +33,7 @@ password:sifre
 
 if(error){
 
-setHata("E-posta veya şifre hatalı");
+setHata("E-posta veya şifre yanlış");
 
 setLoading(false);
 
@@ -52,31 +51,105 @@ window.location.href="/ogrenci";
 
 return(
 
-<div className="login-page">
+<div style={{
+
+minHeight:"100vh",
+background:"#050505",
+display:"flex",
+alignItems:"center",
+justifyContent:"center",
+position:"relative",
+overflow:"hidden",
+fontFamily:"Arial"
 
 
-<div className="login-box">
+}}>
 
 
-<div className="logo">
+<div style={{
+
+position:"absolute",
+width:"600px",
+height:"600px",
+background:"#d4af37",
+opacity:.15,
+filter:"blur(120px)",
+borderRadius:"50%"
+
+
+}}/>
+
+
+
+
+<div style={{
+
+width:"420px",
+padding:"45px",
+background:"rgba(255,255,255,0.08)",
+border:"1px solid rgba(212,175,55,.5)",
+borderRadius:"30px",
+backdropFilter:"blur(20px)",
+boxShadow:"0 30px 80px black",
+zIndex:2
+
+
+}}>
+
+
+
+<div style={{
+
+textAlign:"center"
+
+}}>
+
+
+<h1 style={{
+
+fontSize:"60px",
+fontWeight:900,
+letterSpacing:"15px",
+color:"#d4af37",
+margin:0
+
+
+}}>
 
 HELIX
 
-</div>
+</h1>
 
 
-<div className="academy">
+<h2 style={{
+
+color:"white",
+letterSpacing:"8px",
+marginTop:"10px"
+
+}}>
 
 AKADEMİ
 
+</h2>
+
+
+<p style={{
+
+color:"#aaa",
+marginTop:"25px"
+
+}}>
+
+Öğrenci Giriş Paneli
+
+</p>
+
+
 </div>
 
 
-<p className="desc">
 
-Öğrenci Paneli
-
-</p>
 
 
 
@@ -85,9 +158,21 @@ AKADEMİ
 
 <input
 
-className="login-input"
+style={{
 
-placeholder="E-posta"
+width:"100%",
+boxSizing:"border-box",
+padding:"16px",
+marginTop:"20px",
+borderRadius:"15px",
+background:"#111",
+border:"1px solid #d4af37",
+color:"white",
+fontSize:"16px"
+
+}}
+
+placeholder="E-Posta"
 
 type="email"
 
@@ -99,9 +184,23 @@ onChange={(e)=>setEmail(e.target.value)}
 
 
 
+
+
 <input
 
-className="login-input"
+style={{
+
+width:"100%",
+boxSizing:"border-box",
+padding:"16px",
+marginTop:"15px",
+borderRadius:"15px",
+background:"#111",
+border:"1px solid #d4af37",
+color:"white",
+fontSize:"16px"
+
+}}
 
 placeholder="Şifre"
 
@@ -117,19 +216,46 @@ onChange={(e)=>setSifre(e.target.value)}
 
 
 {
+
 hata &&
 
-<div className="error">
+<p style={{
+
+color:"#ff7777",
+textAlign:"center"
+
+}}>
 
 {hata}
 
-</div>
+</p>
+
 
 }
 
 
 
-<button className="login-button">
+
+<button
+
+style={{
+
+width:"100%",
+marginTop:"25px",
+padding:"16px",
+borderRadius:"15px",
+border:"0",
+background:"linear-gradient(90deg,#d4af37,#ffe88a)",
+fontWeight:900,
+fontSize:"16px",
+cursor:"pointer"
+
+}}
+
+disabled={loading}
+
+>
+
 
 {
 loading
@@ -147,17 +273,28 @@ loading
 </form>
 
 
-<div className="footer">
+
+<p style={{
+
+color:"#777",
+textAlign:"center",
+marginTop:"35px",
+fontSize:"13px"
+
+}}>
 
 HELIX AKADEMİ © 2026
 
-</div>
+</p>
+
+
 
 
 </div>
 
 
 </div>
+
 
 )
 
