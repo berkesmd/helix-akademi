@@ -14,11 +14,7 @@ const router=useRouter();
 
 
 const [egitimler,setEgitimler]=useState<any[]>([]);
-
 const [loading,setLoading]=useState(true);
-
-
-
 
 
 
@@ -28,20 +24,13 @@ useEffect(()=>{
 async function yukle(){
 
 
-
 const {data,error}=await supabase
-
 .from("courses")
-
 .select("*")
-
 .order("created_at",{ascending:false});
 
 
-
-
 console.log(error);
-
 
 
 setEgitimler(data || []);
@@ -49,20 +38,13 @@ setEgitimler(data || []);
 setLoading(false);
 
 
-
 }
-
 
 
 yukle();
 
 
-
 },[]);
-
-
-
-
 
 
 
@@ -74,37 +56,32 @@ return(
 <main style={page}>
 
 
+<section style={header}>
+
+
 <h1 style={title}>
-
 🎓 Eğitimlerimiz
-
 </h1>
 
 
 <p style={desc}>
-
 Kendini geliştir, geleceğini şekillendir.
-
 </p>
 
 
-
+</section>
 
 
 
 
 
 {
-
 loading ?
 
 
-<h2>
-
+<div style={loadingStyle}>
 Yükleniyor...
-
-</h2>
-
+</div>
 
 
 :
@@ -113,12 +90,9 @@ Yükleniyor...
 egitimler.length===0 ?
 
 
-<h2>
-
+<div style={loadingStyle}>
 Henüz eğitim eklenmemiş.
-
-</h2>
-
+</div>
 
 
 :
@@ -133,17 +107,35 @@ egitimler.map((item)=>(
 
 
 <div
-
 key={item.id}
-
 style={card}
-
 >
+
 
 
 <div style={imageBox}>
 
+
+{
+item.image ?
+
+
+<img
+src={item.image}
+alt={item.title}
+style={image}
+/>
+
+
+:
+
+<span>
 🎓
+</span>
+
+
+}
+
 
 </div>
 
@@ -152,19 +144,15 @@ style={card}
 
 
 <h2 style={gold}>
-
 {item.title}
-
 </h2>
 
 
 
-<p>
 
+<p style={text}>
 {item.description}
-
 </p>
-
 
 
 
@@ -175,9 +163,7 @@ style={card}
 style={button}
 
 onClick={()=>router.push(
-
 `/egitimler/${item.id}`
-
 )}
 
 >
@@ -185,7 +171,6 @@ onClick={()=>router.push(
 Detayları Gör →
 
 </button>
-
 
 
 
@@ -202,9 +187,7 @@ Detayları Gör →
 </div>
 
 
-
 }
-
 
 
 </main>
@@ -219,20 +202,27 @@ Detayları Gör →
 
 
 
-
-
-
 const page={
 
 minHeight:"100vh",
 
 background:
+"radial-gradient(circle at top,#5b3b00,#050505 70%)",
 
-"radial-gradient(circle at top,#302300,#050505 65%)",
+color:"#fff",
 
-color:"white",
+padding:"40px 20px",
 
-padding:"60px"
+};
+
+
+
+
+const header={
+
+textAlign:"center" as const,
+
+marginBottom:"50px"
 
 };
 
@@ -240,11 +230,11 @@ padding:"60px"
 
 const title={
 
-fontSize:"50px",
+fontSize:"clamp(32px,8vw,55px)",
+
+fontWeight:900,
 
 color:"#d4af37",
-
-textAlign:"center" as const
 
 };
 
@@ -252,11 +242,11 @@ textAlign:"center" as const
 
 const desc={
 
-textAlign:"center" as const,
+fontSize:"18px",
 
 color:"#aaa",
 
-fontSize:"20px"
+marginTop:"15px"
 
 };
 
@@ -266,27 +256,36 @@ const grid={
 
 display:"grid",
 
-gridTemplateColumns:"repeat(3,1fr)",
+gridTemplateColumns:
+"repeat(auto-fit,minmax(280px,1fr))",
 
-gap:"30px",
+gap:"25px",
 
-marginTop:"50px"
+maxWidth:"1200px",
+
+margin:"auto"
 
 };
 
 
 
+
 const card={
 
-background:"rgba(255,255,255,.06)",
+background:
+"rgba(255,255,255,0.07)",
 
-border:"1px solid rgba(212,175,55,.3)",
+border:
+"1px solid rgba(212,175,55,.4)",
 
 borderRadius:"30px",
 
-padding:"35px",
+padding:"25px",
 
-backdropFilter:"blur(20px)"
+backdropFilter:"blur(15px)",
+
+boxShadow:
+"0 0 35px rgba(212,175,55,.12)",
 
 };
 
@@ -298,9 +297,10 @@ height:"180px",
 
 borderRadius:"25px",
 
-background:
+overflow:"hidden",
 
-"linear-gradient(135deg,#d4af37,#3b2a00)",
+background:
+"linear-gradient(135deg,#d4af37,#2b1c00)",
 
 display:"flex",
 
@@ -308,7 +308,21 @@ alignItems:"center",
 
 justifyContent:"center",
 
-fontSize:"80px"
+fontSize:"70px",
+
+marginBottom:"25px"
+
+};
+
+
+
+const image={
+
+width:"100%",
+
+height:"100%",
+
+objectFit:"cover" as const
 
 };
 
@@ -316,7 +330,23 @@ fontSize:"80px"
 
 const gold={
 
-color:"#d4af37"
+color:"#d4af37",
+
+fontSize:"24px",
+
+marginBottom:"15px"
+
+};
+
+
+
+const text={
+
+color:"#ddd",
+
+lineHeight:1.7,
+
+minHeight:"70px"
 
 };
 
@@ -324,18 +354,34 @@ color:"#d4af37"
 
 const button={
 
-marginTop:"20px",
+marginTop:"25px",
 
-padding:"15px 30px",
+width:"100%",
 
-background:"#d4af37",
+padding:"15px",
 
-border:"0",
+background:
+
+"linear-gradient(135deg,#fff0a0,#d4af37)",
+
+border:"none",
 
 borderRadius:"15px",
 
 fontWeight:900,
 
 cursor:"pointer"
+
+};
+
+
+
+const loadingStyle={
+
+textAlign:"center" as const,
+
+fontSize:"25px",
+
+padding:"50px"
 
 };
