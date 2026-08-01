@@ -12,7 +12,6 @@ const router = useRouter();
 const [videoAcik,setVideoAcik] = useState(true);
 
 
-
 return (
 
 <main style={page}>
@@ -105,6 +104,7 @@ kariyerinde fark yarat.
 
 
 
+
 <button
 
 style={button}
@@ -119,13 +119,17 @@ onClick={()=>router.push("/ogrenci-giris")}
 
 
 
+
+
 <div style={stats}>
+
 
 <Stat number="10.000+" text="ÖĞRENCİ"/>
 
 <Stat number="50+" text="EĞİTİM"/>
 
 <Stat number="%98" text="MEMNUNİYET"/>
+
 
 </div>
 
@@ -142,7 +146,7 @@ onClick={()=>router.push("/ogrenci-giris")}
 <section style={section}>
 
 
-<h2 style={sectionTitle}>
+<h2 style={goldTitle}>
 
 NEDEN HELIX AKADEMİ?
 
@@ -156,7 +160,7 @@ NEDEN HELIX AKADEMİ?
 
 title="UZMAN EĞİTMENLER"
 
-text="Alanında uzman eğitim kadrosu"
+text="Alanında deneyimli eğitim kadrosu"
 
 />
 
@@ -192,39 +196,11 @@ text="Başarılarını belgelendir"
 
 
 
-<section style={cta}>
-
-
-<h2>
-
-EĞİTİM YOLCULUĞUNA BAŞLA
-
-</h2>
-
-
-<button
-
-style={button}
-
-onClick={()=>router.push("/ogrenci-giris")}
-
->
-
-ÖĞRENCİ GİRİŞİ
-
-</button>
-
-
-</section>
-
-
-
-
-
 
 <footer style={footer}>
 
-<h2>
+
+<h2 style={goldTitle}>
 
 HELIX AKADEMİ
 
@@ -276,19 +252,26 @@ return(
 
 
 
+
 function Card({title,text}:any){
 
 return(
 
 <div style={card}>
 
-<h2 style={gold}>
+<h3 style={cardTitle}>
+
 {title}
-</h2>
+
+</h3>
+
 
 <p>
+
 {text}
+
 </p>
+
 
 </div>
 
@@ -302,7 +285,7 @@ return(
 
 
 
-const page={
+const page = {
 
 minHeight:"100vh",
 
@@ -313,56 +296,59 @@ color:"#fff",
 
 overflowX:"hidden"
 
-};
+} as const;
 
 
 
 
 
-const hero={
+
+const hero = {
 
 minHeight:"100vh",
 
 display:"flex",
 
-flexDirection:"column" as const,
+flexDirection:"column",
 
 justifyContent:"center",
 
 alignItems:"center",
 
-textAlign:"center" as const,
+textAlign:"center",
 
-padding:"30px 20px"
+padding:"40px 20px"
 
-};
-
-
+} as const;
 
 
 
-const logo={
 
-objectFit:"contain" as const,
+
+
+const logo = {
+
+objectFit:"contain",
 
 filter:
-"drop-shadow(0 0 40px rgba(212,175,55,.8))"
+"drop-shadow(0 0 45px rgba(212,175,55,.8))"
 
-};
-
-
+} as const;
 
 
 
-const title={
 
-fontSize:"clamp(40px,8vw,78px)",
+
+
+const title = {
+
+fontSize:"clamp(38px,8vw,80px)",
 
 fontWeight:900,
 
-letterSpacing:"8px",
+letterSpacing:"10px",
 
-margin:"20px",
+margin:"20px 0",
 
 background:
 "linear-gradient(180deg,#fff5b8,#d4af37,#8a6500)",
@@ -371,47 +357,50 @@ WebkitBackgroundClip:"text",
 
 WebkitTextFillColor:"transparent"
 
-};
+} as const;
 
 
 
 
 
-const subtitle={
 
-fontSize:"clamp(22px,4vw,38px)",
+const subtitle = {
+
+fontSize:"clamp(20px,4vw,38px)",
 
 fontWeight:900,
 
 textShadow:"0 0 20px #d4af37"
 
-};
+} as const;
 
 
 
 
 
-const text={
 
-fontSize:"20px",
+const text = {
 
 maxWidth:"700px",
 
-color:"#ddd",
+fontSize:"20px",
 
-lineHeight:"1.7"
+lineHeight:"1.7",
 
-};
+color:"#ddd"
+
+} as const;
 
 
 
 
 
-const button={
 
-marginTop:"30px",
+const button = {
 
-padding:"18px 60px",
+marginTop:"35px",
+
+padding:"20px 70px",
 
 borderRadius:"20px",
 
@@ -425,37 +414,39 @@ background:
 "linear-gradient(135deg,#fff1a6,#d4af37,#8a6500)",
 
 boxShadow:
-"0 0 35px rgba(212,175,55,.8)",
+"0 0 40px rgba(212,175,55,.8)",
 
 cursor:"pointer"
 
-};
+} as const;
 
 
 
 
 
-const stats={
+
+const stats = {
 
 display:"flex",
 
-gap:"20px",
+gap:"25px",
 
-marginTop:"60px",
+flexWrap:"wrap",
 
-flexWrap:"wrap" as const,
+justifyContent:"center",
 
-justifyContent:"center"
+marginTop:"60px"
 
-};
-
-
+} as const;
 
 
 
-const stat={
 
-padding:"30px 40px",
+
+
+const stat = {
+
+padding:"30px 45px",
 
 borderRadius:"25px",
 
@@ -463,37 +454,42 @@ border:"1px solid rgba(212,175,55,.5)",
 
 background:"rgba(255,255,255,.06)"
 
-};
+} as const;
 
 
 
 
 
-const section={
+
+const section = {
 
 padding:"80px 20px",
 
-textAlign:"center" as const
+textAlign:"center"
 
-};
-
-
+} as const;
 
 
 
-const sectionTitle={
+
+
+
+const goldTitle = {
+
+color:"#d4af37",
 
 fontSize:"40px",
 
-color:"#d4af37"
+fontWeight:900
 
-};
-
-
+} as const;
 
 
 
-const cards={
+
+
+
+const cards = {
 
 display:"grid",
 
@@ -503,13 +499,14 @@ gap:"25px",
 
 marginTop:"40px"
 
-};
+} as const;
 
 
 
 
 
-const card={
+
+const card = {
 
 padding:"35px",
 
@@ -519,51 +516,42 @@ background:"rgba(255,255,255,.06)",
 
 border:"1px solid rgba(212,175,55,.4)"
 
-};
+} as const;
 
 
 
 
 
-const gold={
+
+const cardTitle = {
 
 color:"#d4af37"
 
-};
+} as const;
 
 
 
 
 
-const cta={
 
-padding:"80px 20px",
-
-textAlign:"center" as const
-
-};
-
-
-
-
-
-const footer={
+const footer = {
 
 padding:"50px",
 
-textAlign:"center" as const,
+textAlign:"center",
 
 color:"#aaa"
 
-};
+} as const;
 
 
 
 
 
-const videoBox={
 
-position:"fixed" as const,
+const videoBox = {
+
+position:"fixed",
 
 right:"20px",
 
@@ -579,37 +567,39 @@ overflow:"hidden",
 
 border:"2px solid #d4af37",
 
-zIndex:99
+zIndex:99,
 
-};
+boxShadow:"0 0 40px rgba(212,175,55,.7)"
+
+} as const;
 
 
 
 
 
-const video={
+
+const video = {
 
 width:"100%",
 
 height:"100%",
 
-objectFit:"cover" as const
+objectFit:"cover"
 
-};
-
-
+} as const;
 
 
 
-const close={
 
-position:"absolute" as const,
+
+
+const close = {
+
+position:"absolute",
 
 right:"10px",
 
 top:"10px",
-
-zIndex:2,
 
 width:"35px",
 
@@ -623,6 +613,8 @@ background:"#d4af37",
 
 fontWeight:900,
 
+zIndex:2,
+
 cursor:"pointer"
 
-};
+} as const;
