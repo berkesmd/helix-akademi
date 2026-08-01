@@ -5,11 +5,12 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 
-export default function EgitimlerimPage(){
+export default function EgitimlerPage(){
 
-const supabase=createClient();
 
-const router=useRouter();
+const router = useRouter();
+
+const supabase = createClient();
 
 
 const [egitimler,setEgitimler]=useState<any[]>([]);
@@ -18,112 +19,55 @@ const [loading,setLoading]=useState(true);
 
 
 
+
+
+
 useEffect(()=>{
-
-getir();
-
-},[]);
-
-
-
 
 
 async function getir(){
 
 
-const {data:userData}=await supabase.auth.getUser();
 
+const {
 
-const user=userData.user;
+data,
 
+error
 
-if(!user){
+}=await supabase
 
-setLoading(false);
+.from("courses")
 
-return;
+.select("*")
 
-}
-
-
-
-
-
-const {data,error}=await supabase
-
-.from("enrollments")
-
-.select(`
-
-id,
-
-courses(
-
-id,
-
-title,
-
-description,
-
-image_url
-
-)
-
-`)
-
-.eq("user_id",user.id);
+.order("created_at",{ascending:false});
 
 
 
 
-
-console.log("EGITIMLER:",data);
-
-console.log("HATA:",error);
-
-
-
-
-
-if(error){
 
 console.log(error);
-
-setLoading(false);
-
-return;
-
-}
 
 
 
 setEgitimler(data || []);
 
-
 setLoading(false);
 
 
-}
-
-
-
-
-
-
-
-if(loading){
-
-return(
-
-<div style={page}>
-
-Yükleniyor...
-
-</div>
-
-)
 
 }
+
+
+
+getir();
+
+
+
+},[]);
+
+
 
 
 
@@ -138,9 +82,17 @@ return(
 
 <h1 style={title}>
 
-EĞİTİMLERİM
+🎓 Eğitimlerim
 
 </h1>
+
+
+<p style={desc}>
+
+Sahip olduğun eğitimlere buradan ulaşabilirsin.
+
+</p>
+
 
 
 
@@ -148,12 +100,27 @@ EĞİTİMLERİM
 
 {
 
+loading ?
+
+
+<div style={message}>
+
+Yükleniyor...
+
+</div>
+
+
+
+:
+
+
+
 egitimler.length===0 ?
 
 
-<div style={card}>
+<div style={message}>
 
-Henüz kayıtlı eğitim bulunmuyor.
+Henüz eğitim bulunamadı.
 
 </div>
 
@@ -167,50 +134,77 @@ Henüz kayıtlı eğitim bulunmuyor.
 
 {
 
-egitimler.map((item)=>(
+egitimler.map((egitim)=>(
+
 
 
 <div
 
-key={item.id}
+key={egitim.id}
 
 style={card}
-
-onClick={()=>router.push(
-
-`/ogrenci/egitim/${item.courses.id}`
-
-)}
 
 >
 
 
+
+<div style={imageBox}>
+
+🎓
+
+</div>
+
+
+
+
+
 <h2 style={gold}>
 
-{item.courses.title}
+{egitim.title}
 
 </h2>
 
 
 
-<p>
 
-{item.courses.description}
+
+<p style={text}>
+
+{egitim.description}
 
 </p>
 
 
 
 
-<button style={button}>
 
-EĞİTİME GİR
+<button
+
+style={button}
+
+onClick={()=>{
+
+router.push(
+
+`/ogrenci/egitim/${egitim.id}`
+
+);
+
+
+}}
+
+>
+
+EĞİTİME GİR →
 
 </button>
 
 
 
+
+
 </div>
+
 
 
 ))
@@ -223,8 +217,9 @@ EĞİTİME GİR
 </div>
 
 
-
 }
+
+
 
 
 
@@ -243,76 +238,212 @@ EĞİTİME GİR
 
 const page={
 
+
 minHeight:"100vh",
 
-padding:"40px",
+padding:"30px 20px",
+
+background:
+
+"radial-gradient(circle at top,#3b2600,#050505)",
 
 color:"white"
 
+
 };
+
+
+
+
 
 
 
 const title={
 
+
+fontSize:"clamp(32px,7vw,50px)",
+
+fontWeight:900,
+
 color:"#d4af37",
 
-fontSize:"45px"
+textAlign:"center" as const
+
 
 };
+
+
+
+
+
+
+const desc={
+
+
+textAlign:"center" as const,
+
+color:"#aaa",
+
+marginTop:"10px",
+
+marginBottom:"40px"
+
+
+};
+
+
+
 
 
 
 const grid={
 
+
 display:"grid",
 
-gridTemplateColumns:"repeat(3,1fr)",
+gridTemplateColumns:
+
+"repeat(auto-fit,minmax(260px,1fr))",
 
 gap:"25px"
 
+
 };
+
+
+
 
 
 
 const card={
 
-padding:"30px",
+
+padding:"25px",
+
+borderRadius:"30px",
+
+background:
+
+"rgba(255,255,255,.06)",
+
+border:
+
+"1px solid rgba(212,175,55,.35)",
+
+boxShadow:
+
+"0 0 30px rgba(212,175,55,.1)"
+
+
+};
+
+
+
+
+
+
+const imageBox={
+
+
+height:"160px",
 
 borderRadius:"25px",
 
-background:"rgba(255,255,255,.06)",
+display:"flex",
 
-border:"1px solid rgba(212,175,55,.3)",
+alignItems:"center",
 
-cursor:"pointer"
+justifyContent:"center",
+
+fontSize:"70px",
+
+background:
+
+"linear-gradient(135deg,#fff1a8,#d4af37,#5a3b00)",
+
+marginBottom:"25px"
+
 
 };
+
+
+
 
 
 
 const gold={
 
-color:"#d4af37"
+
+color:"#d4af37",
+
+fontSize:"24px",
+
+marginBottom:"15px"
+
 
 };
 
 
 
+
+
+
+const text={
+
+
+color:"#ddd",
+
+lineHeight:"1.6",
+
+minHeight:"60px"
+
+
+};
+
+
+
+
+
+
 const button={
 
-marginTop:"20px",
 
-padding:"12px 25px",
+marginTop:"25px",
 
-background:"#d4af37",
+width:"100%",
 
-border:"0",
+padding:"15px",
 
-borderRadius:"12px",
+border:"none",
+
+borderRadius:"18px",
+
+background:
+
+"linear-gradient(135deg,#fff1a8,#d4af37)",
 
 fontWeight:900,
 
 cursor:"pointer"
+
+
+};
+
+
+
+
+
+
+const message={
+
+
+padding:"40px",
+
+textAlign:"center" as const,
+
+fontSize:"20px",
+
+color:"#d4af37"
+
 
 };
