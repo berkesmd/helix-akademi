@@ -22,10 +22,9 @@ const router = useRouter();
 const supabase = createClient();
 
 
-const [isim,setIsim]=useState("Öğrenci");
+const [isim,setIsim] = useState("Öğrenci");
 
-const [menuAcik,setMenuAcik]=useState(false);
-
+const [menu,setMenu] = useState(false);
 
 
 
@@ -36,19 +35,10 @@ useEffect(()=>{
 async function kontrol(){
 
 
-const {
-
-data
-
-}=await supabase.auth.getUser();
+const {data}=await supabase.auth.getUser();
 
 
-
-const user=data.user;
-
-
-
-if(!user){
+if(!data.user){
 
 router.push("/ogrenci-giris");
 
@@ -58,21 +48,15 @@ return;
 
 
 
-
-const {
-
-data:profil
-
-}=await supabase
+const {data:profil}=await supabase
 
 .from("profiles")
 
 .select("full_name")
 
-.eq("id",user.id)
+.eq("id",data.user.id)
 
 .single();
-
 
 
 
@@ -87,9 +71,7 @@ profil?.full_name || "Öğrenci"
 }
 
 
-
 kontrol();
-
 
 
 },[]);
@@ -99,56 +81,7 @@ kontrol();
 
 
 
-
-const menu=[
-
-
-{
-
-ad:"Ana Sayfa",
-
-link:"/ogrenci"
-
-},
-
-
-{
-
-ad:"Eğitimlerim",
-
-link:"/ogrenci/egitimler"
-
-},
-
-
-{
-
-ad:"Bildirimler",
-
-link:"/ogrenci/bildirimler"
-
-},
-
-
-{
-
-ad:"Profilim",
-
-link:"/ogrenci/profil"
-
-}
-
-
-];
-
-
-
-
-
-
-
 return(
-
 
 <div style={page}>
 
@@ -157,13 +90,14 @@ return(
 
 style={hamburger}
 
-onClick={()=>setMenuAcik(!menuAcik)}
+onClick={()=>setMenu(!menu)}
 
 >
 
 ☰
 
 </button>
+
 
 
 
@@ -178,7 +112,7 @@ style={{
 
 transform:
 
-menuAcik
+menu
 
 ?
 
@@ -189,8 +123,6 @@ menuAcik
 "translateX(-100%)"
 
 }}
-
-className="student-sidebar"
 
 >
 
@@ -203,13 +135,14 @@ className="student-sidebar"
 
 src="/helix-logo.png"
 
-alt="Helix"
+alt="Helix Akademi"
 
-width={100}
+width={120}
 
-height={100}
+height={120}
 
 />
+
 
 
 <h2>
@@ -234,44 +167,108 @@ HELIX
 
 
 
-<nav style={menuArea}>
 
-
-{
-
-menu.map(item=>(
+<div style={links}>
 
 
 <button
 
-key={item.ad}
-
-style={menuButton}
+style={linkButton}
 
 onClick={()=>{
 
-router.push(item.link);
+router.push("/ogrenci");
 
-setMenuAcik(false);
+setMenu(false);
 
 }}
 
 >
 
-
-{item.ad}
-
+Ana Sayfa
 
 </button>
 
 
 
-))
-
-}
 
 
-</nav>
+
+
+<button
+
+style={linkButton}
+
+onClick={()=>{
+
+router.push("/ogrenci/egitimler");
+
+setMenu(false);
+
+}}
+
+>
+
+Eğitimlerim
+
+</button>
+
+
+
+
+
+
+
+
+<button
+
+style={linkButton}
+
+onClick={()=>{
+
+router.push("/ogrenci/bildirimler");
+
+setMenu(false);
+
+}}
+
+>
+
+Bildirimler
+
+</button>
+
+
+
+
+
+
+
+<button
+
+style={linkButton}
+
+onClick={()=>{
+
+router.push("/ogrenci/profil");
+
+setMenu(false);
+
+}}
+
+>
+
+Profilim
+
+</button>
+
+
+
+
+
+
+</div>
+
 
 
 
@@ -303,7 +300,11 @@ GÜVENLİ ÇIKIŞ
 
 
 
+
 </aside>
+
+
+
 
 
 
@@ -319,15 +320,16 @@ GÜVENLİ ÇIKIŞ
 
 <h2>
 
-HOŞ GELDİN {isim}
+Hoş Geldin {isim} 👋
 
 </h2>
 
 
 
+
 <button
 
-style={notify}
+style={notification}
 
 onClick={()=>router.push("/ogrenci/bildirimler")}
 
@@ -338,7 +340,9 @@ BİLDİRİMLER
 </button>
 
 
+
 </header>
+
 
 
 
@@ -347,7 +351,10 @@ BİLDİRİMLER
 
 
 
+
+
 </main>
+
 
 
 
@@ -370,15 +377,13 @@ BİLDİRİMLER
 
 const page={
 
-
 minHeight:"100vh",
 
 background:
 
-"radial-gradient(circle at top,#3b2500,#050505 70%)",
+"radial-gradient(circle at top,#3b2600,#050505 70%)",
 
-color:"#fff"
-
+color:"white"
 
 };
 
@@ -387,9 +392,7 @@ color:"#fff"
 
 
 
-
 const sidebar={
-
 
 position:"fixed" as const,
 
@@ -397,15 +400,13 @@ top:0,
 
 left:0,
 
-width:"240px",
+width:"260px",
 
 height:"100vh",
 
+background:"#050505",
+
 padding:"30px 20px",
-
-background:
-
-"linear-gradient(180deg,#050505,#000)",
 
 borderRight:
 
@@ -413,13 +414,11 @@ borderRight:
 
 zIndex:1000,
 
-transition:"0.35s",
+transition:"0.3s",
 
 display:"flex",
 
 flexDirection:"column" as const
-
-
 
 };
 
@@ -431,11 +430,9 @@ flexDirection:"column" as const
 
 const logoArea={
 
-
 textAlign:"center" as const,
 
 color:"#d4af37"
-
 
 };
 
@@ -445,8 +442,7 @@ color:"#d4af37"
 
 
 
-const menuArea={
-
+const links={
 
 marginTop:"40px",
 
@@ -454,7 +450,6 @@ display:"grid",
 
 gap:"15px"
 
-
 };
 
 
@@ -463,8 +458,7 @@ gap:"15px"
 
 
 
-const menuButton={
-
+const linkButton={
 
 padding:"16px",
 
@@ -472,20 +466,17 @@ borderRadius:"18px",
 
 background:
 
-"rgba(255,255,255,.04)",
+"rgba(255,255,255,.05)",
 
 border:
 
-"1px solid rgba(212,175,55,.25)",
+"1px solid rgba(212,175,55,.3)",
 
-color:"#fff",
+color:"white",
 
 fontWeight:900,
 
-cursor:"pointer",
-
-fontSize:"15px"
-
+cursor:"pointer"
 
 };
 
@@ -497,10 +488,9 @@ fontSize:"15px"
 
 const logout={
 
-
 marginTop:"auto",
 
-padding:"15px",
+padding:"16px",
 
 borderRadius:"18px",
 
@@ -516,7 +506,6 @@ fontWeight:900,
 
 cursor:"pointer"
 
-
 };
 
 
@@ -527,13 +516,11 @@ cursor:"pointer"
 
 const content={
 
+marginLeft:"0px",
 
-marginLeft:"240px",
-
-padding:"35px",
+padding:"30px",
 
 minHeight:"100vh"
-
 
 };
 
@@ -544,7 +531,6 @@ minHeight:"100vh"
 
 
 const header={
-
 
 display:"flex",
 
@@ -566,7 +552,6 @@ border:
 
 marginBottom:"30px"
 
-
 };
 
 
@@ -575,8 +560,7 @@ marginBottom:"30px"
 
 
 
-const notify={
-
+const notification={
 
 padding:"12px 22px",
 
@@ -594,7 +578,6 @@ fontWeight:900,
 
 cursor:"pointer"
 
-
 };
 
 
@@ -605,7 +588,6 @@ cursor:"pointer"
 
 const hamburger={
 
-
 position:"fixed" as const,
 
 top:"20px",
@@ -614,9 +596,9 @@ left:"20px",
 
 zIndex:2000,
 
-width:"48px",
+width:"50px",
 
-height:"48px",
+height:"50px",
 
 borderRadius:"15px",
 
@@ -629,7 +611,5 @@ background:
 fontSize:"25px",
 
 cursor:"pointer"
-
-
 
 };

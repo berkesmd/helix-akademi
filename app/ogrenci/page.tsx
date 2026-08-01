@@ -1,227 +1,75 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-
-
-export default function OgrenciLayout({
-
-children
-
-}:{
-
-children:React.ReactNode
-
-}){
-
-
-const router = useRouter();
-
-const supabase = createClient();
-
-
-const [isim,setIsim]=useState("Öğrenci");
-
-const [menuAcik,setMenuAcik]=useState(false);
-
-
-
-
-
-useEffect(()=>{
-
-
-async function kontrol(){
-
-
-const {
-
-data
-
-}=await supabase.auth.getUser();
-
-
-
-const user=data.user;
-
-
-
-if(!user){
-
-router.push("/ogrenci-giris");
-
-return;
-
-}
-
-
-
-
-const {
-
-data:profil
-
-}=await supabase
-
-.from("profiles")
-
-.select("full_name")
-
-.eq("id",user.id)
-
-.single();
-
-
-
-
-setIsim(
-
-profil?.full_name || "Öğrenci"
-
-);
-
-
-
-}
-
-
-
-kontrol();
-
-
-
-},[]);
-
-
-
-
-
-
-
-const menu=[
-
-
-{
-
-ad:"Ana Sayfa",
-
-link:"/ogrenci"
-
-},
-
-
-{
-
-ad:"Eğitimlerim",
-
-link:"/ogrenci/egitimler"
-
-},
-
-
-{
-
-ad:"Bildirimler",
-
-link:"/ogrenci/bildirimler"
-
-},
-
-
-{
-
-ad:"Profilim",
-
-link:"/ogrenci/profil"
-
-}
-
-
-];
-
-
-
-
-
+export default function OgrenciHome(){
 
 
 return(
 
+<main style={page}>
 
-<div style={page}>
+
+<section style={welcome}>
 
 
-<button
+<h1>
 
-style={hamburger}
+Hoş Geldin 👋
 
-onClick={()=>setMenuAcik(!menuAcik)}
+</h1>
+
+
+<p>
+
+Helix Akademi ailesine hoş geldin.
+Eğitimlerine ulaşmak için menüyü kullanabilirsin.
+
+</p>
+
+
+
+</section>
+
+
+
+
+
+<section style={videoCard}>
+
+
+<video
+
+src="/helix-tanitim.mp4"
+
+autoPlay
+
+muted
+
+loop
+
+playsInline
+
+style={video}
 
 >
 
-☰
 
-</button>
-
+</video>
 
 
 
-
-
-<aside
-
-style={{
-
-...sidebar,
-
-transform:
-
-menuAcik
-
-?
-
-"translateX(0)"
-
-:
-
-"translateX(-100%)"
-
-}}
-
-className="student-sidebar"
-
->
-
-
-
-<div style={logoArea}>
-
-
-<Image
-
-src="/helix-logo.png"
-
-alt="Helix"
-
-width={100}
-
-height={100}
-
-/>
+<div style={overlay}>
 
 
 <h2>
 
-HELIX
+HELIX AKADEMİ
 
 </h2>
 
 
 <p>
 
-ÖĞRENCİ PANELİ
+Geleceğini eğitimle şekillendir.
 
 </p>
 
@@ -230,130 +78,37 @@ HELIX
 
 
 
-
-
-
-
-<nav style={menuArea}>
-
-
-{
-
-menu.map(item=>(
-
-
-<button
-
-key={item.ad}
-
-style={menuButton}
-
-onClick={()=>{
-
-router.push(item.link);
-
-setMenuAcik(false);
-
-}}
-
->
-
-
-{item.ad}
-
-
-</button>
-
-
-
-))
-
-}
-
-
-</nav>
+</section>
 
 
 
 
 
 
-
-<button
-
-style={logout}
-
-onClick={async()=>{
-
-
-await supabase.auth.signOut();
-
-
-router.push("/ogrenci-giris");
-
-
-}}
-
->
-
-GÜVENLİ ÇIKIŞ
-
-</button>
-
-
-
-
-</aside>
-
-
-
-
-
-
-
-<main style={content}>
-
-
-<header style={header}>
+<section style={info}>
 
 
 <h2>
 
-HOŞ GELDİN {isim}
+Eğitimlerine ulaşmak için
 
 </h2>
 
 
+<p>
 
-<button
+Sol üstteki menü ☰ butonuna basarak
+"Eğitimlerim" bölümüne gidebilirsin.
 
-style={notify}
-
-onClick={()=>router.push("/ogrenci/bildirimler")}
-
->
-
-BİLDİRİMLER
-
-</button>
-
-
-</header>
+</p>
 
 
 
-
-{children}
+</section>
 
 
 
 </main>
-
-
-
-
-
-</div>
 
 
 )
@@ -365,61 +120,18 @@ BİLDİRİMLER
 
 
 
-
-
-
 const page={
 
 
 minHeight:"100vh",
 
-background:
-
-"radial-gradient(circle at top,#3b2500,#050505 70%)",
-
-color:"#fff"
-
-
-};
-
-
-
-
-
-
-
-const sidebar={
-
-
-position:"fixed" as const,
-
-top:0,
-
-left:0,
-
-width:"240px",
-
-height:"100vh",
-
-padding:"30px 20px",
+padding:"30px",
 
 background:
 
-"linear-gradient(180deg,#050505,#000)",
+"radial-gradient(circle at top,#3b2600,#050505)",
 
-borderRight:
-
-"1px solid rgba(212,175,55,.35)",
-
-zIndex:1000,
-
-transition:"0.35s",
-
-display:"flex",
-
-flexDirection:"column" as const
-
-
+color:"white"
 
 };
 
@@ -428,133 +140,12 @@ flexDirection:"column" as const
 
 
 
+const welcome={
 
-const logoArea={
 
+padding:"30px",
 
-textAlign:"center" as const,
-
-color:"#d4af37"
-
-
-};
-
-
-
-
-
-
-
-const menuArea={
-
-
-marginTop:"40px",
-
-display:"grid",
-
-gap:"15px"
-
-
-};
-
-
-
-
-
-
-
-const menuButton={
-
-
-padding:"16px",
-
-borderRadius:"18px",
-
-background:
-
-"rgba(255,255,255,.04)",
-
-border:
-
-"1px solid rgba(212,175,55,.25)",
-
-color:"#fff",
-
-fontWeight:900,
-
-cursor:"pointer",
-
-fontSize:"15px"
-
-
-};
-
-
-
-
-
-
-
-const logout={
-
-
-marginTop:"auto",
-
-padding:"15px",
-
-borderRadius:"18px",
-
-background:"transparent",
-
-border:
-
-"1px solid #d4af37",
-
-color:"#d4af37",
-
-fontWeight:900,
-
-cursor:"pointer"
-
-
-};
-
-
-
-
-
-
-
-const content={
-
-
-marginLeft:"240px",
-
-padding:"35px",
-
-minHeight:"100vh"
-
-
-};
-
-
-
-
-
-
-
-const header={
-
-
-display:"flex",
-
-justifyContent:"space-between",
-
-alignItems:"center",
-
-padding:"20px 25px",
-
-borderRadius:"25px",
+borderRadius:"30px",
 
 background:
 
@@ -562,7 +153,7 @@ background:
 
 border:
 
-"1px solid rgba(212,175,55,.3)",
+"1px solid rgba(212,175,55,.35)",
 
 marginBottom:"30px"
 
@@ -574,25 +165,24 @@ marginBottom:"30px"
 
 
 
+const videoCard={
 
-const notify={
 
+position:"relative" as const,
 
-padding:"12px 22px",
+height:"450px",
 
-borderRadius:"30px",
+borderRadius:"35px",
 
-background:"transparent",
+overflow:"hidden",
 
 border:
 
-"1px solid #d4af37",
+"1px solid rgba(212,175,55,.5)",
 
-color:"#d4af37",
+boxShadow:
 
-fontWeight:900,
-
-cursor:"pointer"
+"0 0 40px rgba(212,175,55,.2)"
 
 
 };
@@ -602,34 +192,67 @@ cursor:"pointer"
 
 
 
+const video={
 
-const hamburger={
+
+width:"100%",
+
+height:"100%",
+
+objectFit:"cover" as const
 
 
-position:"fixed" as const,
+};
 
-top:"20px",
 
-left:"20px",
 
-zIndex:2000,
 
-width:"48px",
 
-height:"48px",
 
-borderRadius:"15px",
+const overlay={
 
-border:"0",
+
+position:"absolute" as const,
+
+bottom:"30px",
+
+left:"30px",
+
+padding:"20px 30px",
+
+borderRadius:"20px",
 
 background:
 
-"linear-gradient(135deg,#fff1a8,#d4af37)",
+"rgba(0,0,0,.6)",
 
-fontSize:"25px",
+border:
 
-cursor:"pointer"
+"1px solid rgba(212,175,55,.3)"
 
 
+};
+
+
+
+
+
+
+const info={
+
+
+marginTop:"30px",
+
+padding:"25px",
+
+borderRadius:"25px",
+
+background:
+
+"rgba(255,255,255,.04)",
+
+border:
+
+"1px solid rgba(212,175,55,.25)"
 
 };
