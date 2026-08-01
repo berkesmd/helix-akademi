@@ -1,116 +1,89 @@
-@import "tailwindcss";
-
-
-:root{
-
-  --gold:#d4af37;
-  --gold-light:#fff1a8;
-  --gold-dark:#8a6500;
-  --black:#050505;
-
-}
-
-
-
 *{
-
   margin:0;
   padding:0;
   box-sizing:border-box;
-
 }
 
 
-
-html{
-
-  scroll-behavior:smooth;
-
-}
-
-
-
+html,
 body{
+  width:100%;
+  min-height:100%;
+  background:#050505;
+  color:#fff;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+
+
+.home{
 
   min-height:100vh;
 
-  background:#050505;
-
-  color:white;
-
-  font-family:
-  Arial,
-  Helvetica,
-  sans-serif;
-
-  overflow-x:hidden;
-
-}
-
-
-
-a{
-
-  text-decoration:none;
-
-}
-
-
-
-button{
-
-  font-family:inherit;
-
-  cursor:pointer;
-
-}
-
-
-
-/* SCROLL */
-
-::-webkit-scrollbar{
-
-  width:8px;
-
-}
-
-
-::-webkit-scrollbar-track{
-
-  background:#050505;
-
-}
-
-
-::-webkit-scrollbar-thumb{
-
   background:
-
-  linear-gradient(
-    180deg,
-    #fff1a8,
-    #d4af37,
-    #8a6500
+  radial-gradient(
+    circle at top,
+    #6b4700 0%,
+    #241500 35%,
+    #050505 75%
   );
 
-  border-radius:20px;
+  overflow:hidden;
 
 }
 
 
 
-/* ALTIN YAZI */
+.hero{
+
+  min-height:100vh;
+
+  display:flex;
+
+  flex-direction:column;
+
+  justify-content:center;
+
+  align-items:center;
+
+  text-align:center;
+
+  padding:50px 20px;
+
+}
 
 
-.gold-text{
+
+.logo{
+
+  width:230px;
+
+  height:230px;
+
+  object-fit:contain;
+
+  filter:
+  drop-shadow(0 0 45px rgba(212,175,55,.8));
+
+  margin-bottom:20px;
+
+}
+
+
+
+.hero h1{
+
+  font-size:clamp(42px,8vw,90px);
+
+  font-weight:900;
+
+  letter-spacing:12px;
 
 
   background:
-
   linear-gradient(
     180deg,
-    #fff5b8,
+    #fff3a6,
     #d4af37,
     #8a6500
   );
@@ -126,20 +99,70 @@ button{
   -webkit-text-fill-color:transparent;
 
 
+  text-shadow:
+  0 0 30px rgba(212,175,55,.5);
+
 }
 
 
 
+.hero h2{
+
+  margin-top:35px;
+
+  font-size:clamp(22px,4vw,40px);
+
+  font-weight:900;
+
+  color:white;
+
+  text-shadow:
+  0 0 20px #d4af37;
+
+}
 
 
-/* PREMIUM BUTTON */
+
+.hero p{
+
+  margin-top:25px;
+
+  max-width:750px;
+
+  font-size:20px;
+
+  line-height:1.7;
+
+  color:#ddd;
+
+}
 
 
-.gold-button{
+
+.hero button{
+
+  margin-top:40px;
+
+  padding:20px 80px;
+
+  border-radius:22px;
+
+  border:none;
+
+  cursor:pointer;
+
+
+  font-size:16px;
+
+  font-weight:900;
+
+  letter-spacing:5px;
+
+
+  color:#000;
 
 
   background:
-
   linear-gradient(
     135deg,
     #fff1a8,
@@ -148,280 +171,151 @@ button{
   );
 
 
-  color:#000;
-
-
-  font-weight:900;
-
-
-  border-radius:20px;
-
-
-  transition:.3s;
-
-
   box-shadow:
-
-  0 0 30px rgba(212,175,55,.5);
-
+  0 0 40px rgba(212,175,55,.8);
 
 }
 
 
 
-.gold-button:hover{
+.stats{
 
+  margin-top:70px;
 
-  transform:scale(1.05);
+  display:flex;
 
+  gap:25px;
 
-  box-shadow:
+  justify-content:center;
 
-  0 0 60px rgba(212,175,55,.8);
-
+  flex-wrap:wrap;
 
 }
 
 
 
+.stat-box{
 
+  width:160px;
 
-/* CARD */
-
-
-.premium-card{
-
-
-  background:
-
-  rgba(255,255,255,.05);
-
-
-  border:
-
-  1px solid rgba(212,175,55,.35);
-
+  padding:35px 20px;
 
   border-radius:25px;
 
 
-  transition:.35s;
-
-
-}
-
-
-
-.premium-card:hover{
-
-
-  transform:translateY(-8px);
-
-
-  border-color:#d4af37;
-
-
-  box-shadow:
-
-  0 0 40px rgba(212,175,55,.35);
-
-
-}
-
-
-
-
-
-
-/* INPUT */
-
-
-input,
-textarea,
-select{
+  border:
+  1px solid rgba(212,175,55,.6);
 
 
   background:
-
   rgba(255,255,255,.06);
 
 
-  border:
+  backdrop-filter:blur(10px);
 
-  1px solid rgba(212,175,55,.4);
+}
 
+
+
+.stat-box strong{
+
+  display:block;
+
+  font-size:32px;
+
+  font-weight:900;
+
+  color:#d4af37;
+
+}
+
+
+
+.stat-box span{
+
+  display:block;
+
+  margin-top:10px;
+
+  font-size:14px;
 
   color:white;
 
-
-  border-radius:12px;
-
-
-  padding:12px;
-
-
-  outline:none;
-
-
 }
 
 
-
-input:focus,
-textarea:focus,
-select:focus{
-
-
-  border-color:#d4af37;
-
-
-  box-shadow:
-
-  0 0 20px rgba(212,175,55,.4);
-
-
-}
-
-
-
-
-
-/* NAVBAR */
-
-
-.navbar{
-
-
-  background:
-
-  rgba(0,0,0,.8);
-
-
-  backdrop-filter:
-
-  blur(20px);
-
-
-  border-bottom:
-
-  1px solid rgba(212,175,55,.2);
-
-
-}
-
-
-
-
-
-/* ANIMATION */
-
-
-.fade-in{
-
-
-animation:
-
-fade .8s ease;
-
-
-}
-
-
-
-@keyframes fade{
-
-
-from{
-
-opacity:0;
-
-transform:translateY(20px);
-
-}
-
-
-to{
-
-opacity:1;
-
-transform:translateY(0);
-
-}
-
-
-}
-
-
-
-
-
-/* VIDEO */
-
-
-video{
-
-max-width:100%;
-
-}
-
-
-
-
-
-/* MOBIL */
 
 
 @media(max-width:768px){
 
 
-body{
+.hero{
 
-overflow-x:hidden;
-
-}
-
-
-
-h1{
-
-font-size:40px!important;
+  padding:40px 15px;
 
 }
 
 
 
-h2{
+.logo{
 
-font-size:25px!important;
+  width:160px;
 
-}
-
-
-
-p{
-
-font-size:15px;
+  height:160px;
 
 }
 
 
 
+.hero h1{
+
+  font-size:40px;
+
+  letter-spacing:5px;
+
 }
 
 
 
+.hero h2{
+
+  font-size:24px;
+
+}
 
 
-/* SELECTION */
+
+.hero p{
+
+  font-size:16px;
+
+}
 
 
-::selection{
+
+.hero button{
+
+  width:90%;
+
+}
 
 
-background:#d4af37;
+
+.stats{
+
+  gap:15px;
+
+}
 
 
-color:#000;
+
+.stat-box{
+
+  width:140px;
+
+  padding:25px 10px;
+
+}
 
 
 }
