@@ -7,11 +7,17 @@
 
 html,
 body{
+
   width:100%;
+
   min-height:100%;
+
   background:#050505;
-  color:#fff;
+
+  color:white;
+
   font-family:Arial, Helvetica, sans-serif;
+
 }
 
 
@@ -21,6 +27,7 @@ body{
   min-height:100vh;
 
   background:
+
   radial-gradient(
     circle at top,
     #6b4700 0%,
@@ -33,6 +40,11 @@ body{
 }
 
 
+
+
+
+
+/* HERO */
 
 .hero{
 
@@ -48,32 +60,35 @@ body{
 
   text-align:center;
 
-  padding:50px 20px;
+  padding:60px 20px;
 
 }
 
 
 
+
 .logo{
 
-  width:230px;
+  width:240px;
 
-  height:230px;
+  height:240px;
 
   object-fit:contain;
 
   filter:
   drop-shadow(0 0 45px rgba(212,175,55,.8));
 
-  margin-bottom:20px;
-
 }
+
+
 
 
 
 .hero h1{
 
-  font-size:clamp(42px,8vw,90px);
+  margin-top:25px;
+
+  font-size:clamp(40px,8vw,85px);
 
   font-weight:900;
 
@@ -81,6 +96,7 @@ body{
 
 
   background:
+
   linear-gradient(
     180deg,
     #fff3a6,
@@ -100,26 +116,30 @@ body{
 
 
   text-shadow:
+
   0 0 30px rgba(212,175,55,.5);
 
 }
 
 
 
+
+
 .hero h2{
 
-  margin-top:35px;
+  margin-top:30px;
 
   font-size:clamp(22px,4vw,40px);
 
   font-weight:900;
 
-  color:white;
-
   text-shadow:
+
   0 0 20px #d4af37;
 
 }
+
+
 
 
 
@@ -127,7 +147,7 @@ body{
 
   margin-top:25px;
 
-  max-width:750px;
+  max-width:700px;
 
   font-size:20px;
 
@@ -139,30 +159,29 @@ body{
 
 
 
+
+
+
+
 .hero button{
 
   margin-top:40px;
 
-  padding:20px 80px;
-
-  border-radius:22px;
+  padding:20px 70px;
 
   border:none;
 
+  border-radius:20px;
+
   cursor:pointer;
-
-
-  font-size:16px;
 
   font-weight:900;
 
-  letter-spacing:5px;
-
-
-  color:#000;
+  letter-spacing:4px;
 
 
   background:
+
   linear-gradient(
     135deg,
     #fff1a8,
@@ -172,15 +191,20 @@ body{
 
 
   box-shadow:
+
   0 0 40px rgba(212,175,55,.8);
 
 }
 
 
 
-.stats{
 
-  margin-top:70px;
+
+
+
+/* İSTATİSTİK */
+
+.stats{
 
   display:flex;
 
@@ -190,6 +214,8 @@ body{
 
   flex-wrap:wrap;
 
+  margin-top:70px;
+
 }
 
 
@@ -198,17 +224,19 @@ body{
 
   width:160px;
 
-  padding:35px 20px;
+  padding:30px 20px;
 
   border-radius:25px;
 
 
-  border:
-  1px solid rgba(212,175,55,.6);
-
-
   background:
+
   rgba(255,255,255,.06);
+
+
+  border:
+
+  1px solid rgba(212,175,55,.5);
 
 
   backdrop-filter:blur(10px);
@@ -217,15 +245,16 @@ body{
 
 
 
+
 .stat-box strong{
 
   display:block;
 
+  color:#d4af37;
+
   font-size:32px;
 
   font-weight:900;
-
-  color:#d4af37;
 
 }
 
@@ -237,13 +266,191 @@ body{
 
   margin-top:10px;
 
-  font-size:14px;
-
-  color:white;
+  color:#fff;
 
 }
 
 
+
+
+
+
+
+/* BÖLÜMLER */
+
+
+.section{
+
+  padding:90px 20px;
+
+  text-align:center;
+
+}
+
+
+
+
+
+.section h2,
+.contact h2{
+
+  font-size:42px;
+
+  font-weight:900;
+
+  color:#d4af37;
+
+  margin-bottom:45px;
+
+}
+
+
+
+
+
+
+
+.cards{
+
+  max-width:1200px;
+
+  margin:auto;
+
+  display:grid;
+
+  grid-template-columns:
+
+  repeat(auto-fit,minmax(260px,1fr));
+
+  gap:30px;
+
+}
+
+
+
+
+
+.card{
+
+  padding:40px;
+
+  border-radius:30px;
+
+
+  background:
+
+  rgba(255,255,255,.06);
+
+
+  border:
+
+  1px solid rgba(212,175,55,.4);
+
+
+  box-shadow:
+
+  0 0 30px rgba(212,175,55,.08);
+
+}
+
+
+
+
+
+.card h3{
+
+  color:#d4af37;
+
+  font-size:25px;
+
+  margin-bottom:15px;
+
+}
+
+
+
+
+
+.card p{
+
+  color:#ddd;
+
+  line-height:1.7;
+
+}
+
+
+
+
+
+
+
+/* İLETİŞİM */
+
+
+.contact{
+
+  padding:90px 20px;
+
+  text-align:center;
+
+}
+
+
+
+.contact p{
+
+  margin:15px;
+
+  font-size:20px;
+
+  color:#ddd;
+
+}
+
+
+
+
+
+
+
+/* FOOTER */
+
+
+footer{
+
+  padding:50px 20px;
+
+  text-align:center;
+
+  border-top:
+
+  1px solid rgba(212,175,55,.3);
+
+  color:#aaa;
+
+}
+
+
+
+footer h3{
+
+  color:#d4af37;
+
+  font-size:28px;
+
+  margin-bottom:10px;
+
+}
+
+
+
+
+
+
+
+
+/* MOBİL */
 
 
 @media(max-width:768px){
@@ -279,7 +486,7 @@ body{
 
 .hero h2{
 
-  font-size:24px;
+  font-size:23px;
 
 }
 
@@ -314,6 +521,15 @@ body{
   width:140px;
 
   padding:25px 10px;
+
+}
+
+
+
+.section h2,
+.contact h2{
+
+  font-size:32px;
 
 }
 

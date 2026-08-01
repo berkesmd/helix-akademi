@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 
-export default function Home() {
+export default function Home(){
 
   const router = useRouter();
 
@@ -14,6 +14,7 @@ export default function Home() {
     <main className="home">
 
 
+      {/* HERO */}
       <section className="hero">
 
 
@@ -52,6 +53,8 @@ export default function Home() {
 
 
 
+
+
         <div className="stats">
 
 
@@ -59,7 +62,6 @@ export default function Home() {
             <strong>
               10.000+
             </strong>
-
             <span>
               ÖĞRENCİ
             </span>
@@ -71,7 +73,6 @@ export default function Home() {
             <strong>
               50+
             </strong>
-
             <span>
               EĞİTİM
             </span>
@@ -79,11 +80,11 @@ export default function Home() {
 
 
 
+
           <div className="stat-box">
             <strong>
               %98
             </strong>
-
             <span>
               MEMNUNİYET
             </span>
@@ -93,10 +94,206 @@ export default function Home() {
         </div>
 
 
+
       </section>
+
+
+
+
+
+
+      {/* ÖZELLİKLER */}
+
+      <section className="section">
+
+
+        <h2>
+          NEDEN HELIX AKADEMİ?
+        </h2>
+
+
+
+        <div className="cards">
+
+
+          <div className="card">
+
+            <h3>
+              Uzman Eğitmenler
+            </h3>
+
+            <p>
+              Alanında deneyimli eğitmenlerle kaliteli eğitim deneyimi.
+            </p>
+
+          </div>
+
+
+
+
+          <div className="card">
+
+            <h3>
+              Online Eğitim
+            </h3>
+
+            <p>
+              Dilediğin yerden kolay erişilebilir eğitim sistemi.
+            </p>
+
+          </div>
+
+
+
+
+          <div className="card">
+
+            <h3>
+              Sertifikalı Eğitim
+            </h3>
+
+            <p>
+              Başarılarını resmi sertifikalar ile belgele.
+            </p>
+
+          </div>
+
+
+
+        </div>
+
+
+      </section>
+
+
+
+
+
+
+
+      {/* YORUMLAR */}
+
+      <section className="section">
+
+
+        <h2>
+          ÖĞRENCİ YORUMLARI
+        </h2>
+
+
+
+        <div className="cards">
+
+
+          <div className="card">
+
+            <p>
+              "Helix Akademi sayesinde kendimi geliştirdim ve yeni fırsatlar yakaladım."
+            </p>
+
+            <strong>
+              Ahmet K.
+            </strong>
+
+          </div>
+
+
+
+
+
+          <div className="card">
+
+            <p>
+              "Eğitim sistemi çok kaliteli ve profesyonel."
+            </p>
+
+            <strong>
+              Zeynep M.
+            </strong>
+
+          </div>
+
+
+
+
+
+          <div className="card">
+
+            <p>
+              "Başarılı ve güvenilir bir eğitim platformu."
+            </p>
+
+            <strong>
+              Mehmet T.
+            </strong>
+
+          </div>
+
+
+
+        </div>
+
+
+      </section>
+
+
+
+
+
+
+
+      {/* İLETİŞİM */}
+
+      <section className="contact">
+
+
+        <h2>
+          İLETİŞİM
+        </h2>
+
+
+
+        <p>
+          📞 +90 530 508 62 69
+        </p>
+
+
+        <p>
+          ✉️ helix_akademi@gmail.com
+        </p>
+
+
+        <p>
+          🌐 helixakademi.com
+        </p>
+
+
+
+      </section>
+
+
+
+
+
+
+
+      <footer>
+
+        <h3>
+          HELIX AKADEMİ
+        </h3>
+
+        <p>
+          Geleceğin eğitim platformu
+        </p>
+
+
+      </footer>
+
 
 
     </main>
 
   );
+
 }
