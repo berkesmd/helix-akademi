@@ -1,74 +1,138 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 
-export default function OgrenciGiris(){
+export default function OgrenciGirisPage(){
 
+  const router = useRouter();
 
-const router=useRouter();
+  const [email,setEmail] = useState("");
+  const [sifre,setSifre] = useState("");
 
-const supabase=createClient();
-
-
-
-const [email,setEmail]=useState("");
-
-const [sifre,setSifre]=useState("");
-
-const [hata,setHata]=useState("");
-
-const [loading,setLoading]=useState(false);
+  const [hata,setHata] = useState("");
+  const [loading,setLoading] = useState(false);
 
 
 
+  async function giris(e:React.FormEvent){
+
+    e.preventDefault();
+
+    setLoading(true);
+    setHata("");
 
 
 
+    try{
 
-async function giris(){
 
-
-setLoading(true);
-
-setHata("");
+      const supabase = createClient();
 
 
 
-const {error}=await supabase.auth.signInWithPassword({
+      if(!supabase){
 
-email,
+        setHata(
+          "Supabase bağlantısı yok"
+        );
 
-password:sifre
+        setLoading(false);
 
-});
+        return;
 
-
-
-if(error){
-
-setHata("Giriş bilgileri hatalı.");
-
-setLoading(false);
-
-return;
-
-}
-
-
-
-router.push("/ogrenci");
-
-
-
-}
+      }
 
 
 
 
+      const {
+        data,
+        error
+      } = await supabase.auth.signInWithPassword({
+
+        email,
+
+        password:sifre
+
+      });
+
+
+
+
+
+      console.log(
+        "LOGIN DATA",
+        data
+      );
+
+
+      console.log(
+        "LOGIN ERROR",
+        error
+      );
+
+
+
+
+
+      if(error){
+
+        setHata(error.message);
+
+        setLoading(false);
+
+        return;
+
+      }
+
+
+
+
+      if(!data.user){
+
+        setHata(
+          "Kullanıcı bulunamadı"
+        );
+
+        setLoading(false);
+
+        return;
+
+      }
+
+
+
+
+      // direkt yönlendir
+
+      window.location.href="/ogrenci";
+
+
+
+    }
+
+    catch(err:any){
+
+
+      console.log(err);
+
+
+      setHata(
+        err.message
+      );
+
+
+      setLoading(false);
+
+
+    }
+
+
+
+  }
 
 
 
@@ -76,111 +140,71 @@ router.push("/ogrenci");
 
 return(
 
-
-<main style={page}>
-
-
-<div style={box}>
+<div className="min-h-screen bg-black flex items-center justify-center">
 
 
-<div style={logoBox}>
+<div className="bg-white p-8 rounded-2xl w-full max-w-md">
 
 
-<Image
+<h1 className="text-3xl font-bold mb-6 text-center">
 
-src="/helix-logo.png"
-
-alt="Helix Akademi"
-
-width={170}
-
-height={170}
-
-style={logo}
-
-/>
-
-
-</div>
-
-
-
-
-
-
-
-<h1 style={title}>
-
-HELIX AKADEMİ
+Öğrenci Giriş
 
 </h1>
 
 
 
 
-<p style={subtitle}>
-
-ÖĞRENCİ PANELİ
-
-</p>
-
-
-
-
-
-
+<form
+onSubmit={giris}
+className="space-y-4"
+>
 
 
 
 <input
 
-style={input}
+type="email"
 
-placeholder="E-POSTA ADRESİ"
+placeholder="E-posta"
 
 value={email}
 
-onChange={(e)=>setEmail(e.target.value)}
+onChange={
+e=>setEmail(e.target.value)
+}
+
+className="w-full border p-3 rounded"
 
 />
-
-
-
-
-
 
 
 
 
 <input
 
-style={input}
-
-placeholder="ŞİFRE"
-
 type="password"
+
+placeholder="Şifre"
 
 value={sifre}
 
-onChange={(e)=>setSifre(e.target.value)}
+onChange={
+e=>setSifre(e.target.value)
+}
+
+className="w-full border p-3 rounded"
 
 />
-
-
-
-
-
-
 
 
 
 
 
 {
-
 hata &&
 
-<p style={error}>
+<p className="text-red-600">
 
 {hata}
 
@@ -192,35 +216,22 @@ hata &&
 
 
 
-
-
-
-
 <button
 
-style={button}
-
-onClick={giris}
-
 disabled={loading}
+
+className="w-full bg-black text-white p-3 rounded font-bold"
 
 >
 
 
 {
-
 loading
-
 ?
-
-"GİRİŞ YAPILIYOR..."
-
+"Giriş yapılıyor..."
 :
-
-"GİRİŞ YAP"
-
+"Giriş Yap"
 }
-
 
 
 </button>
@@ -228,299 +239,18 @@ loading
 
 
 
-
-
-
-
-
-<p
-
-style={forgot}
-
-onClick={()=>router.push("/sifre-yenile")}
-
->
-
-ŞİFREMİ UNUTTUM
-
-</p>
-
-
-
-
-
+</form>
 
 
 
 </div>
 
 
-</main>
+
+</div>
 
 
 )
 
+
 }
-
-
-
-
-
-
-
-
-
-const page={
-
-minHeight:"100vh",
-
-background:
-
-"radial-gradient(circle at top,#4a3500,#050505 70%)",
-
-display:"flex",
-
-alignItems:"center",
-
-justifyContent:"center",
-
-color:"white",
-
-padding:"20px"
-
-};
-
-
-
-
-
-
-
-
-const box={
-
-width:"420px",
-
-padding:"50px",
-
-borderRadius:"30px",
-
-background:
-
-"rgba(255,255,255,.07)",
-
-border:
-
-"1px solid rgba(212,175,55,.4)",
-
-backdropFilter:"blur(20px)",
-
-textAlign:"center" as const,
-
-display:"flex",
-
-flexDirection:"column" as const,
-
-alignItems:"center",
-
-boxShadow:
-
-"0 0 70px rgba(212,175,55,.25)"
-
-};
-
-
-
-
-
-
-
-
-const logoBox={
-
-width:"100%",
-
-display:"flex",
-
-justifyContent:"center",
-
-alignItems:"center",
-
-marginBottom:"20px"
-
-};
-
-
-
-
-
-
-
-
-const logo={
-
-filter:
-
-"drop-shadow(0 0 45px #d4af37)"
-
-};
-
-
-
-
-
-
-
-
-const title={
-
-fontSize:"38px",
-
-fontWeight:900,
-
-letterSpacing:"5px",
-
-margin:"10px",
-
-background:
-
-"linear-gradient(180deg,#fff3b0,#d4af37,#8a6500)",
-
-WebkitBackgroundClip:"text",
-
-WebkitTextFillColor:"transparent",
-
-textShadow:
-
-"0 0 25px rgba(212,175,55,.7)"
-
-};
-
-
-
-
-
-
-
-
-const subtitle={
-
-color:"#d4af37",
-
-fontWeight:900,
-
-letterSpacing:"4px",
-
-marginBottom:"25px"
-
-};
-
-
-
-
-
-
-
-
-const input={
-
-width:"100%",
-
-boxSizing:"border-box" as const,
-
-padding:"18px",
-
-marginTop:"18px",
-
-borderRadius:"15px",
-
-border:
-
-"1px solid rgba(212,175,55,.4)",
-
-background:"#050505",
-
-color:"white",
-
-fontSize:"15px",
-
-fontWeight:700,
-
-outline:"none"
-
-};
-
-
-
-
-
-
-
-
-const button={
-
-width:"100%",
-
-marginTop:"30px",
-
-padding:"18px",
-
-borderRadius:"18px",
-
-border:"0",
-
-background:
-
-"linear-gradient(135deg,#fff1a6,#d4af37,#8a6500)",
-
-fontSize:"18px",
-
-fontWeight:900,
-
-letterSpacing:"3px",
-
-cursor:"pointer",
-
-boxShadow:
-
-"0 0 35px rgba(212,175,55,.6)"
-
-};
-
-
-
-
-
-
-
-
-const error={
-
-color:"#ff7777",
-
-marginTop:"20px",
-
-fontWeight:700
-
-};
-
-
-
-
-
-
-
-
-const forgot={
-
-marginTop:"25px",
-
-color:"#d4af37",
-
-fontWeight:900,
-
-cursor:"pointer",
-
-letterSpacing:"1px"
-
-};
