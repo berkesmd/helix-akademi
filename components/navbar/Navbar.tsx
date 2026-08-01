@@ -3,59 +3,88 @@
 import Link from "next/link";
 import { useState } from "react";
 
-export default function Navbar(){
+export default function Navbar() {
 
-const [open,setOpen]=useState(false);
-
-
-return(
-
-<header className="fixed top-0 left-0 w-full z-50">
+  const [menuOpen,setMenuOpen]=useState(false);
 
 
-<div className="
-h-20
-px-5
-flex
-items-center
-justify-between
-bg-black/90
+  return (
+
+<header className="
+fixed
+top-0
+left-0
+right-0
+z-50
+bg-black/80
 backdrop-blur-xl
 border-b
 border-yellow-500/20
 ">
 
 
+<div className="
+mx-auto
+flex
+h-20
+max-w-7xl
+items-center
+justify-between
+px-5
+">
+
+
 {/* LOGO */}
 
-<Link href="/" className="flex items-center gap-3">
+<Link
+href="/"
+className="
+flex
+items-center
+gap-3
+"
+>
 
 
 <img
+
 src="/helix-logo.png"
-className="w-10 h-10 object-contain"
+
+alt="Helix"
+
+className="
+h-12
+w-12
+object-contain
+"
+
 />
 
 
 <div>
 
-<h1 className="
-text-white
-font-black
-tracking-[4px]
+
+<div className="
 text-xl
-">
-HELIX
-</h1>
-
-
-<p className="
-text-yellow-400
-text-[9px]
+font-black
 tracking-[5px]
+text-white
 ">
+
+HELIX
+
+</div>
+
+
+<div className="
+text-[11px]
+tracking-[7px]
+text-yellow-500
+">
+
 AKADEMİ
-</p>
+
+</div>
 
 
 </div>
@@ -67,7 +96,8 @@ AKADEMİ
 
 
 
-{/* DESKTOP */}
+
+{/* DESKTOP MENU */}
 
 <nav className="
 hidden
@@ -77,41 +107,88 @@ gap-8
 ">
 
 
-<Link href="/" className="text-white">
+<Link
+href="/"
+className="
+text-white
+font-semibold
+hover:text-yellow-400
+transition
+"
+>
+
 Ana Sayfa
-</Link>
 
-
-<Link href="/egitimler" className="text-white">
-Eğitimler
-</Link>
-
-
-<Link href="/hakkimizda" className="text-white">
-Hakkımızda
-</Link>
-
-
-<Link href="/iletisim" className="text-white">
-İletişim
 </Link>
 
 
 <Link
-
-href="/ogrenci-giris"
-
+href="/egitimler"
 className="
-bg-yellow-500
-text-black
+text-gray-300
+font-semibold
+hover:text-yellow-400
+transition
+"
+>
+
+Eğitimler
+
+</Link>
+
+
+<Link
+href="/hakkimizda"
+className="
+text-gray-300
+font-semibold
+hover:text-yellow-400
+transition
+"
+>
+
+Hakkımızda
+
+</Link>
+
+
+<Link
+href="/iletisim"
+className="
+text-gray-300
+font-semibold
+hover:text-yellow-400
+transition
+"
+>
+
+İletişim
+
+</Link>
+
+
+
+
+
+<Link
+href="/ogrenci-giris"
+className="
+rounded-xl
 px-6
 py-3
-rounded-xl
-font-bold
+font-black
+text-black
+bg-gradient-to-r
+from-yellow-200
+via-yellow-500
+to-yellow-700
+shadow-lg
+shadow-yellow-500/30
 "
-
 >
-ÖĞRENCİ GİRİŞ
+
+ÖĞRENCİ GİRİŞİ
+
 </Link>
 
 
@@ -122,23 +199,58 @@ font-bold
 
 
 
-{/* MOBILE */}
+
+{/* MOBİL HAMBURGER */}
 
 <button
 
+onClick={()=>setMenuOpen(!menuOpen)}
+
 className="
 md:hidden
-text-yellow-400
-text-3xl
+border
+border-yellow-500/40
+rounded-xl
+p-3
 "
-
-onClick={()=>setOpen(!open)}
 
 >
 
-☰
+
+<div className="
+space-y-1.5
+">
+
+
+<span className="
+block
+w-6
+h-0.5
+bg-yellow-400
+"/>
+
+
+<span className="
+block
+w-6
+h-0.5
+bg-yellow-400
+"/>
+
+
+<span className="
+block
+w-6
+h-0.5
+bg-yellow-400
+"/>
+
+
+</div>
+
 
 </button>
+
 
 
 </div>
@@ -148,8 +260,15 @@ onClick={()=>setOpen(!open)}
 
 
 
+
+
+
+{/* MOBİL MENU */}
+
 {
-open &&
+
+menuOpen && (
+
 
 <div
 
@@ -157,75 +276,59 @@ className="
 md:hidden
 absolute
 top-20
-right-4
-w-64
-bg-black
-border
+left-0
+right-0
+bg-black/95
+border-t
 border-yellow-500/30
-rounded-2xl
 p-6
-shadow-xl
 "
 
 >
-
-
-<div className="
-flex
-flex-col
-gap-5
-">
-
-
-<Link href="/" className="text-white">
-Ana Sayfa
-</Link>
-
-
-<Link href="/egitimler" className="text-white">
-Eğitimler
-</Link>
-
-
-<Link href="/hakkimizda" className="text-white">
-Hakkımızda
-</Link>
-
-
-<Link href="/iletisim" className="text-white">
-İletişim
-</Link>
 
 
 <Link
 
 href="/ogrenci-giris"
 
+onClick={()=>setMenuOpen(false)}
+
 className="
-bg-yellow-500
-text-black
+block
+w-full
 text-center
-py-3
 rounded-xl
-font-bold
+py-4
+font-black
+tracking-widest
+text-black
+bg-gradient-to-r
+from-yellow-200
+via-yellow-500
+to-yellow-700
+shadow-xl
+shadow-yellow-500/30
 "
 
 >
-ÖĞRENCİ GİRİŞ
+
+ÖĞRENCİ GİRİŞİ
+
 </Link>
 
 
-</div>
-
 
 </div>
 
+
+)
 
 }
 
 
+
 </header>
 
-)
+  );
 
 }
