@@ -5,8 +5,8 @@
 
   --gold:#d4af37;
   --gold-light:#fff1a8;
+  --gold-dark:#8a6500;
   --black:#050505;
-  --dark:#0b0b0b;
 
 }
 
@@ -38,7 +38,6 @@ body{
   color:white;
 
   font-family:
-
   Arial,
   Helvetica,
   sans-serif;
@@ -49,14 +48,32 @@ body{
 
 
 
+a{
 
-/* Scrollbar Premium */
+  text-decoration:none;
+
+}
+
+
+
+button{
+
+  font-family:inherit;
+
+  cursor:pointer;
+
+}
+
+
+
+/* SCROLLBAR */
 
 ::-webkit-scrollbar{
 
-  width:10px;
+  width:8px;
 
 }
+
 
 
 ::-webkit-scrollbar-track{
@@ -66,11 +83,12 @@ body{
 }
 
 
+
 ::-webkit-scrollbar-thumb{
 
   background:
-
   linear-gradient(
+  180deg,
   #fff1a8,
   #d4af37,
   #8a6500
@@ -82,13 +100,75 @@ body{
 
 
 
+/* GOLD TEXT */
+
+.gold-text{
+
+  background:
+
+  linear-gradient(
+  180deg,
+  #fff5b8,
+  #d4af37,
+  #8a6500
+  );
 
 
-/* Linkler */
+  -webkit-background-clip:text;
 
-a{
+  -webkit-text-fill-color:transparent;
 
-  text-decoration:none;
+}
+
+
+
+/* PREMIUM BUTTON */
+
+
+.gold-button{
+
+
+  background:
+
+  linear-gradient(
+  135deg,
+  #fff1a8,
+  #d4af37,
+  #8a6500
+  );
+
+
+  color:#000;
+
+
+  font-weight:900;
+
+
+  border-radius:20px;
+
+
+  transition:.3s;
+
+
+  box-shadow:
+
+  0 0 30px rgba(212,175,55,.5);
+
+
+}
+
+
+
+.gold-button:hover{
+
+
+  transform:scale(1.05);
+
+
+  box-shadow:
+
+  0 0 60px rgba(212,175,55,.8);
+
 
 }
 
@@ -96,45 +176,44 @@ a{
 
 
 
-/* Buton genel */
+/* CARD */
 
-button{
+.premium-card{
 
-  font-family:inherit;
+
+background:
+
+rgba(255,255,255,.05);
+
+
+border:
+
+1px solid rgba(212,175,55,.35);
+
+
+border-radius:25px;
+
+
+transition:.35s;
+
 
 }
 
 
 
+.premium-card:hover{
 
 
-/* Premium Glow */
+transform:translateY(-10px);
 
-.gold-glow{
+
+border-color:#d4af37;
+
 
 box-shadow:
 
-0 0 20px rgba(212,175,55,.4),
-0 0 60px rgba(212,175,55,.2);
+0 0 40px rgba(212,175,55,.35);
 
-}
-
-
-
-
-/* Navbar Mobil */
-
-.desktop-menu{
-
-display:flex;
-
-}
-
-
-
-.mobile-menu-btn{
-
-display:none;
 
 }
 
@@ -142,41 +221,104 @@ display:none;
 
 
 
+/* INPUT */
+
+input,
+textarea,
+select{
+
+
+background:
+
+rgba(255,255,255,.06);
+
+
+border:
+
+1px solid rgba(212,175,55,.35);
+
+
+color:white;
+
+
+border-radius:12px;
+
+
+padding:12px;
+
+
+outline:none;
+
+
+transition:.3s;
+
+
+}
+
+
+
+input:focus,
+textarea:focus,
+select:focus{
+
+
+border-color:#d4af37;
+
+
+box-shadow:
+
+0 0 20px rgba(212,175,55,.35);
+
+
+}
+
+
+
+
+
+/* NAVBAR */
+
+.navbar{
+
+
+background:
+
+rgba(0,0,0,.75);
+
+
+backdrop-filter:
+
+blur(20px);
+
+
+border-bottom:
+
+1px solid rgba(212,175,55,.15);
+
+
+}
+
+
+
+
+
+/* MOBIL */
 
 @media(max-width:768px){
 
 
 
-.desktop-menu{
+body{
 
-display:none !important;
-
-}
-
-
-
-.mobile-menu-btn{
-
-display:block !important;
+overflow-x:hidden;
 
 }
-
-
-
-
-}
-
-
-
-/* Mobil düzen */
-
-@media(max-width:768px){
 
 
 
 h1{
 
-font-size:40px !important;
+font-size:40px!important;
 
 }
 
@@ -184,7 +326,7 @@ font-size:40px !important;
 
 h2{
 
-font-size:24px !important;
+font-size:24px!important;
 
 }
 
@@ -202,59 +344,38 @@ font-size:15px;
 
 
 
+/* ANIMASYON */
 
 
-/* Kart Hover Efekti */
+.fade-in{
 
+animation:
 
-.premium-card{
-
-
-transition:.4s ease;
-
+fade .8s ease;
 
 }
 
 
 
-.premium-card:hover{
+@keyframes fade{
 
 
-transform:translateY(-8px);
+from{
 
+opacity:0;
 
-border-color:#d4af37;
-
-
-box-shadow:
-
-0 0 35px rgba(212,175,55,.35);
-
+transform:translateY(20px);
 
 }
 
 
+to{
 
+opacity:1;
 
+transform:none;
 
-/* Altın yazı */
-
-.gold-text{
-
-
-background:
-
-linear-gradient(
-180deg,
-#fff1a8,
-#d4af37,
-#8a6500
-);
-
-
--webkit-background-clip:text;
-
--webkit-text-fill-color:transparent;
+}
 
 
 }
@@ -263,63 +384,7 @@ linear-gradient(
 
 
 
-/* Premium buton */
-
-
-.gold-button{
-
-
-background:
-
-linear-gradient(
-135deg,
-#fff1a8,
-#d4af37,
-#8a6500
-);
-
-
-color:black;
-
-
-font-weight:900;
-
-
-border-radius:20px;
-
-
-transition:.3s;
-
-
-box-shadow:
-
-0 0 30px rgba(212,175,55,.5);
-
-
-
-}
-
-
-
-.gold-button:hover{
-
-
-transform:scale(1.05);
-
-
-box-shadow:
-
-0 0 60px rgba(212,175,55,.8);
-
-
-
-}
-
-
-
-
-
-/* Video popup */
+/* VIDEO */
 
 
 video{
@@ -331,53 +396,8 @@ max-width:100%;
 
 
 
-/* Formlar */
 
-
-input{
-
-
-background:
-
-rgba(255,255,255,.06);
-
-
-border:
-
-1px solid rgba(212,175,55,.3);
-
-
-color:white;
-
-
-outline:none;
-
-
-transition:.3s;
-
-
-
-}
-
-
-
-input:focus{
-
-
-border-color:#d4af37;
-
-
-box-shadow:
-
-0 0 20px rgba(212,175,55,.3);
-
-
-}
-
-
-
-
-/* Selection */
+/* SELECTION */
 
 
 ::selection{
@@ -385,7 +405,7 @@ box-shadow:
 
 background:#d4af37;
 
-color:black;
+color:#000;
 
 
 }
