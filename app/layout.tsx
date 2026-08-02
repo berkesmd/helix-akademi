@@ -20,6 +20,12 @@ apple:"/icons/icon-192.png"
 
 },
 
+appleWebApp:{
+  capable:true,
+  title:"HELIX AKADEMİ",
+  statusBarStyle:"black-translucent"
+}
+
 };
 
 
