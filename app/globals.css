@@ -856,12 +856,43 @@ font-size:15px !important;
 }
 
 }
-@media(max-width:900px){
+.admin-btn{
 
-.sidebar{
+margin-top:15px;
 
-transform:translateX(-100%);
+padding:14px 45px;
+
+border-radius:30px;
+
+border:1px solid #d4af37;
+
+background:transparent;
+
+color:#d4af37;
+
+font-size:16px;
+
+font-weight:900;
+
+cursor:pointer;
+
+transition:.3s;
+
+box-shadow:
+0 0 15px rgba(212,175,55,.2);
 
 }
+
+
+.admin-btn:hover{
+
+transform:translateY(-5px);
+
+background:#d4af37;
+
+color:#050505;
+
+box-shadow:
+0 0 35px rgba(212,175,55,.8);
 
 }

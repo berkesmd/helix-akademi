@@ -81,6 +81,18 @@ onClick={()=>router.push("/ogrenci-giris")}
 
 </button>
 
+<button
+
+className="admin-btn"
+
+onClick={()=>router.push("/admin-giris")}
+
+>
+
+🔐 YÖNETİM GİRİŞ
+
+</button>
+
 
 
 
