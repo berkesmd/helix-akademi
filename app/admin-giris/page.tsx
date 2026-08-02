@@ -1,18 +1,19 @@
 "use client";
 
-import {useState} from "react";
-import Image from "next/image";
-import {createClient} from "@/lib/supabase/client";
-import {useRouter} from "next/navigation";
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+
 
 export default function AdminGirisPage(){
 
-const router=useRouter();
+const router = useRouter();
 
-const [email,setEmail]=useState("");
-const [sifre,setSifre]=useState("");
-const [hata,setHata]=useState("");
-const [loading,setLoading]=useState(false);
+const [email,setEmail] = useState("");
+const [sifre,setSifre] = useState("");
+const [hata,setHata] = useState("");
+const [loading,setLoading] = useState(false);
+
 
 
 async function girisYap(e:React.FormEvent){
@@ -24,16 +25,24 @@ setHata("");
 
 const supabase=createClient();
 
+
 const {error}=await supabase.auth.signInWithPassword({
+
 email,
+
 password:sifre
+
 });
 
 
 if(error){
+
 setHata("Giriş bilgileri hatalı");
+
 setLoading(false);
+
 return;
+
 }
 
 
@@ -43,208 +52,481 @@ router.refresh();
 }
 
 
+
 return(
 
-<div className="min-h-screen bg-black flex items-center justify-center p-5 relative overflow-hidden">
-
-<div className="absolute inset-0 bg-gradient-to-br from-yellow-900/40 via-black to-black"/>
+<div style={page}>
 
 
-<div className="
-relative
-w-full
-max-w-md
-rounded-[40px]
-p-8
-bg-black/70
-backdrop-blur-xl
-border
-border-yellow-500/50
-shadow-[0_0_80px_rgba(212,175,55,.25)]
-">
+<div style={goldGlow}></div>
 
 
-<div className="text-center">
+
+<div style={card}>
 
 
-<div className="
-mx-auto
-w-32
-h-32
-rounded-full
-border
-border-yellow-500
-p-3
-shadow-[0_0_40px_rgba(212,175,55,.6)]
-">
+<div style={logoArea}>
 
-<Image
+
+<img
+
 src="/helix-logo.png"
+
 alt="Helix Akademi"
-width={120}
-height={120}
-className="rounded-full"
+
+style={logo}
+
 />
 
-</div>
 
 
+<h1 style={helix}>
 
-<h1 className="
-mt-6
-text-5xl
-font-black
-tracking-[8px]
-bg-gradient-to-r
-from-yellow-200
-via-yellow-500
-to-yellow-200
-bg-clip-text
-text-transparent
-">
 HELIX
+
 </h1>
 
 
-<h2 className="
-text-yellow-400
-text-xl
-font-black
-tracking-[6px]
-">
+
+<h2 style={akademi}>
+
 AKADEMİ
+
 </h2>
 
 
-<div className="
-inline-block
-mt-5
-px-6
-py-2
-rounded-full
-border
-border-yellow-500
-text-yellow-300
-tracking-[5px]
-font-bold
-shadow-[0_0_20px_rgba(212,175,55,.5)]
-">
-SINCE 2020
+
+<div style={since}>
+
+✦ SINCE 2020 ✦
+
 </div>
 
 
 
-<h3 className="
-mt-8
-text-white
-text-2xl
-font-black
-">
+<h3 style={welcome}>
+
 Yönetim Paneline
-</h3>
 
-<h3 className="
-text-yellow-400
-text-2xl
-font-black
-">
+<br/>
+
+<span>
+
 Hoş Geldiniz
+
+</span>
+
 </h3>
 
 
-<p className="text-gray-400 mt-3">
+
+<p style={desc}>
+
 Helix Akademi Yönetim Merkezi
+
 </p>
 
+
+
 </div>
 
 
 
-<form onSubmit={girisYap} className="mt-8 space-y-5">
+
+
+
+
+<form
+
+onSubmit={girisYap}
+
+style={form}
+
+>
+
 
 
 <input
-className="
-w-full
-rounded-2xl
-p-4
-bg-black
-border
-border-yellow-500/50
-text-white
-outline-none
-focus:border-yellow-300
-"
+
+style={input}
+
 placeholder="E-posta"
+
 type="email"
+
 value={email}
-onChange={e=>setEmail(e.target.value)}
+
+onChange={(e)=>setEmail(e.target.value)}
+
 />
+
+
 
 
 <input
-className="
-w-full
-rounded-2xl
-p-4
-bg-black
-border
-border-yellow-500/50
-text-white
-outline-none
-focus:border-yellow-300
-"
+
+style={input}
+
 placeholder="Şifre"
+
 type="password"
+
 value={sifre}
-onChange={e=>setSifre(e.target.value)}
+
+onChange={(e)=>setSifre(e.target.value)}
+
 />
 
 
 
-{hata &&
-<div className="bg-red-500/20 border border-red-500 text-red-300 p-3 rounded-xl text-center">
+
+
+{
+
+hata &&
+
+<div style={error}>
+
 {hata}
+
 </div>
+
 }
 
 
 
+
+
+
 <button
+
+style={button}
+
 disabled={loading}
-className="
-w-full
-py-4
-rounded-2xl
-font-black
-text-black
-bg-gradient-to-r
-from-yellow-600
-via-yellow-300
-to-yellow-600
-shadow-[0_0_35px_rgba(212,175,55,.5)]
-hover:scale-105
-transition
-"
+
 >
 
-{loading ? "GİRİŞ YAPILIYOR..." : "YÖNETİME GİRİŞ"}
+{
+
+loading
+
+?
+
+"GİRİŞ YAPILIYOR..."
+
+:
+
+"YÖNETİME GİRİŞ"
+
+}
+
 
 </button>
+
+
 
 
 </form>
 
 
-<p className="text-center text-gray-500 mt-8 text-sm">
+
+
+
+<p style={footer}>
+
 HELIX AKADEMİ © 2026
+
 </p>
 
 
+
 </div>
+
+
 
 </div>
 
 )
 
 }
+
+
+
+
+
+
+const page={
+
+minHeight:"100vh",
+
+display:"flex",
+
+alignItems:"center",
+
+justifyContent:"center",
+
+padding:"30px",
+
+background:
+
+"radial-gradient(circle at top,#3b2800,#050505 60%)",
+
+position:"relative" as const,
+
+overflow:"hidden"
+
+};
+
+
+
+const goldGlow={
+
+position:"absolute" as const,
+
+width:"500px",
+
+height:"500px",
+
+background:"#d4af37",
+
+filter:"blur(180px)",
+
+opacity:.18
+
+};
+
+
+
+const card={
+
+position:"relative" as const,
+
+width:"100%",
+
+maxWidth:"450px",
+
+padding:"45px 35px",
+
+borderRadius:"40px",
+
+background:"rgba(255,255,255,.06)",
+
+border:"1px solid rgba(212,175,55,.5)",
+
+backdropFilter:"blur(20px)",
+
+boxShadow:
+
+"0 0 60px rgba(212,175,55,.25)"
+
+};
+
+
+
+const logoArea={
+
+textAlign:"center" as const
+
+};
+
+
+
+const logo={
+
+width:"130px",
+
+height:"130px",
+
+objectFit:"contain" as const,
+
+filter:
+
+"drop-shadow(0 0 35px rgba(212,175,55,.7))"
+
+};
+
+
+
+const helix={
+
+marginTop:"20px",
+
+fontSize:"55px",
+
+letterSpacing:"12px",
+
+fontWeight:900,
+
+color:"#d4af37"
+
+};
+
+
+
+const akademi={
+
+fontSize:"25px",
+
+letterSpacing:"8px",
+
+color:"#ffe58a",
+
+fontWeight:900
+
+};
+
+
+
+const since={
+
+display:"inline-block",
+
+marginTop:"25px",
+
+padding:"10px 25px",
+
+borderRadius:"30px",
+
+border:"1px solid #d4af37",
+
+color:"#fff0a0",
+
+fontWeight:900,
+
+letterSpacing:"4px",
+
+boxShadow:
+
+"0 0 25px rgba(212,175,55,.5)"
+
+};
+
+
+
+const welcome={
+
+marginTop:"35px",
+
+fontSize:"28px",
+
+fontWeight:900,
+
+color:"white",
+
+lineHeight:"1.3"
+
+};
+
+
+
+const welcomeSpan={
+
+color:"#d4af37"
+
+};
+
+
+
+const desc={
+
+marginTop:"15px",
+
+color:"#bbb",
+
+fontSize:"16px"
+
+};
+
+
+
+const form={
+
+marginTop:"35px"
+
+};
+
+
+
+const input={
+
+width:"100%",
+
+padding:"17px",
+
+marginBottom:"18px",
+
+borderRadius:"18px",
+
+background:"#050505",
+
+border:"1px solid rgba(212,175,55,.5)",
+
+color:"white",
+
+outline:"none",
+
+fontSize:"16px"
+
+};
+
+
+
+const button={
+
+width:"100%",
+
+padding:"18px",
+
+borderRadius:"20px",
+
+border:"0",
+
+background:
+
+"linear-gradient(135deg,#fff0a0,#d4af37)",
+
+fontWeight:900,
+
+fontSize:"17px",
+
+cursor:"pointer",
+
+boxShadow:
+
+"0 0 30px rgba(212,175,55,.5)"
+
+};
+
+
+
+const error={
+
+padding:"12px",
+
+marginBottom:"15px",
+
+borderRadius:"15px",
+
+background:"rgba(255,0,0,.15)",
+
+border:"1px solid red",
+
+color:"#ffaaaa",
+
+textAlign:"center" as const
+
+};
+
+
+
+const footer={
+
+marginTop:"35px",
+
+textAlign:"center" as const,
+
+color:"#777",
+
+fontSize:"13px"
+
+};
