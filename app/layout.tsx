@@ -8,10 +8,19 @@ export const metadata: Metadata = {
 title:"HELIX AKADEMİ",
 
 description:
-"Geleceğin eğitim platformu"
+"Geleceğin eğitim platformu",
+
+manifest:"/manifest.json",
+
+icons:{
+
+icon:"/helix-logo.png",
+
+apple:"/helix-logo.png"
+
+},
 
 };
-
 
 
 export default function RootLayout({

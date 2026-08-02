@@ -1,0 +1,22 @@
+{
+  "name": "Helix Akademi",
+  "short_name": "Helix",
+  "description": "Helix Akademi eğitim platformu",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#d4af37",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/helix-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/helix-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
