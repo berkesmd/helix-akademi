@@ -14,9 +14,9 @@ manifest:"/manifest.json",
 
 icons:{
 
-icon:"/helix-logo.png",
+icon:"/icons/icon-192.png",
 
-apple:"/helix-logo.png"
+apple:"/icons/icon-192.png"
 
 },
 
