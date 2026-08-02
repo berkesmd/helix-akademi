@@ -856,3 +856,12 @@ font-size:15px !important;
 }
 
 }
+@media(max-width:900px){
+
+.sidebar{
+
+transform:translateX(-100%);
+
+}
+
+}

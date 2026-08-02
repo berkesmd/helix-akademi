@@ -23,12 +23,8 @@ const supabase=createClient();
 
 
 const [kontrol,setKontrol]=useState(false);
-
 const [isim,setIsim]=useState("");
-
 const [menuAcik,setMenuAcik]=useState(false);
-
-
 
 
 
@@ -38,15 +34,7 @@ useEffect(()=>{
 async function kontrolEt(){
 
 
-const {
-
-data:{
-user
-
-}
-
-}=await supabase.auth.getUser();
-
+const {data:{user}}=await supabase.auth.getUser();
 
 
 
@@ -57,9 +45,6 @@ router.push("/admin-giris");
 return;
 
 }
-
-
-
 
 
 
@@ -75,10 +60,6 @@ const {data:profil}=await supabase
 
 
 
-
-
-
-
 if(!profil || profil.role!=="admin"){
 
 router.push("/");
@@ -89,21 +70,12 @@ return;
 
 
 
-
-
-
-setIsim(
-
-profil.full_name || "Admin"
-
-);
-
+setIsim(profil.full_name || "Admin");
 
 setKontrol(true);
 
 
 }
-
 
 
 kontrolEt();
@@ -115,12 +87,7 @@ kontrolEt();
 
 
 
-
-
-
-
 if(!kontrol){
-
 
 return(
 
@@ -138,111 +105,39 @@ Kontrol ediliyor...
 
 
 
-
-
-
 const menu=[
 
+["🏠 Dashboard","/admin"],
 
-{
-isim:"🏠 Dashboard",
-link:"/admin"
-},
+["👨‍🎓 Öğrenci Yönetimi","/admin/ogrenciler"],
 
+["➕ Öğrenci Ekle","/admin/ogrenciler/yeni"],
 
+["🎓 Eğitim Yönetimi","/admin/egitimler"],
 
-{
-isim:"👨‍🎓 Öğrenci Yönetimi",
-link:"/admin/ogrenciler"
-},
+["🎥 Ders Yönetimi","/admin/ders-yonetimi"],
 
+["📝 Sınav Yönetimi","/admin/sinavlar"],
 
+["📚 Eğitim Ata","/admin/egitim-atama"],
 
-{
-isim:"➕ Öğrenci Ekle",
-link:"/admin/ogrenciler/yeni"
-},
+["📊 Öğrenci Takip","/admin/ogrenci-takip"],
 
+["📈 Analiz","/admin/analiz"],
 
+["🔔 Bildirimler","/admin/bildirimler"],
 
-{
-isim:"🎓 Eğitim Yönetimi",
-link:"/admin/egitimler"
-},
+["👑 Rol Yönetimi","/admin/rol-yonetimi"],
 
-
-
-{
-isim:"🎥 Ders Yönetimi",
-link:"/admin/ders-yonetimi"
-},
-
-
-
-{
-isim:"📝 Sınav Yönetimi",
-link:"/admin/sinavlar"
-},
-
-
-
-{
-isim:"📚 Eğitim Ata",
-link:"/admin/egitim-atama"
-},
-
-
-
-{
-isim:"📊 Öğrenci Takip",
-link:"/admin/ogrenci-takip"
-},
-
-
-
-{
-isim:"📈 Analiz",
-link:"/admin/analiz"
-},
-
-
-
-{
-isim:"🔔 Bildirimler",
-link:"/admin/bildirimler"
-},
-
-
-
-{
-isim:"👑 Rol Yönetimi",
-link:"/admin/rol-yonetimi"
-},
-
-
-
-{
-isim:"⚙️ Site Ayarları",
-link:"/admin/ayarlar"
-}
-
-
+["⚙️ Site Ayarları","/admin/ayarlar"]
 
 ];
 
 
 
-
-
-
-
-
-
 return(
 
-
 <div style={page}>
-
 
 
 <button
@@ -259,9 +154,18 @@ onClick={()=>setMenuAcik(!menuAcik)}
 
 
 
+{
+menuAcik &&
 
+<div
 
+style={overlay}
 
+onClick={()=>setMenuAcik(false)}
+
+></div>
+
+}
 
 
 
@@ -281,16 +185,11 @@ menuAcik
 
 :
 
-"translateX(0)"
+undefined
 
 }}
 
 >
-
-
-
-
-
 
 
 <div style={logo}>
@@ -300,16 +199,13 @@ menuAcik
 
 src="/helix-logo.png"
 
-alt="Helix Akademi"
+alt="Helix"
 
-width={130}
+width={120}
 
-height={130}
+height={120}
 
 />
-
-
-
 
 
 <h1>
@@ -319,23 +215,14 @@ HELIX
 </h1>
 
 
-
 <p>
 
-ADMIN PANEL
+YÖNETİM MERKEZİ
 
 </p>
 
 
 </div>
-
-
-
-
-
-
-
-
 
 
 
@@ -346,61 +233,41 @@ ADMIN PANEL
 
 menu.map((item)=>(
 
-
 <button
 
-key={item.link}
+key={item[1]}
 
 style={menuBtn}
 
 onClick={()=>{
 
-
-router.push(item.link);
+router.push(item[1]);
 
 setMenuAcik(false);
-
 
 }}
 
 >
 
-
-{item.isim}
-
+{item[0]}
 
 </button>
 
-
 ))
-
 
 }
 
 
-
 </div>
-
-
-
-
-
-
-
-
-
 <button
 
 style={logout}
 
 onClick={async()=>{
 
-
 await supabase.auth.signOut();
 
-
 router.push("/admin-giris");
-
 
 }}
 
@@ -411,16 +278,7 @@ router.push("/admin-giris");
 </button>
 
 
-
-
-
-
-
 </aside>
-
-
-
-
 
 
 
@@ -447,11 +305,7 @@ Helix Akademi Yönetim Merkezi
 </p>
 
 
-
 </div>
-
-
-
 
 
 
@@ -459,26 +313,15 @@ Helix Akademi Yönetim Merkezi
 
 
 
-
-
 </main>
-
-
-
-
 
 
 
 </div>
 
-
 )
 
 }
-
-
-
-
 
 
 
@@ -500,9 +343,6 @@ color:"white"
 
 
 
-
-
-
 const sidebar={
 
 position:"fixed" as const,
@@ -519,7 +359,9 @@ padding:"25px",
 
 background:"rgba(0,0,0,.95)",
 
-borderRight:"1px solid rgba(212,175,55,.3)",
+borderRight:
+
+"1px solid rgba(212,175,55,.3)",
 
 zIndex:1000,
 
@@ -527,12 +369,11 @@ overflowY:"auto" as const,
 
 display:"flex",
 
-flexDirection:"column" as const
+flexDirection:"column" as const,
+
+transition:"0.3s"
 
 };
-
-
-
 
 
 
@@ -545,9 +386,6 @@ textAlign:"center" as const,
 color:"#d4af37"
 
 };
-
-
-
 
 
 
@@ -569,18 +407,19 @@ flex:1
 
 
 
-
-
-
 const menuBtn={
 
 padding:"15px",
 
 borderRadius:"15px",
 
-background:"rgba(212,175,55,.08)",
+background:
 
-border:"1px solid rgba(212,175,55,.3)",
+"rgba(212,175,55,.08)",
+
+border:
+
+"1px solid rgba(212,175,55,.3)",
 
 color:"white",
 
@@ -591,9 +430,6 @@ fontWeight:900,
 textAlign:"left" as const
 
 };
-
-
-
 
 
 
@@ -625,9 +461,6 @@ cursor:"pointer"
 
 
 
-
-
-
 const content={
 
 marginLeft:"320px",
@@ -640,18 +473,19 @@ padding:"40px"
 
 
 
-
-
-
 const header={
 
 padding:"25px",
 
 borderRadius:"25px",
 
-background:"rgba(255,255,255,.05)",
+background:
 
-border:"1px solid rgba(212,175,55,.3)",
+"rgba(255,255,255,.05)",
+
+border:
+
+"1px solid rgba(212,175,55,.3)",
 
 marginBottom:"30px"
 
@@ -661,17 +495,45 @@ marginBottom:"30px"
 
 
 
-
-
-
 const hamburger={
 
-display:"none"
+display:"block",
+
+position:"fixed" as const,
+
+top:"20px",
+
+left:"20px",
+
+zIndex:2000,
+
+fontSize:"28px",
+
+background:"#d4af37",
+
+borderRadius:"12px",
+
+padding:"10px 15px",
+
+cursor:"pointer"
 
 };
 
 
 
+
+
+const overlay={
+
+position:"fixed" as const,
+
+inset:0,
+
+background:"rgba(0,0,0,.7)",
+
+zIndex:900
+
+};
 
 
 
@@ -687,10 +549,14 @@ display:"flex",
 
 alignItems:"center",
 
-justifyContent:"center",
+JustifyContent:"center",
 
 color:"#d4af37",
 
 fontSize:"24px"
 
 };
+
+
+
+
