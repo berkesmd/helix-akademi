@@ -1,9 +1,24 @@
 import type { NextConfig } from "next";
+import withPWA from "@ducanh2912/next-pwa";
+
 
 const nextConfig: NextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
+
+  typescript:{
+    ignoreBuildErrors:true,
   },
+
 };
 
-export default nextConfig;
+
+export default withPWA({
+
+  dest:"public",
+
+  register:true,
+
+  workboxOptions:{
+    skipWaiting:true,
+  },
+
+})(nextConfig);
