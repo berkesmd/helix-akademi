@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import {useState} from "react";
+import Image from "next/image";
+import {createClient} from "@/lib/supabase/client";
+import {useRouter} from "next/navigation";
 
 export default function AdminGirisPage(){
 
-const router = useRouter();
+const router=useRouter();
 
 const [email,setEmail]=useState("");
 const [sifre,setSifre]=useState("");
 const [hata,setHata]=useState("");
 const [loading,setLoading]=useState(false);
-
 
 
 async function girisYap(e:React.FormEvent){
@@ -24,189 +24,211 @@ setHata("");
 
 const supabase=createClient();
 
-
 const {error}=await supabase.auth.signInWithPassword({
-
 email,
 password:sifre
-
 });
 
 
 if(error){
-
 setHata("Giriş bilgileri hatalı");
-
 setLoading(false);
-
 return;
-
 }
 
 
 router.push("/admin");
-
 router.refresh();
 
-
 }
-
 
 
 return(
 
-<div className="min-h-screen bg-black flex items-center justify-center px-5">
+<div className="min-h-screen bg-black flex items-center justify-center p-5 relative overflow-hidden">
+
+<div className="absolute inset-0 bg-gradient-to-br from-yellow-900/40 via-black to-black"/>
 
 
 <div className="
-w-full max-w-md
-bg-white/10
+relative
+w-full
+max-w-md
+rounded-[40px]
+p-8
+bg-black/70
 backdrop-blur-xl
-border border-yellow-500/40
-rounded-3xl
-p-10
-shadow-2xl
+border
+border-yellow-500/50
+shadow-[0_0_80px_rgba(212,175,55,.25)]
 ">
 
 
-<div className="text-center mb-8">
+<div className="text-center">
+
+
+<div className="
+mx-auto
+w-32
+h-32
+rounded-full
+border
+border-yellow-500
+p-3
+shadow-[0_0_40px_rgba(212,175,55,.6)]
+">
+
+<Image
+src="/helix-logo.png"
+alt="Helix Akademi"
+width={120}
+height={120}
+className="rounded-full"
+/>
+
+</div>
+
 
 
 <h1 className="
+mt-6
 text-5xl
 font-black
-tracking-widest
-text-yellow-400
+tracking-[8px]
+bg-gradient-to-r
+from-yellow-200
+via-yellow-500
+to-yellow-200
+bg-clip-text
+text-transparent
 ">
-
 HELIX
-
 </h1>
 
 
-<p className="text-white mt-2 text-xl">
+<h2 className="
+text-yellow-400
+text-xl
+font-black
+tracking-[6px]
+">
 AKADEMİ
-</p>
+</h2>
 
-
-<p className="text-gray-400 mt-4">
-Yönetici Paneli
-</p>
-
-
-</div>
-
-
-
-<form 
-onSubmit={girisYap}
-className="space-y-5"
->
-
-
-
-<input
-
-className="
-w-full
-bg-black/60
-border
-border-yellow-500/30
-rounded-xl
-p-4
-text-white
-outline-none
-focus:border-yellow-400
-"
-
-placeholder="E-posta"
-
-type="email"
-
-value={email}
-
-onChange={(e)=>setEmail(e.target.value)}
-
-/>
-
-
-
-<input
-
-className="
-w-full
-bg-black/60
-border
-border-yellow-500/30
-rounded-xl
-p-4
-text-white
-outline-none
-focus:border-yellow-400
-"
-
-placeholder="Şifre"
-
-type="password"
-
-value={sifre}
-
-onChange={(e)=>setSifre(e.target.value)}
-
-/>
-
-
-
-
-{
-hata &&
 
 <div className="
-bg-red-500/20
+inline-block
+mt-5
+px-6
+py-2
+rounded-full
 border
-border-red-500
-text-red-300
-p-3
-rounded-xl
+border-yellow-500
+text-yellow-300
+tracking-[5px]
+font-bold
+shadow-[0_0_20px_rgba(212,175,55,.5)]
 ">
+SINCE 2020
+</div>
 
-{hata}
+
+
+<h3 className="
+mt-8
+text-white
+text-2xl
+font-black
+">
+Yönetim Paneline
+</h3>
+
+<h3 className="
+text-yellow-400
+text-2xl
+font-black
+">
+Hoş Geldiniz
+</h3>
+
+
+<p className="text-gray-400 mt-3">
+Helix Akademi Yönetim Merkezi
+</p>
 
 </div>
 
-}
 
+
+<form onSubmit={girisYap} className="mt-8 space-y-5">
+
+
+<input
+className="
+w-full
+rounded-2xl
+p-4
+bg-black
+border
+border-yellow-500/50
+text-white
+outline-none
+focus:border-yellow-300
+"
+placeholder="E-posta"
+type="email"
+value={email}
+onChange={e=>setEmail(e.target.value)}
+/>
+
+
+<input
+className="
+w-full
+rounded-2xl
+p-4
+bg-black
+border
+border-yellow-500/50
+text-white
+outline-none
+focus:border-yellow-300
+"
+placeholder="Şifre"
+type="password"
+value={sifre}
+onChange={e=>setSifre(e.target.value)}
+/>
+
+
+
+{hata &&
+<div className="bg-red-500/20 border border-red-500 text-red-300 p-3 rounded-xl text-center">
+{hata}
+</div>
+}
 
 
 
 <button
-
 disabled={loading}
-
 className="
 w-full
-bg-gradient-to-r
-from-yellow-500
-to-yellow-300
-text-black
-font-black
 py-4
-rounded-xl
+rounded-2xl
+font-black
+text-black
+bg-gradient-to-r
+from-yellow-600
+via-yellow-300
+to-yellow-600
+shadow-[0_0_35px_rgba(212,175,55,.5)]
 hover:scale-105
 transition
 "
-
 >
 
-
-{
-loading
-?
-"GİRİŞ YAPILIYOR..."
-:
-"ADMİN GİRİŞ"
-}
-
+{loading ? "GİRİŞ YAPILIYOR..." : "YÖNETİME GİRİŞ"}
 
 </button>
 
@@ -214,25 +236,14 @@ loading
 </form>
 
 
-
-<p className="
-text-center
-text-gray-500
-mt-8
-text-sm
-">
-
+<p className="text-center text-gray-500 mt-8 text-sm">
 HELIX AKADEMİ © 2026
-
 </p>
 
 
-
 </div>
 
-
 </div>
-
 
 )
 
