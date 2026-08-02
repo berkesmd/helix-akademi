@@ -24,8 +24,6 @@ const [seciliEgitim,setSeciliEgitim]=useState("");
 
 const [title,setTitle]=useState("");
 
-const [description,setDescription]=useState("");
-
 const [videoUrl,setVideoUrl]=useState("");
 
 const [pdfUrl,setPdfUrl]=useState("");
@@ -43,14 +41,12 @@ const [loading,setLoading]=useState(true);
 
 
 
-
 useEffect(()=>{
-
 
 egitimleriGetir();
 
-
 },[]);
+
 
 
 
@@ -86,8 +82,9 @@ setEgitimler(data || []);
 setLoading(false);
 
 
-
 }
+
+
 
 
 
@@ -98,6 +95,7 @@ setLoading(false);
 async function dersleriGetir(id:string){
 
 
+
 if(!id){
 
 setDersler([]);
@@ -105,6 +103,8 @@ setDersler([]);
 return;
 
 }
+
+
 
 
 
@@ -131,6 +131,7 @@ return;
 
 
 
+
 setDersler(data || []);
 
 
@@ -143,17 +144,19 @@ setDersler(data || []);
 
 
 
-function egitimSec(e:string){
 
 
-setSeciliEgitim(e);
+function egitimSec(id:string){
 
 
-dersleriGetir(e);
+setSeciliEgitim(id);
 
+
+dersleriGetir(id);
 
 
 }
+
 
 
 
@@ -168,7 +171,8 @@ async function dersEkle(){
 
 if(!seciliEgitim){
 
-setMesaj("Önce eğitim seçiniz.");
+
+setMesaj("❌ Önce eğitim seçiniz.");
 
 return;
 
@@ -178,11 +182,13 @@ return;
 
 if(!title){
 
-setMesaj("Ders adı boş olamaz.");
+
+setMesaj("❌ Ders adı boş olamaz.");
 
 return;
 
 }
+
 
 
 
@@ -199,13 +205,15 @@ const {error}=await supabase
 
 course_id:seciliEgitim,
 
+
 title:title,
 
-description:description,
 
 video_url:videoUrl,
 
-pdf_url:pdfUrl,
+
+pdf_url:pdfUrl || null,
+
 
 lesson_order:sira
 
@@ -219,13 +227,22 @@ lesson_order:sira
 
 
 
+
 if(error){
+
 
 console.log(error);
 
-setMesaj("❌ Ders eklenemedi.");
+
+setMesaj(
+
+"❌ "+error.message
+
+);
+
 
 return;
+
 
 }
 
@@ -234,13 +251,18 @@ return;
 
 
 
-setMesaj("✅ Ders başarıyla eklendi.");
+
+setMesaj(
+
+"✅ Ders başarıyla eklendi."
+
+);
+
+
 
 
 
 setTitle("");
-
-setDescription("");
 
 setVideoUrl("");
 
@@ -281,6 +303,7 @@ if(!onay)return;
 
 
 
+
 const {error}=await supabase
 
 .from("lessons")
@@ -303,7 +326,12 @@ return;
 
 
 
-setMesaj("🗑 Ders silindi.");
+
+setMesaj(
+
+"🗑 Ders silindi."
+
+);
 
 
 
@@ -340,12 +368,16 @@ Yükleniyor...
 
 
 
+
+
+
+
+
 return(
 
 
 
 <main style={page}>
-
 
 
 <h1 style={titleStyle}>
@@ -368,8 +400,6 @@ Eğitimlere ders ekleyin ve yönetin.
 
 
 
-
-
 <div style={box}>
 
 
@@ -381,6 +411,9 @@ Eğitimlere ders ekleyin ve yönetin.
 
 
 
+
+
+
 <select
 
 style={input}
@@ -388,7 +421,9 @@ style={input}
 value={seciliEgitim}
 
 onChange={(e)=>
+
 egitimSec(e.target.value)
+
 }
 
 >
@@ -399,6 +434,7 @@ egitimSec(e.target.value)
 Eğitim seçiniz
 
 </option>
+
 
 
 
@@ -453,6 +489,8 @@ value={e.id}
 
 
 
+
+
 <input
 
 style={input}
@@ -461,23 +499,11 @@ placeholder="Ders başlığı"
 
 value={title}
 
-onChange={(e)=>setTitle(e.target.value)}
+onChange={(e)=>
 
-/>
+setTitle(e.target.value)
 
-
-
-
-
-<textarea
-
-style={textarea}
-
-placeholder="Ders açıklaması"
-
-value={description}
-
-onChange={(e)=>setDescription(e.target.value)}
+}
 
 />
 
@@ -495,7 +521,11 @@ placeholder="Youtube Video URL"
 
 value={videoUrl}
 
-onChange={(e)=>setVideoUrl(e.target.value)}
+onChange={(e)=>
+
+setVideoUrl(e.target.value)
+
+}
 
 />
 
@@ -513,7 +543,11 @@ placeholder="PDF URL"
 
 value={pdfUrl}
 
-onChange={(e)=>setPdfUrl(e.target.value)}
+onChange={(e)=>
+
+setPdfUrl(e.target.value)
+
+}
 
 />
 
@@ -533,7 +567,11 @@ placeholder="Ders sırası"
 
 value={sira}
 
-onChange={(e)=>setSira(Number(e.target.value))}
+onChange={(e)=>
+
+setSira(Number(e.target.value))
+
+}
 
 />
 
@@ -559,11 +597,13 @@ onClick={dersEkle}
 
 
 
+
 <p style={message}>
 
 {mesaj}
 
 </p>
+
 
 
 
@@ -585,6 +625,8 @@ onClick={dersEkle}
 📖 Ders Listesi
 
 </h2>
+
+
 
 
 
@@ -623,7 +665,6 @@ Bu eğitimde ders yok.
 dersler.map((ders,index)=>(
 
 
-
 <div
 
 key={ders.id}
@@ -631,7 +672,6 @@ key={ders.id}
 style={dersBox}
 
 >
-
 
 
 <div>
@@ -642,14 +682,6 @@ style={dersBox}
 {index+1}. {ders.title}
 
 </h3>
-
-
-
-<p>
-
-{ders.description}
-
-</p>
 
 
 
@@ -693,16 +725,13 @@ ders.pdf_url &&
 
 style={deleteBtn}
 
-onClick={()=>
-dersSil(ders.id)
-}
+onClick={()=>dersSil(ders.id)}
 
 >
 
 🗑 Sil
 
 </button>
-
 
 
 
@@ -719,8 +748,8 @@ dersSil(ders.id)
 
 
 
-
 </div>
+
 
 
 
@@ -804,29 +833,6 @@ color:"#d4af37"
 const input={
 
 width:"100%",
-
-marginTop:"15px",
-
-padding:"15px",
-
-borderRadius:"12px",
-
-background:"#111",
-
-color:"white",
-
-border:"1px solid #d4af37"
-
-};
-
-
-
-
-const textarea={
-
-width:"100%",
-
-height:"120px",
 
 marginTop:"15px",
 
