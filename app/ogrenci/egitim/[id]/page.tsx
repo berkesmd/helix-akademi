@@ -8,14 +8,14 @@ import { createClient } from "@/lib/supabase/client";
 export default function EgitimDetayPage(){
 
 
-const router = useRouter();
+const router=useRouter();
 
-const params = useParams();
+const params=useParams();
 
-const supabase = createClient();
+const supabase=createClient();
 
 
-const id = params.id as string;
+const id=params.id as string;
 
 
 
@@ -23,7 +23,19 @@ const [egitim,setEgitim]=useState<any>(null);
 
 const [dersler,setDersler]=useState<any[]>([]);
 
+const [sinav,setSinav]=useState<any>(null);
+
+
+const [tamamlanan,setTamamlanan]=useState(0);
+
+const [yuzde,setYuzde]=useState(0);
+
+
 const [loading,setLoading]=useState(true);
+
+
+
+
 
 
 
@@ -31,9 +43,18 @@ const [loading,setLoading]=useState(true);
 
 useEffect(()=>{
 
+
+if(id){
+
 getir();
 
-},[]);
+}
+
+
+},[id]);
+
+
+
 
 
 
@@ -56,9 +77,8 @@ const {data:course}=await supabase
 
 
 
-
-
 setEgitim(course);
+
 
 
 
@@ -73,13 +93,121 @@ const {data:lessonData}=await supabase
 
 .eq("course_id",id)
 
-.order("created_at",{ascending:true});
+.order("lesson_order",{ascending:true});
+
+
+
+
+const dersListesi=lessonData || [];
+
+
+setDersler(dersListesi);
 
 
 
 
 
-setDersler(lessonData || []);
+
+
+const {
+
+data:{
+user
+
+}
+
+}=await supabase.auth.getUser();
+
+
+
+
+
+
+if(user && dersListesi.length){
+
+
+
+const dersIdleri=dersListesi.map(
+
+(d:any)=>d.id
+
+);
+
+
+
+
+
+
+
+const {data:progress}=await supabase
+
+.from("lesson_progress")
+
+.select("lesson_id")
+
+.eq("user_id",user.id)
+
+.eq("completed",true)
+
+.in(
+
+"lesson_id",
+
+dersIdleri
+
+);
+
+
+
+
+
+
+
+const tamam=progress?.length || 0;
+
+
+
+setTamamlanan(tamam);
+
+
+
+setYuzde(
+
+Math.round(
+
+(tamam/dersListesi.length)*100
+
+)
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+const {data:exam}=await supabase
+
+.from("exams")
+
+.select("*")
+
+.eq("course_id",id)
+
+.maybeSingle();
+
+
+
+
+setSinav(exam);
+
 
 
 
@@ -96,19 +224,41 @@ setLoading(false);
 
 
 
+
+
 if(loading){
+
 
 return(
 
-<div style={page}>
+<main style={page}>
+
+<h2>
 
 Yükleniyor...
 
-</div>
+</h2>
+
+</main>
 
 )
 
 }
+
+
+
+
+
+
+
+
+
+const egitimTamam =
+
+dersler.length > 0 &&
+
+tamamlanan === dersler.length;
+
 
 
 
@@ -134,6 +284,9 @@ return(
 
 
 
+
+
+
 <p style={aciklama}>
 
 {egitim?.description}
@@ -144,9 +297,70 @@ return(
 
 
 
+
+
+
+
+<div style={progressBox}>
+
+
+<p>
+
+📚 Ders İlerlemesi
+
+</p>
+
+
+
 <h2>
 
-DERSLER
+{tamamlanan} / {dersler.length}
+
+</h2>
+
+
+
+
+<div style={bar}>
+
+
+<div
+
+style={{
+
+...fill,
+
+width:`${yuzde}%`
+
+}}
+
+/>
+
+
+</div>
+
+
+
+<p>
+
+%{yuzde} tamamlandı
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<h2 style={sectionTitle}>
+
+🎥 DERSLER
 
 </h2>
 
@@ -154,23 +368,27 @@ DERSLER
 
 
 
-{
 
+
+
+{
 
 dersler.length===0 ?
 
 
-<p>
+<div style={empty}>
 
 Bu eğitim için henüz ders eklenmemiş.
 
-</p>
+</div>
+
 
 
 :
 
 
-dersler.map((ders)=>(
+
+dersler.map((ders,index)=>(
 
 
 
@@ -185,9 +403,12 @@ style={dersKart}
 
 <h3>
 
-{ders.title}
+{index+1}. {ders.title}
 
 </h3>
+
+
+
 
 
 
@@ -211,14 +432,119 @@ DERSE GİR →
 
 
 
-</div>
 
+</div>
 
 
 ))
 
 
 }
+
+
+
+
+
+
+
+
+
+{
+
+sinav &&
+
+
+<div style={sinavKart}>
+
+
+<h2>
+
+📝 Final Sınavı
+
+</h2>
+
+
+
+
+
+{
+
+egitimTamam ?
+
+
+<>
+
+<p>
+
+🎉 Tüm dersleri tamamladınız.
+
+Sınava girebilirsiniz.
+
+</p>
+
+
+
+<button
+
+style={button}
+
+onClick={()=>router.push(
+
+`/ogrenci/sinav/${sinav.id}`
+
+)}
+
+>
+
+SINAVA GİR →
+
+</button>
+
+
+</>
+
+
+
+:
+
+
+<>
+
+
+<p>
+
+🔒 Sınav kilitli
+
+</p>
+
+
+
+<p>
+
+Önce tüm dersleri tamamlayın.
+
+</p>
+
+
+
+</>
+
+
+
+}
+
+
+
+
+
+</div>
+
+
+}
+
+
+
+
 
 
 
@@ -239,7 +565,11 @@ onClick={()=>router.back()}
 
 
 
+
+
 </div>
+
+
 
 
 
@@ -255,15 +585,18 @@ onClick={()=>router.back()}
 
 
 
+
+
+
 const page={
 
 minHeight:"100vh",
 
-padding:"30px",
+padding:"20px",
 
 background:
 
-"radial-gradient(circle,#3b2600,#050505)",
+"radial-gradient(circle at top,#3b2600,#050505 70%)",
 
 color:"white"
 
@@ -271,35 +604,43 @@ color:"white"
 
 
 
+
+
 const kart={
 
-maxWidth:"800px",
+width:"100%",
 
-margin:"30px auto",
+maxWidth:"850px",
 
-padding:"35px",
+margin:"20px auto",
+
+padding:"25px",
 
 borderRadius:"30px",
 
-background:
+background:"rgba(255,255,255,.06)",
 
-"rgba(255,255,255,.06)",
+border:"1px solid #d4af37",
 
-border:
-
-"1px solid #d4af37"
+boxSizing:"border-box" as const
 
 };
+
+
 
 
 
 const title={
 
-fontSize:"42px",
+fontSize:"clamp(28px,5vw,42px)",
 
-color:"#d4af37"
+color:"#d4af37",
+
+textAlign:"center" as const
 
 };
+
+
 
 
 
@@ -307,27 +648,107 @@ const aciklama={
 
 color:"#ddd",
 
-marginBottom:"30px"
+textAlign:"center" as const
 
 };
+
+
+
+
+
+const progressBox={
+
+marginTop:"25px",
+
+padding:"20px",
+
+borderRadius:"20px",
+
+background:"rgba(212,175,55,.1)",
+
+textAlign:"center" as const
+
+};
+
+
+
+
+
+const bar={
+
+height:"12px",
+
+background:"#333",
+
+borderRadius:"20px",
+
+overflow:"hidden"
+
+};
+
+
+
+
+
+const fill={
+
+height:"100%",
+
+background:"#d4af37"
+
+};
+
+
+
+
+
+const sectionTitle={
+
+marginTop:"35px",
+
+color:"#d4af37"
+
+};
+
+
 
 
 
 const dersKart={
 
-padding:"20px",
+marginTop:"15px",
 
-marginTop:"20px",
+padding:"20px",
 
 borderRadius:"20px",
 
 background:"#111",
 
-border:
-
-"1px solid rgba(212,175,55,.4)"
+border:"1px solid rgba(212,175,55,.4)"
 
 };
+
+
+
+
+
+const sinavKart={
+
+marginTop:"35px",
+
+padding:"25px",
+
+borderRadius:"25px",
+
+background:"rgba(212,175,55,.12)",
+
+border:"2px solid #d4af37",
+
+textAlign:"center" as const
+
+};
+
+
 
 
 
@@ -337,21 +758,19 @@ width:"100%",
 
 padding:"15px",
 
-marginTop:"15px",
-
 borderRadius:"15px",
 
 border:"0",
 
-background:
-
-"linear-gradient(90deg,#fff1a8,#d4af37)",
+background:"linear-gradient(90deg,#fff1a8,#d4af37)",
 
 fontWeight:900,
 
 cursor:"pointer"
 
 };
+
+
 
 
 
@@ -367,12 +786,26 @@ borderRadius:"15px",
 
 background:"transparent",
 
-border:
-
-"1px solid #d4af37",
+border:"1px solid #d4af37",
 
 color:"#d4af37",
 
 cursor:"pointer"
+
+};
+
+
+
+
+
+const empty={
+
+padding:"20px",
+
+background:"#111",
+
+borderRadius:"15px",
+
+color:"#aaa"
 
 };
