@@ -63,7 +63,6 @@ return;
 
 
 
-
 const {data:profil}=await supabase
 
 .from("profiles")
@@ -79,6 +78,7 @@ const {data:profil}=await supabase
 
 
 
+
 if(!profil || profil.role!=="admin"){
 
 router.push("/");
@@ -86,6 +86,7 @@ router.push("/");
 return;
 
 }
+
 
 
 
@@ -120,6 +121,7 @@ kontrolEt();
 
 if(!kontrol){
 
+
 return(
 
 <div style={loading}>
@@ -148,10 +150,12 @@ link:"/admin"
 },
 
 
+
 {
 isim:"👨‍🎓 Öğrenci Yönetimi",
 link:"/admin/ogrenciler"
 },
+
 
 
 {
@@ -160,10 +164,12 @@ link:"/admin/ogrenciler/yeni"
 },
 
 
+
 {
 isim:"🎓 Eğitim Yönetimi",
 link:"/admin/egitimler"
 },
+
 
 
 {
@@ -172,10 +178,19 @@ link:"/admin/ders-yonetimi"
 },
 
 
+
+{
+isim:"📝 Sınav Yönetimi",
+link:"/admin/sinavlar"
+},
+
+
+
 {
 isim:"📚 Eğitim Ata",
 link:"/admin/egitim-atama"
 },
+
 
 
 {
@@ -184,10 +199,12 @@ link:"/admin/ogrenci-takip"
 },
 
 
+
 {
 isim:"📈 Analiz",
 link:"/admin/analiz"
 },
+
 
 
 {
@@ -196,16 +213,19 @@ link:"/admin/bildirimler"
 },
 
 
+
 {
 isim:"👑 Rol Yönetimi",
 link:"/admin/rol-yonetimi"
 },
 
 
+
 {
 isim:"⚙️ Site Ayarları",
 link:"/admin/ayarlar"
 }
+
 
 
 ];
@@ -224,6 +244,7 @@ return(
 <div style={page}>
 
 
+
 <button
 
 style={hamburger}
@@ -235,6 +256,7 @@ onClick={()=>setMenuAcik(!menuAcik)}
 ☰
 
 </button>
+
 
 
 
@@ -306,6 +328,8 @@ ADMIN PANEL
 
 
 </div>
+
+
 
 
 
@@ -391,6 +415,7 @@ router.push("/admin-giris");
 
 
 
+
 </aside>
 
 
@@ -414,11 +439,13 @@ Hoş Geldin {isim}
 </h2>
 
 
+
 <p>
 
 Helix Akademi Yönetim Merkezi
 
 </p>
+
 
 
 </div>
@@ -433,7 +460,9 @@ Helix Akademi Yönetim Merkezi
 
 
 
+
 </main>
+
 
 
 
@@ -466,6 +495,7 @@ background:
 color:"white"
 
 };
+
 
 
 
@@ -507,6 +537,7 @@ flexDirection:"column" as const
 
 
 
+
 const logo={
 
 textAlign:"center" as const,
@@ -514,6 +545,7 @@ textAlign:"center" as const,
 color:"#d4af37"
 
 };
+
 
 
 
@@ -532,6 +564,7 @@ gap:"12px",
 flex:1
 
 };
+
 
 
 
@@ -594,6 +627,7 @@ cursor:"pointer"
 
 
 
+
 const content={
 
 marginLeft:"320px",
@@ -601,6 +635,7 @@ marginLeft:"320px",
 padding:"40px"
 
 };
+
 
 
 
@@ -628,11 +663,13 @@ marginBottom:"30px"
 
 
 
+
 const hamburger={
 
 display:"none"
 
 };
+
 
 
 
