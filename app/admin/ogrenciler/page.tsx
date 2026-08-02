@@ -1,581 +1,105 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
-
+import {useEffect,useState} from "react";
+import {createClient} from "@/lib/supabase/client";
+import {useRouter} from "next/navigation";
 
 export default function OgrencilerPage(){
 
-
 const supabase=createClient();
-
 const router=useRouter();
 
-
 const [ogrenciler,setOgrenciler]=useState<any[]>([]);
-
 const [arama,setArama]=useState("");
+const [siliniyor,setSiliniyor]=useState("");
 
-const [loading,setLoading]=useState(true);
-
-
-
-
-
-useEffect(()=>{
-
-listele();
-
-},[]);
-
-
-
-
-
-
+useEffect(()=>{listele()},[]);
 
 async function listele(){
 
-
-setLoading(true);
-
-
-
-const {data,error}=await supabase
-
+const {data}=await supabase
 .from("profiles")
-
 .select("*")
-
 .eq("role","student")
-
 .order("created_at",{ascending:false});
 
+setOgrenciler(data||[]);
 
+}
 
+async function ogrenciSil(id:string){
+
+if(!confirm("Öğrenci silinsin mi?")) return;
+
+setSiliniyor(id);
+
+await supabase.from("lesson_progress").delete().eq("user_id",id);
+await supabase.from("exam_results").delete().eq("user_id",id);
+
+const {error}=await supabase
+.from("profiles")
+.delete()
+.eq("id",id);
 
 if(error){
+alert(error.message);
+}
 
-console.log(error);
-
-setLoading(false);
-
-return;
+setSiliniyor("");
+listele();
 
 }
 
-
-
-
-setOgrenciler(data || []);
-
-setLoading(false);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-const filtre=ogrenciler.filter((item)=>{
-
-
-const isim=item.full_name || "";
-
-const email=item.email || "";
-
-
-return (
-
-isim
-
-.toLowerCase()
-
-.includes(arama.toLowerCase())
-
-
-||
-
-email
-
-.toLowerCase()
-
-.includes(arama.toLowerCase())
-
+const liste=ogrenciler.filter(o=>
+(o.full_name||"").toLowerCase().includes(arama.toLowerCase()) ||
+(o.email||"").toLowerCase().includes(arama.toLowerCase())
 );
 
+return <main style={page}>
 
-});
-
-
-
-
-
-
-
-
-if(loading){
-
-
-return(
-
-<main style={page}>
-
-<h2>
-
-Yükleniyor...
-
-</h2>
-
-</main>
-
-)
-
-}
-
-
-
-
-
-
-
-return(
-
-
-<main style={page}>
-
-
-<h1 style={title}>
-
-👨‍🎓 Öğrenci Yönetimi
-
-</h1>
-
-
-
-<p style={desc}>
-
-Helix Akademi öğrenci kayıtları
-
-</p>
-
-
-
-
-
-
-
-
-<div style={toolbar}>
-
+<h1 style={title}>👨‍🎓 Öğrenci Yönetimi</h1>
 
 <input
-
 style={input}
-
-placeholder="🔍 Öğrenci ara..."
-
+placeholder="Öğrenci ara"
 value={arama}
-
-onChange={(e)=>setArama(e.target.value)}
-
+onChange={e=>setArama(e.target.value)}
 />
 
+{liste.map(o=>
 
+<div key={o.id} style={card}>
 
+<h2 style={gold}>{o.full_name}</h2>
 
-
-
+<p>{o.email}</p>
 
 <button
-
-style={addButton}
-
-onClick={()=>router.push("/admin/ogrenciler/ekle")}
-
+style={detail}
+onClick={()=>router.push(`/admin/ogrenciler/${o.id}`)}
 >
-
-➕ Öğrenci Ekle
-
+👁 Detay
 </button>
 
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div style={grid}>
-
-
-{
-
-
-filtre.length===0 ?
-
-
-<div style={empty}>
-
-Öğrenci bulunamadı.
-
-</div>
-
-
-
-:
-
-
-filtre.map((ogrenci)=>(
-
-
-
-<div
-
-key={ogrenci.id}
-
-style={card}
-
->
-
-
-
-
-
-<h2 style={gold}>
-
-👤 {ogrenci.full_name || "İsimsiz"}
-
-</h2>
-
-
-
-
-
-<p>
-
-📧 {ogrenci.email || "Email yok"}
-
-</p>
-
-
-
-
-
-<p>
-
-📱 {ogrenci.phone || "Telefon yok"}
-
-</p>
-
-
-
-
-
-
-<div style={info}>
-
-
-🎭 Rol:
-
-<b>
-
-{" "}
-
-{ogrenci.role}
-
-</b>
-
-
-<br/>
-
-
-📅 Kayıt:
-
-{" "}
-
-{
-
-new Date(
-
-ogrenci.created_at
-
-)
-
-.toLocaleDateString("tr-TR")
-
-}
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
 <button
+style={deleteBtn}
+onClick={()=>ogrenciSil(o.id)}
+>
+{siliniyor===o.id ? "Siliniyor..." : "🗑 Sil"}
+</button>
 
-style={detailButton}
-
-onClick={()=>router.push(
-
-`/admin/ogrenciler/${ogrenci.id}`
+</div>
 
 )}
 
->
-
-👁 Detay Gör
-
-</button>
-
-
-
-
-
-
-</div>
-
-
-))
-
-
-}
-
-
-
-
-
-</div>
-
-
-
-
-
 </main>
 
-
-)
-
 }
 
-
-
-
-
-
-
-
-
-const page={
-
-minHeight:"100vh",
-
-padding:"30px",
-
-color:"white"
-
-};
-
-
-
-
-
-const title={
-
-fontSize:"42px",
-
-color:"#d4af37",
-
-fontWeight:900
-
-};
-
-
-
-
-
-const desc={
-
-color:"#aaa",
-
-fontSize:"18px"
-
-};
-
-
-
-
-
-const toolbar={
-
-display:"flex",
-
-gap:"15px",
-
-marginTop:"30px",
-
-flexWrap:"wrap" as const
-
-};
-
-
-
-
-
-const input={
-
-flex:1,
-
-minWidth:"250px",
-
-padding:"15px",
-
-background:"#111",
-
-color:"white",
-
-border:"1px solid #d4af37",
-
-borderRadius:"15px"
-
-};
-
-
-
-
-
-const addButton={
-
-padding:"15px 25px",
-
-background:"#d4af37",
-
-border:"0",
-
-borderRadius:"15px",
-
-fontWeight:900,
-
-cursor:"pointer"
-
-};
-
-
-
-
-
-const grid={
-
-display:"grid",
-
-gridTemplateColumns:
-
-"repeat(auto-fit,minmax(300px,1fr))",
-
-gap:"25px",
-
-marginTop:"40px"
-
-};
-
-
-
-
-
-const card={
-
-padding:"30px",
-
-background:
-
-"rgba(255,255,255,.05)",
-
-border:
-
-"1px solid rgba(212,175,55,.3)",
-
-borderRadius:"25px"
-
-};
-
-
-
-
-
-const gold={
-
-color:"#d4af37"
-
-};
-
-
-
-
-
-const info={
-
-marginTop:"15px",
-
-lineHeight:"2",
-
-color:"#ddd"
-
-};
-
-
-
-
-
-const detailButton={
-
-width:"100%",
-
-marginTop:"25px",
-
-padding:"14px",
-
-borderRadius:"15px",
-
-background:"transparent",
-
-border:"1px solid #d4af37",
-
-color:"#d4af37",
-
-fontWeight:900,
-
-cursor:"pointer"
-
-};
-
-
-
-
-
-const empty={
-
-padding:"30px",
-
-borderRadius:"20px",
-
-background:"rgba(255,255,255,.05)"
-
-};
+const page={padding:"30px",color:"white"};
+const title={color:"#d4af37"};
+const input={width:"100%",padding:"15px",background:"#111",color:"white",border:"1px solid #d4af37",borderRadius:"15px"};
+const card={marginTop:"20px",padding:"25px",borderRadius:"20px",background:"rgba(255,255,255,.05)"};
+const gold={color:"#d4af37"};
+const detail={width:"100%",padding:"14px",marginTop:"15px",background:"transparent",color:"#d4af37",border:"1px solid #d4af37",borderRadius:"15px"};
+const deleteBtn={width:"100%",padding:"14px",marginTop:"15px",background:"#8b0000",color:"white",border:"0",borderRadius:"15px"};
