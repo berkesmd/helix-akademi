@@ -787,3 +787,72 @@ font-weight:900;
 font-size:17px;
 
 }
+@media(max-width:480px){
+
+/* öğrenci giriş mobil */
+
+.ogrenci-card{
+width:100%;
+max-width:360px;
+padding:25px !important;
+border-radius:30px;
+}
+
+
+.ogrenci-logo{
+width:90px !important;
+height:90px !important;
+}
+
+
+.ogrenci-helix{
+font-size:38px !important;
+letter-spacing:6px !important;
+}
+
+
+.ogrenci-akademi{
+font-size:18px !important;
+letter-spacing:5px !important;
+}
+
+
+.ogrenci-since{
+
+font-size:12px !important;
+padding:8px 18px !important;
+
+}
+
+
+.ogrenci-welcome{
+
+font-size:22px !important;
+line-height:1.3 !important;
+
+}
+
+
+.ogrenci-desc{
+
+font-size:14px !important;
+
+}
+
+
+.ogrenci-input{
+
+padding:14px !important;
+font-size:14px !important;
+
+}
+
+
+.ogrenci-button{
+
+padding:15px !important;
+font-size:15px !important;
+
+}
+
+}
