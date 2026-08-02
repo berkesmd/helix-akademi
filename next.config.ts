@@ -8,7 +8,10 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors:true,
   },
 
+  turbopack:{},
+
 };
+
 
 
 export default withPWA({
@@ -20,5 +23,6 @@ export default withPWA({
   workboxOptions:{
     skipWaiting:true,
   },
+
 
 })(nextConfig);
