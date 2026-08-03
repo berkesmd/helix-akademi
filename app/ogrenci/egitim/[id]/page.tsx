@@ -85,6 +85,8 @@ setEgitim(course);
 
 
 
+
+
 const {data:lessonData}=await supabase
 
 .from("lessons")
@@ -98,10 +100,13 @@ const {data:lessonData}=await supabase
 
 
 
+
 const dersListesi=lessonData || [];
 
 
+
 setDersler(dersListesi);
+
 
 
 
@@ -117,6 +122,7 @@ user
 }
 
 }=await supabase.auth.getUser();
+
 
 
 
@@ -163,6 +169,7 @@ dersIdleri
 
 
 
+
 const tamam=progress?.length || 0;
 
 
@@ -171,11 +178,12 @@ setTamamlanan(tamam);
 
 
 
+
 setYuzde(
 
 Math.round(
 
-(tamam/dersListesi.length)*100
+(tamam / dersListesi.length) * 100
 
 )
 
@@ -207,7 +215,6 @@ const {data:exam}=await supabase
 
 
 setSinav(exam);
-
 
 
 
@@ -257,7 +264,7 @@ const egitimTamam =
 
 dersler.length > 0 &&
 
-tamamlanan === dersler.length;
+tamamlanan >= dersler.length;
 
 
 
@@ -273,7 +280,12 @@ return(
 <main style={page}>
 
 
+
+
 <div style={kart}>
+
+
+
 
 
 <h1 style={title}>
@@ -281,6 +293,7 @@ return(
 {egitim?.title}
 
 </h1>
+
 
 
 
@@ -321,6 +334,7 @@ return(
 
 
 
+
 <div style={bar}>
 
 
@@ -337,7 +351,10 @@ width:`${yuzde}%`
 />
 
 
+
 </div>
+
+
 
 
 
@@ -346,6 +363,7 @@ width:`${yuzde}%`
 %{yuzde} tamamlandı
 
 </p>
+
 
 
 </div>
@@ -371,6 +389,7 @@ width:`${yuzde}%`
 
 
 
+
 {
 
 dersler.length===0 ?
@@ -387,7 +406,6 @@ Bu eğitim için henüz ders eklenmemiş.
 :
 
 
-
 dersler.map((ders,index)=>(
 
 
@@ -399,6 +417,8 @@ key={ders.id}
 style={dersKart}
 
 >
+
+
 
 
 <h3>
@@ -433,6 +453,8 @@ DERSE GİR →
 
 
 
+
+
 </div>
 
 
@@ -449,9 +471,8 @@ DERSE GİR →
 
 
 
-{
 
-sinav &&
+
 
 
 <div style={sinavKart}>
@@ -467,12 +488,29 @@ sinav &&
 
 
 
+
 {
+
+!sinav ?
+
+
+<p>
+
+⚠️ Bu eğitim için sınav henüz oluşturulmamış.
+
+</p>
+
+
+
+
+:
+
 
 egitimTamam ?
 
 
 <>
+
 
 <p>
 
@@ -481,6 +519,8 @@ egitimTamam ?
 Sınava girebilirsiniz.
 
 </p>
+
+
 
 
 
@@ -501,7 +541,9 @@ SINAVA GİR →
 </button>
 
 
+
 </>
+
 
 
 
@@ -519,6 +561,19 @@ SINAVA GİR →
 
 
 
+
+
+<h2 style={gold}>
+
+{tamamlanan}/{dersler.length}
+
+</h2>
+
+
+
+
+
+
 <p>
 
 Önce tüm dersleri tamamlayın.
@@ -527,20 +582,32 @@ SINAVA GİR →
 
 
 
+
+
+
+<button
+
+style={locked}
+
+disabled
+
+>
+
+🔒 KİLİTLİ
+
+</button>
+
+
+
 </>
 
 
-
 }
-
 
 
 
 
 </div>
-
-
-}
 
 
 
@@ -561,6 +628,8 @@ onClick={()=>router.back()}
 ← Geri Dön
 
 </button>
+
+
 
 
 
@@ -601,6 +670,7 @@ background:
 color:"white"
 
 };
+
 
 
 
@@ -724,7 +794,17 @@ borderRadius:"20px",
 
 background:"#111",
 
-border:"1px solid rgba(212,175,55,.4)"
+border:"1px solid rgba(212,175,55,.4)",
+
+display:"flex",
+
+justifyContent:"space-between",
+
+alignItems:"center",
+
+gap:"15px",
+
+flexWrap:"wrap" as const
 
 };
 
@@ -774,6 +854,28 @@ cursor:"pointer"
 
 
 
+const locked={
+
+width:"100%",
+
+padding:"15px",
+
+borderRadius:"15px",
+
+border:"1px solid #555",
+
+background:"#333",
+
+color:"#888",
+
+fontWeight:900
+
+};
+
+
+
+
+
 const geri={
 
 width:"100%",
@@ -807,5 +909,15 @@ background:"#111",
 borderRadius:"15px",
 
 color:"#aaa"
+
+};
+
+
+
+
+
+const gold={
+
+color:"#d4af37"
 
 };
