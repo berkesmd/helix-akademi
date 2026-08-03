@@ -15,7 +15,6 @@ const supabase=createClient();
 const router=useRouter();
 
 
-
 const [isim,setIsim]=useState("");
 
 const [video,setVideo]=useState("");
@@ -28,19 +27,11 @@ const [loading,setLoading]=useState(true);
 
 
 
-
-
-
-
 useEffect(()=>{
-
 
 yukle();
 
-
 },[]);
-
-
 
 
 
@@ -51,17 +42,13 @@ yukle();
 async function yukle(){
 
 
-
 const {
-
 data:userData
-
 }=await supabase.auth.getUser();
 
 
 
 const user=userData.user;
-
 
 
 
@@ -79,9 +66,7 @@ return;
 
 
 
-
-
-// öğrenci adı
+// profil
 
 const {data:profil}=await supabase
 
@@ -107,9 +92,7 @@ profil?.full_name || "Öğrenci"
 
 
 
-
-
-// tanıtım videosu
+// video
 
 const {data:ayar}=await supabase
 
@@ -135,30 +118,26 @@ ayar?.intro_video || ""
 
 
 
-// eğitimler
+// ======================
+// EĞİTİMLERİ GETİR
+// ======================
 
-const {data:kayitlar}=await supabase
+
+const {data:kayitlar,error:kayitError}=await supabase
 
 .from("enrollments")
 
-.select(`
-
-courses(
-
-id,
-
-title,
-
-description
-
-)
-
-`)
+.select("course_id")
 
 .eq("user_id",user.id);
 
 
 
+if(kayitError){
+
+console.log(kayitError);
+
+}
 
 
 
@@ -169,25 +148,33 @@ let liste:any[]=[];
 
 
 
-
-
-
-
 for(const item of kayitlar || []){
 
 
 
-const course=
+const {data:course,error:courseError}=await supabase
 
-Array.isArray(item.courses)
+.from("courses")
 
-?
+.select(
+"id,title,description"
+)
 
-item.courses[0]
+.eq("id",item.course_id)
 
-:
+.single();
 
-item.courses;
+
+
+
+
+if(courseError){
+
+console.log(courseError);
+
+continue;
+
+}
 
 
 
@@ -198,6 +185,10 @@ if(!course) continue;
 
 
 
+
+
+
+// ders sayısı
 
 const {data:dersler}=await supabase
 
@@ -211,11 +202,11 @@ const {data:dersler}=await supabase
 
 
 
-const ids=
+const ids=(dersler || []).map(
 
-(dersler || [])
+(d:any)=>d.id
 
-.map((d:any)=>d.id);
+);
 
 
 
@@ -225,11 +216,7 @@ let tamam=0;
 
 
 
-
-
-
 if(ids.length){
-
 
 
 const {data:progress}=await supabase
@@ -243,11 +230,8 @@ const {data:progress}=await supabase
 .eq("completed",true)
 
 .in(
-
 "lesson_id",
-
 ids
-
 );
 
 
@@ -255,9 +239,7 @@ ids
 tamam=progress?.length || 0;
 
 
-
 }
-
 
 
 
@@ -290,7 +272,6 @@ Math.round(
 
 
 
-
 liste.push({
 
 ...course,
@@ -305,9 +286,7 @@ yuzde
 
 
 
-
 }
-
 
 
 
@@ -352,7 +331,6 @@ url.split("watch?v=")[1]
 .split("&")[0];
 
 
-
 return `https://www.youtube.com/embed/${id}`;
 
 
@@ -369,7 +347,6 @@ const id=
 url.split("youtu.be/")[1]
 
 .split("?")[0];
-
 
 
 return `https://www.youtube.com/embed/${id}`;
@@ -415,14 +392,11 @@ Yükleniyor...
 
 
 
+
 return(
 
 
 <main style={page}>
-
-
-
-
 
 
 <div style={welcome}>
@@ -435,7 +409,6 @@ Hoş Geldin 👋
 </h1>
 
 
-
 <h2 style={gold}>
 
 {isim}
@@ -443,13 +416,11 @@ Hoş Geldin 👋
 </h2>
 
 
-
 <p>
 
 Helix Akademi eğitim platformuna hoş geldin.
 
 </p>
-
 
 
 </div>
@@ -466,7 +437,6 @@ Helix Akademi eğitim platformuna hoş geldin.
 
 video &&
 
-
 <div style={box}>
 
 
@@ -475,8 +445,6 @@ video &&
 🎬 Tanıtım Videomuz
 
 </h2>
-
-
 
 
 <iframe
@@ -488,8 +456,6 @@ style={iframe}
 allowFullScreen
 
 />
-
-
 
 
 </div>
@@ -513,8 +479,6 @@ allowFullScreen
 📚 Eğitimlerim
 
 </h2>
-
-
 
 
 
@@ -550,7 +514,6 @@ style={card}
 >
 
 
-
 <h2>
 
 {e.title}
@@ -558,15 +521,11 @@ style={card}
 </h2>
 
 
-
 <p>
 
 {e.description}
 
 </p>
-
-
-
 
 
 <p>
@@ -580,8 +539,6 @@ style={card}
 {e.toplam}
 
 </p>
-
-
 
 
 
@@ -607,13 +564,11 @@ width:`${e.yuzde}%`
 
 
 
-
 <h3 style={gold}>
 
 İlerleme %{e.yuzde}
 
 </h3>
-
 
 
 
@@ -638,7 +593,6 @@ onClick={()=>router.push(
 
 
 
-
 </div>
 
 
@@ -646,11 +600,6 @@ onClick={()=>router.push(
 
 
 }
-
-
-
-
-
 
 
 
@@ -667,8 +616,6 @@ onClick={()=>router.push(
 )
 
 }
-
-
 
 
 
