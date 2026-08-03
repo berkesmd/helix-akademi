@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 
-export default function DerslerPage() {
-
+export default function DerslerPage(){
 
 const supabase=createClient();
 
@@ -13,13 +12,10 @@ const supabase=createClient();
 const [egitimler,setEgitimler]=useState<any[]>([]);
 const [dersler,setDersler]=useState<any[]>([]);
 
-
 const [egitim,setEgitim]=useState("");
 const [baslik,setBaslik]=useState("");
 const [video,setVideo]=useState("");
 const [pdf,setPdf]=useState("");
-const [sira,setSira]=useState("1");
-
 
 const [mesaj,setMesaj]=useState("");
 
@@ -27,6 +23,12 @@ const [mesaj,setMesaj]=useState("");
 
 
 useEffect(()=>{
+
+getir();
+
+},[]);
+
+
 
 
 async function getir(){
@@ -51,20 +53,13 @@ courses(
 title
 )
 `)
-.order("created_at");
+.order("lesson_order",{ascending:true});
 
 
 setDersler(dersData || []);
 
 
-
 }
-
-
-getir();
-
-
-},[]);
 
 
 
@@ -73,8 +68,25 @@ getir();
 
 async function dersEkle(e:React.FormEvent){
 
-
 e.preventDefault();
+
+
+
+const {data:last}=await supabase
+.from("lessons")
+.select("lesson_order")
+.eq("course_id",egitim)
+.order("lesson_order",{ascending:false})
+.limit(1)
+.maybeSingle();
+
+
+
+const yeniSira = last
+? last.lesson_order + 1
+: 1;
+
+
 
 
 
@@ -90,17 +102,15 @@ video_url:video,
 
 pdf_url:pdf,
 
-lesson_order:Number(sira)
+lesson_order:yeniSira
 
 });
-
 
 
 
 if(error){
 
 setMesaj(error.message);
-
 return;
 
 }
@@ -110,25 +120,107 @@ return;
 setMesaj("✅ Ders eklendi");
 
 
-
 setBaslik("");
 setVideo("");
 setPdf("");
 
+getir();
+
+}
 
 
-const {data}=await supabase
+
+
+
+
+
+
+
+async function sirala(
+
+index:number,
+
+yon:"up"|"down"
+
+){
+
+
+const yeni=[...dersler];
+
+
+const hedef =
+
+yon==="up"
+
+?
+
+index-1
+
+:
+
+index+1;
+
+
+
+if(hedef<0 || hedef>=yeni.length)
+
+return;
+
+
+
+
+const mevcut=yeni[index];
+
+const degisen=yeni[hedef];
+
+
+
+
+
+const eskiSira=mevcut.lesson_order;
+
+const yeniSira=degisen.lesson_order;
+
+
+
+
+yeni[index].lesson_order=yeniSira;
+
+yeni[hedef].lesson_order=eskiSira;
+
+
+
+
+setDersler(yeni);
+
+
+
+
+
+await supabase
 .from("lessons")
-.select(`
-*,
-courses(
-title
-)
-`)
-.order("created_at");
+.update({
+
+lesson_order:yeniSira
+
+})
+.eq("id",mevcut.id);
 
 
-setDersler(data || []);
+
+
+await supabase
+.from("lessons")
+.update({
+
+lesson_order:eskiSira
+
+})
+.eq("id",degisen.id);
+
+
+
+getir();
 
 
 
@@ -139,33 +231,17 @@ setDersler(data || []);
 
 
 
+
+
+
 return(
 
 
-<main
-
-style={{
-minHeight:"100vh",
-background:"#050505",
-color:"white",
-padding:"40px"
-}}
-
->
+<main style={page}>
 
 
-
-<h1
-
-style={{
-color:"#d4af37",
-fontSize:"40px"
-}}
-
->
-
+<h1 style={title}>
 🎬 Ders Yönetimi
-
 </h1>
 
 
@@ -175,17 +251,9 @@ fontSize:"40px"
 
 onSubmit={dersEkle}
 
-style={{
-marginTop:"30px",
-maxWidth:"600px",
-background:"#111",
-padding:"30px",
-borderRadius:"20px"
-}}
+style={form}
 
 >
-
-
 
 
 <select
@@ -198,14 +266,13 @@ style={input}
 
 >
 
-<option value="">
+<option>
 Eğitim seç
 </option>
 
 
 {
-
-egitimler.map((e)=>(
+egitimler.map(e=>
 
 <option
 
@@ -219,10 +286,9 @@ value={e.id}
 
 </option>
 
-))
+)
 
 }
-
 
 </select>
 
@@ -232,35 +298,39 @@ value={e.id}
 
 <input
 
+style={input}
+
 placeholder="Ders adı"
 
 value={baslik}
 
 onChange={e=>setBaslik(e.target.value)}
 
-style={input}
-
 />
+
 
 
 
 
 <input
 
-placeholder="YouTube / Vimeo video linki"
+style={input}
+
+placeholder="Video linki"
 
 value={video}
 
 onChange={e=>setVideo(e.target.value)}
 
-style={input}
-
 />
 
 
 
 
+
 <input
+
+style={input}
 
 placeholder="PDF linki"
 
@@ -268,34 +338,12 @@ value={pdf}
 
 onChange={e=>setPdf(e.target.value)}
 
-style={input}
-
 />
 
 
 
 
-<input
-
-placeholder="Ders sırası"
-
-value={sira}
-
-onChange={e=>setSira(e.target.value)}
-
-style={input}
-
-/>
-
-
-
-
-
-<button
-
-style={button}
-
->
+<button style={button}>
 
 Dersi Kaydet
 
@@ -303,14 +351,8 @@ Dersi Kaydet
 
 
 
-<p
-style={{
-color:"#d4af37"
-}}
->
-
+<p style={msg}>
 {mesaj}
-
 </p>
 
 
@@ -321,17 +363,10 @@ color:"#d4af37"
 
 
 
-<h2
 
-style={{
-marginTop:"50px",
-color:"#d4af37"
-}}
 
->
-
-Mevcut Dersler
-
+<h2 style={gold}>
+📚 Mevcut Dersler
 </h2>
 
 
@@ -340,7 +375,7 @@ Mevcut Dersler
 
 {
 
-dersler.map((ders)=>(
+dersler.map((ders,index)=>(
 
 
 <div
@@ -353,29 +388,55 @@ style={kart}
 
 
 <h2>
-{ders.title}
+
+{index+1}. {ders.title}
+
 </h2>
 
 
+
 <p>
-📚 Eğitim: {ders.courses?.title}
+
+📚 {ders.courses?.title}
+
 </p>
 
 
 <p>
-🎥 {ders.video_url}
+
+Sıra: {ders.lesson_order}
+
 </p>
 
 
-{
 
-ders.pdf_url &&
 
-<p>
-📄 PDF mevcut
-</p>
+<button
 
-}
+style={small}
+
+onClick={()=>sirala(index,"up")}
+
+>
+
+⬆ Yukarı
+
+</button>
+
+
+
+
+<button
+
+style={small}
+
+onClick={()=>sirala(index,"down")}
+
+>
+
+⬇ Aşağı
+
+</button>
 
 
 
@@ -383,7 +444,6 @@ ders.pdf_url &&
 
 
 ))
-
 
 }
 
@@ -401,6 +461,52 @@ ders.pdf_url &&
 
 
 
+
+
+const page={
+
+minHeight:"100vh",
+
+background:"#050505",
+
+color:"white",
+
+padding:"40px"
+
+};
+
+
+const title={
+
+color:"#d4af37",
+
+fontSize:"40px"
+
+};
+
+
+const gold={
+
+color:"#d4af37",
+
+marginTop:"40px"
+
+};
+
+
+const form={
+
+maxWidth:"600px",
+
+background:"#111",
+
+padding:"30px",
+
+borderRadius:"20px"
+
+};
+
+
 const input={
 
 width:"100%",
@@ -413,15 +519,11 @@ background:"#000",
 
 color:"white",
 
-border:"1px solid #333",
+border:"1px solid #d4af37",
 
-borderRadius:"10px",
+borderRadius:"10px"
 
-boxSizing:"border-box" as const
-
-}
-
-
+};
 
 
 const button={
@@ -432,30 +534,49 @@ padding:"15px",
 
 background:"#d4af37",
 
-color:"#000",
-
 border:"0",
-
-borderRadius:"10px",
 
 fontWeight:900,
 
-cursor:"pointer"
+borderRadius:"10px"
 
-}
-
+};
 
 
 const kart={
 
 background:"#111",
 
+border:"1px solid rgba(212,175,55,.4)",
+
 padding:"25px",
 
 borderRadius:"20px",
 
-marginTop:"20px",
+marginTop:"20px"
 
-border:"1px solid rgba(212,175,55,.3)"
+};
 
-}
+
+const small={
+
+marginRight:"10px",
+
+padding:"12px 20px",
+
+background:"#d4af37",
+
+border:"0",
+
+borderRadius:"10px",
+
+fontWeight:900
+
+};
+
+
+const msg={
+
+color:"#d4af37"
+
+};
