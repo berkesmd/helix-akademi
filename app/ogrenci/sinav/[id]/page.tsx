@@ -10,7 +10,6 @@ export default function SinavPage(){
 const supabase=createClient();
 
 const params=useParams();
-
 const router=useRouter();
 
 const id=params.id as string;
@@ -18,10 +17,12 @@ const id=params.id as string;
 
 const [sinav,setSinav]=useState<any>(null);
 const [sorular,setSorular]=useState<any[]>([]);
-const [aktifSoru,setAktifSoru]=useState(0);
+
+const [index,setIndex]=useState(0);
 
 const [cevaplar,setCevaplar]=useState<any>({});
-const [seciliCevap,setSeciliCevap]=useState("");
+
+const [secim,setSecim]=useState("");
 
 const [loading,setLoading]=useState(true);
 
@@ -31,14 +32,10 @@ const [bitti,setBitti]=useState(false);
 
 
 
-
-
 useEffect(()=>{
 
 if(id){
-
-yukle();
-
+getir();
 }
 
 },[id]);
@@ -47,52 +44,15 @@ yukle();
 
 
 
-
-async function yukle(){
+async function getir(){
 
 
 const {data:userData}=await supabase.auth.getUser();
 
-const user=userData.user;
 
-
-if(!user){
+if(!userData.user){
 
 router.push("/ogrenci-giris");
-
-return;
-
-}
-
-
-
-
-const {data:eski}=await supabase
-
-.from("exam_results")
-
-.select("*")
-
-.eq("user_id",user.id)
-
-.eq("exam_id",id)
-
-.maybeSingle();
-
-
-
-if(eski){
-
-setSonuc(
-`Bu sınav daha önce çözüldü.
-
-Puan: ${eski.score}/100`
-);
-
-setBitti(true);
-
-setLoading(false);
-
 return;
 
 }
@@ -104,11 +64,8 @@ return;
 const {data:exam}=await supabase
 
 .from("exams")
-
 .select("*")
-
 .eq("id",id)
-
 .single();
 
 
@@ -121,25 +78,21 @@ setSinav(exam);
 const {data:questions,error}=await supabase
 
 .from("questions")
-
 .select("*")
-
 .eq("exam_id",id)
-
 .order("created_at",{ascending:true});
 
 
 
 if(error){
 
-setSonuc(error.message);
+alert(error.message);
 
 }
 
 
 
 setSorular(questions || []);
-
 
 setLoading(false);
 
@@ -152,32 +105,22 @@ setLoading(false);
 
 
 
+function cevapVer(c:string){
 
 
-function cevapSec(cevap:string){
+setSecim(c);
 
 
-const soru=sorular[aktifSoru];
+setCevaplar({
 
+...cevaplar,
 
-if(!soru)return;
+[sorular[index].id]:c
 
-
-
-setSeciliCevap(cevap);
-
-
-setCevaplar((prev:any)=>({
-
-...prev,
-
-[soru.id]:cevap
-
-}));
+});
 
 
 }
-
 
 
 
@@ -188,9 +131,9 @@ setCevaplar((prev:any)=>({
 function sonraki(){
 
 
-if(!seciliCevap){
+if(!secim){
 
-setSonuc("Önce cevap seçiniz.");
+alert("Önce cevap seç");
 
 return;
 
@@ -198,18 +141,15 @@ return;
 
 
 
-const yeni=aktifSoru+1;
+const yeni=index+1;
 
 
-if(yeni<sorular.length){
+setIndex(yeni);
 
 
-setAktifSoru(yeni);
+setSecim(
 
-
-setSeciliCevap(
-
-cevaplar[sorular[yeni].id] || ""
+cevaplar[sorular[yeni]?.id] || ""
 
 );
 
@@ -217,32 +157,26 @@ cevaplar[sorular[yeni].id] || ""
 }
 
 
-}
 
 
 
 
 
 
+async function sinaviBitir(){
+
+
+alert("Sınav hesaplanıyor");
 
 
 
-async function bitir(){
-
-
-
-try{
-
-
-
-const yeniCevaplar={
+const sonCevap={
 
 ...cevaplar,
 
-[sorular[aktifSoru].id]:seciliCevap
+[sorular[index].id]:secim
 
 };
-
 
 
 
@@ -250,32 +184,14 @@ let dogru=0;
 
 
 
-
 sorular.forEach((s)=>{
 
 
-const verilen=
+if(
 
-String(yeniCevaplar[s.id] || "")
+sonCevap[s.id]===s.correct_answer
 
-.toUpperCase()
-
-.trim();
-
-
-
-const dogruCevap=
-
-String(s.correct_answer || "")
-
-.toUpperCase()
-
-.trim();
-
-
-
-
-if(verilen===dogruCevap){
+){
 
 dogru++;
 
@@ -288,13 +204,7 @@ dogru++;
 
 
 
-
-const puan=Math.round(
-
-(dogru/sorular.length)*100
-
-);
-
+const puan=dogru*10;
 
 
 
@@ -302,18 +212,19 @@ const puan=Math.round(
 
 const {data:userData}=await supabase.auth.getUser();
 
+
+
 const user=userData.user;
 
 
 
 if(!user){
 
-router.push("/ogrenci-giris");
+alert("Kullanıcı yok");
 
 return;
 
 }
-
 
 
 
@@ -341,9 +252,7 @@ success:puan>=70
 
 if(error){
 
-setSonuc(
-"Kaydetme hatası: "+error.message
-);
+alert(error.message);
 
 return;
 
@@ -354,26 +263,16 @@ return;
 
 setSonuc(
 
-puan>=70
-
-?
-
-`🎉 BAŞARILI
+`
+${puan>=70?"🎉 Başarılı":"❌ Başarısız"}
 
 Doğru: ${dogru}/${sorular.length}
 
-Puan: ${puan}/100`
+Puan: ${puan}/100
 
-:
-
-`❌ BAŞARISIZ
-
-Doğru: ${dogru}/${sorular.length}
-
-Puan: ${puan}/100`
+`
 
 );
-
 
 
 setBitti(true);
@@ -382,19 +281,6 @@ setBitti(true);
 
 }
 
-catch(e:any){
-
-
-setSonuc(
-"Hata: "+e.message
-);
-
-
-}
-
-
-
-}
 
 
 
@@ -408,15 +294,14 @@ if(loading){
 
 return(
 
-<main style={page}>
-
+<div style={page}>
 Yükleniyor...
-
-</main>
+</div>
 
 )
 
 }
+
 
 
 
@@ -429,16 +314,12 @@ return(
 
 <main style={page}>
 
-<div style={container}>
-
-<div style={result}>
+<div style={sonucBox}>
 
 {sonuc}
 
 </div>
 
-</div>
-
 </main>
 
 )
@@ -451,14 +332,16 @@ return(
 
 
 
-if(!sorular.length){
+const soru=sorular[index];
+
+
+
+if(!soru){
 
 return(
 
 <main style={page}>
-
-Soru bulunamadı.
-
+Soru bulunamadı
 </main>
 
 )
@@ -466,12 +349,6 @@ Soru bulunamadı.
 }
 
 
-
-
-
-
-
-const soru=sorular[aktifSoru];
 
 
 
@@ -493,9 +370,9 @@ return(
 
 
 
-<div style={counter}>
+<div style={sayac}>
 
-Soru {aktifSoru+1}/{sorular.length}
+Soru {index+1} / {sorular.length}
 
 </div>
 
@@ -511,6 +388,7 @@ Soru {aktifSoru+1}/{sorular.length}
 {soru.question}
 
 </h2>
+
 
 
 
@@ -533,35 +411,31 @@ Soru {aktifSoru+1}/{sorular.length}
 
 key={x[0]}
 
+onClick={()=>cevapVer(x[0])}
+
 style={
 
-seciliCevap===x[0]
+secim===x[0]
 
-?
+? secili
 
-selected
-
-:
-
-option
+: cevap
 
 }
 
-onClick={()=>cevapSec(x[0])}
-
 >
 
-
 {x[0]}) {x[1]}
-
 
 </button>
 
 
+
 ))
 
-
 }
+
+
 
 
 </div>
@@ -571,15 +445,14 @@ onClick={()=>cevapSec(x[0])}
 
 
 
-
 {
 
-aktifSoru < sorular.length-1 ?
+index < sorular.length-1 ?
 
 
 <button
 
-style={btn}
+style={button}
 
 onClick={sonraki}
 
@@ -596,9 +469,9 @@ SONRAKİ SORU ➜
 
 <button
 
-style={btn}
+style={button}
 
-onClick={bitir}
+onClick={sinaviBitir}
 
 >
 
@@ -607,7 +480,10 @@ onClick={bitir}
 </button>
 
 
+
 }
+
+
 
 
 
@@ -618,6 +494,7 @@ onClick={bitir}
 
 
 )
+
 
 }
 
@@ -640,7 +517,7 @@ color:"white"
 
 const container={
 
-maxWidth:"600px",
+maxWidth:"700px",
 
 margin:"auto"
 
@@ -649,20 +526,24 @@ margin:"auto"
 
 const title={
 
+textAlign:"center" as const,
+
 color:"#d4af37",
 
-textAlign:"center" as const
+fontSize:"40px"
 
 };
 
 
-const counter={
+const sayac={
 
 marginTop:"20px",
 
 padding:"15px",
 
-background:"#222",
+background:"#111",
+
+border:"1px solid #d4af37",
 
 borderRadius:"15px",
 
@@ -671,26 +552,32 @@ textAlign:"center" as const
 };
 
 
+
 const card={
 
-marginTop:"20px",
+marginTop:"25px",
 
 padding:"25px",
 
 background:"#111",
 
-borderRadius:"25px"
+borderRadius:"25px",
+
+border:"1px solid #d4af37"
 
 };
 
 
-const option={
+
+const cevap={
 
 width:"100%",
 
 marginTop:"15px",
 
-padding:"15px",
+padding:"18px",
+
+borderRadius:"15px",
 
 background:"#222",
 
@@ -698,16 +585,17 @@ color:"white",
 
 border:"1px solid #d4af37",
 
-borderRadius:"15px",
+textAlign:"left" as const,
 
-textAlign:"left" as const
+cursor:"pointer"
 
 };
 
 
-const selected={
 
-...option,
+const secili={
+
+...cevap,
 
 background:"#d4af37",
 
@@ -716,7 +604,8 @@ color:"#000"
 };
 
 
-const btn={
+
+const button={
 
 width:"100%",
 
@@ -724,32 +613,35 @@ marginTop:"25px",
 
 padding:"18px",
 
+borderRadius:"20px",
+
 background:"#d4af37",
 
-border:"0",
+fontWeight:900,
 
-borderRadius:"15px",
-
-fontWeight:900
+cursor:"pointer"
 
 };
 
 
-const result={
 
-marginTop:"100px",
+const sonucBox={
 
-padding:"30px",
+maxWidth:"600px",
 
-background:"#111",
+margin:"100px auto",
 
-border:"2px solid #d4af37",
+padding:"40px",
 
 borderRadius:"25px",
 
+background:"rgba(212,175,55,.15)",
+
+border:"2px solid #d4af37",
+
 color:"#d4af37",
 
-fontSize:"22px",
+fontSize:"25px",
 
 fontWeight:900,
 
