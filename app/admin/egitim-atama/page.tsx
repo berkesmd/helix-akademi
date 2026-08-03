@@ -10,20 +10,16 @@ export default function EgitimAtamaPage(){
 const supabase=createClient();
 
 
-
 const [ogrenciler,setOgrenciler]=useState<any[]>([]);
-
 const [egitimler,setEgitimler]=useState<any[]>([]);
 
 
-
 const [ogrenci,setOgrenci]=useState("");
-
 const [egitim,setEgitim]=useState("");
 
 const [mesaj,setMesaj]=useState("");
 
-
+const [loading,setLoading]=useState(false);
 
 
 
@@ -35,14 +31,25 @@ useEffect(()=>{
 async function yukle(){
 
 
-
-const {data:ogrenciData}=await supabase
+const {data:ogrenciData,error:ogrenciError}=await supabase
 
 .from("profiles")
 
 .select("id,full_name")
 
 .eq("role","student");
+
+
+
+if(ogrenciError){
+
+console.log("Öğrenci yükleme hatası:",ogrenciError);
+
+setMesaj("Öğrenciler yüklenemedi.");
+
+return;
+
+}
 
 
 
@@ -54,7 +61,7 @@ setOgrenciler(ogrenciData || []);
 
 
 
-const {data:egitimData}=await supabase
+const {data:egitimData,error:egitimError}=await supabase
 
 .from("courses")
 
@@ -64,8 +71,20 @@ const {data:egitimData}=await supabase
 
 
 
-setEgitimler(egitimData || []);
 
+if(egitimError){
+
+console.log("Eğitim yükleme hatası:",egitimError);
+
+setMesaj("Eğitimler yüklenemedi.");
+
+return;
+
+}
+
+
+
+setEgitimler(egitimData || []);
 
 
 
@@ -78,6 +97,7 @@ yukle();
 
 
 },[]);
+
 
 
 
@@ -103,10 +123,16 @@ return;
 
 
 
+setLoading(true);
+
+setMesaj("");
 
 
 
-const {data:kontrol}=await supabase
+
+
+
+const {data:kontrol,error:kontrolError}=await supabase
 
 .from("enrollments")
 
@@ -116,7 +142,27 @@ const {data:kontrol}=await supabase
 
 .eq("course_id",egitim)
 
-.single();
+.maybeSingle();
+
+
+
+
+
+if(kontrolError){
+
+console.log("Kontrol hatası:",kontrolError);
+
+setMesaj(
+"Kontrol sırasında hata: "+kontrolError.message
+);
+
+setLoading(false);
+
+return;
+
+}
+
+
 
 
 
@@ -127,10 +173,14 @@ if(kontrol){
 
 setMesaj("Bu eğitim zaten öğrenciye atanmış.");
 
+setLoading(false);
+
 return;
 
 
 }
+
+
 
 
 
@@ -156,10 +206,21 @@ course_id:egitim
 
 
 
+
 if(error){
 
 
-setMesaj("Eğitim atanırken hata oluştu.");
+console.log("ATAMA HATASI:",error);
+
+
+setMesaj(
+
+"Eğitim atanamadı: "+error.message
+
+);
+
+
+setLoading(false);
 
 return;
 
@@ -170,17 +231,20 @@ return;
 
 
 
+
+
 setMesaj("✅ Eğitim başarıyla öğrenciye atandı.");
-
-
 
 setOgrenci("");
 
 setEgitim("");
 
+setLoading(false);
+
 
 
 }
+
 
 
 
@@ -215,7 +279,6 @@ return(
 
 
 
-
 <div style={card}>
 
 
@@ -224,6 +287,7 @@ return(
 Yeni Eğitim Ataması
 
 </h2>
+
 
 
 
@@ -276,7 +340,6 @@ value={item.id}
 
 
 ))
-
 
 }
 
@@ -338,14 +401,11 @@ value={item.id}
 
 ))
 
-
 }
 
 
 
 </select>
-
-
 
 
 
@@ -359,9 +419,24 @@ onClick={ata}
 
 style={button}
 
+disabled={loading}
+
 >
 
-🎓 Eğitimi Öğrenciye Ata
+{
+
+loading
+
+?
+
+"Atanıyor..."
+
+:
+
+"🎓 Eğitimi Öğrenciye Ata"
+
+}
+
 
 </button>
 
@@ -371,12 +446,7 @@ style={button}
 
 
 
-
-<p
-
-style={message}
-
->
+<p style={message}>
 
 {mesaj}
 
@@ -409,6 +479,7 @@ style={message}
 
 
 
+
 const page={
 
 color:"white",
@@ -416,7 +487,6 @@ color:"white",
 padding:"20px"
 
 };
-
 
 
 
@@ -462,6 +532,7 @@ gap:"15px"
 
 
 
+
 const input={
 
 width:"100%",
@@ -479,6 +550,7 @@ borderRadius:"12px",
 fontSize:"16px"
 
 };
+
 
 
 
@@ -506,11 +578,14 @@ cursor:"pointer"
 
 
 
+
 const gold={
 
 color:"#d4af37"
 
 };
+
+
 
 
 
