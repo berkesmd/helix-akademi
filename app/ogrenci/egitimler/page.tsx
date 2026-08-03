@@ -5,12 +5,12 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 
-export default function EgitimlerPage(){
+export default function OgrenciEgitimler(){
 
 
-const router = useRouter();
+const supabase=createClient();
 
-const supabase = createClient();
+const router=useRouter();
 
 
 const [egitimler,setEgitimler]=useState<any[]>([]);
@@ -21,37 +21,113 @@ const [loading,setLoading]=useState(true);
 
 
 
-
 useEffect(()=>{
 
+yukle();
 
-async function getir(){
-
-
-
-const {
-
-data,
-
-error
-
-}=await supabase
-
-.from("courses")
-
-.select("*")
-
-.order("created_at",{ascending:false});
+},[]);
 
 
 
 
+
+
+async function yukle(){
+
+
+
+const {data:userData}=await supabase.auth.getUser();
+
+
+const user=userData.user;
+
+
+
+if(!user){
+
+router.push("/ogrenci-giris");
+
+return;
+
+}
+
+
+
+
+
+
+
+// SADECE ATANAN EĞİTİMLER
+
+const {data:kayitlar,error}=await supabase
+
+.from("enrollments")
+
+.select("course_id")
+
+.eq("user_id",user.id);
+
+
+
+
+
+if(error){
 
 console.log(error);
 
+setLoading(false);
+
+return;
+
+}
 
 
-setEgitimler(data || []);
+
+
+
+let liste:any[]=[];
+
+
+
+
+
+
+
+for(const item of kayitlar || []){
+
+
+
+const {data:course}=await supabase
+
+.from("courses")
+
+.select(
+"id,title,description"
+)
+
+.eq("id",item.course_id)
+
+.single();
+
+
+
+
+
+if(course){
+
+liste.push(course);
+
+}
+
+
+}
+
+
+
+
+
+
+setEgitimler(liste);
 
 setLoading(false);
 
@@ -61,11 +137,25 @@ setLoading(false);
 
 
 
-getir();
 
 
 
-},[]);
+
+
+
+if(loading){
+
+return(
+
+<main style={page}>
+
+Yükleniyor...
+
+</main>
+
+)
+
+}
 
 
 
@@ -82,16 +172,9 @@ return(
 
 <h1 style={title}>
 
-🎓 Eğitimlerim
+📚 Eğitimlerim
 
 </h1>
-
-
-<p style={desc}>
-
-Sahip olduğun eğitimlere buradan ulaşabilirsin.
-
-</p>
 
 
 
@@ -100,27 +183,12 @@ Sahip olduğun eğitimlere buradan ulaşabilirsin.
 
 {
 
-loading ?
-
-
-<div style={message}>
-
-Yükleniyor...
-
-</div>
-
-
-
-:
-
-
-
 egitimler.length===0 ?
 
 
-<div style={message}>
+<div style={card}>
 
-Henüz eğitim bulunamadı.
+Henüz atanmış eğitim yok.
 
 </div>
 
@@ -134,13 +202,12 @@ Henüz eğitim bulunamadı.
 
 {
 
-egitimler.map((egitim)=>(
-
+egitimler.map((e)=>(
 
 
 <div
 
-key={egitim.id}
+key={e.id}
 
 style={card}
 
@@ -148,7 +215,7 @@ style={card}
 
 
 
-<div style={imageBox}>
+<div style={image}>
 
 🎓
 
@@ -157,20 +224,18 @@ style={card}
 
 
 
-
 <h2 style={gold}>
 
-{egitim.title}
+{e.title}
 
 </h2>
 
 
 
 
+<p>
 
-<p style={text}>
-
-{egitim.description}
+{e.description}
 
 </p>
 
@@ -182,29 +247,22 @@ style={card}
 
 style={button}
 
-onClick={()=>{
+onClick={()=>router.push(
 
-router.push(
+`/ogrenci/egitim/${e.id}`
 
-`/ogrenci/egitim/${egitim.id}`
-
-);
-
-
-}}
+)}
 
 >
 
-EĞİTİME GİR →
+▶ EĞİTİME GİR
 
 </button>
 
 
 
 
-
 </div>
-
 
 
 ))
@@ -221,8 +279,6 @@ EĞİTİME GİR →
 
 
 
-
-
 </main>
 
 
@@ -236,61 +292,28 @@ EĞİTİME GİR →
 
 
 
-const page={
 
+
+const page={
 
 minHeight:"100vh",
 
-padding:"30px 20px",
-
-background:
-
-"radial-gradient(circle at top,#3b2600,#050505)",
+padding:"30px",
 
 color:"white"
 
-
 };
-
-
-
 
 
 
 
 const title={
 
+fontSize:"40px",
 
-fontSize:"clamp(32px,7vw,50px)",
-
-fontWeight:900,
-
-color:"#d4af37",
-
-textAlign:"center" as const
-
+color:"#d4af37"
 
 };
-
-
-
-
-
-
-const desc={
-
-
-textAlign:"center" as const,
-
-color:"#aaa",
-
-marginTop:"10px",
-
-marginBottom:"40px"
-
-
-};
-
 
 
 
@@ -298,15 +321,11 @@ marginBottom:"40px"
 
 const grid={
 
-
 display:"grid",
 
-gridTemplateColumns:
-
-"repeat(auto-fit,minmax(260px,1fr))",
+gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",
 
 gap:"25px"
-
 
 };
 
@@ -317,23 +336,13 @@ gap:"25px"
 
 const card={
 
-
 padding:"25px",
 
-borderRadius:"30px",
+borderRadius:"25px",
 
-background:
+background:"rgba(255,255,255,.06)",
 
-"rgba(255,255,255,.06)",
-
-border:
-
-"1px solid rgba(212,175,55,.35)",
-
-boxShadow:
-
-"0 0 30px rgba(212,175,55,.1)"
-
+border:"1px solid rgba(212,175,55,.3)"
 
 };
 
@@ -341,13 +350,9 @@ boxShadow:
 
 
 
+const image={
 
-const imageBox={
-
-
-height:"160px",
-
-borderRadius:"25px",
+height:"140px",
 
 display:"flex",
 
@@ -355,17 +360,15 @@ alignItems:"center",
 
 justifyContent:"center",
 
-fontSize:"70px",
+fontSize:"80px",
 
-background:
+background:"linear-gradient(135deg,#ffe88a,#d4af37)",
 
-"linear-gradient(135deg,#fff1a8,#d4af37,#5a3b00)",
+borderRadius:"20px",
 
-marginBottom:"25px"
-
+marginBottom:"20px"
 
 };
-
 
 
 
@@ -373,33 +376,9 @@ marginBottom:"25px"
 
 const gold={
 
-
-color:"#d4af37",
-
-fontSize:"24px",
-
-marginBottom:"15px"
-
+color:"#d4af37"
 
 };
-
-
-
-
-
-
-const text={
-
-
-color:"#ddd",
-
-lineHeight:"1.6",
-
-minHeight:"60px"
-
-
-};
-
 
 
 
@@ -407,43 +386,18 @@ minHeight:"60px"
 
 const button={
 
+marginTop:"20px",
 
-marginTop:"25px",
+padding:"15px 30px",
 
-width:"100%",
+borderRadius:"15px",
 
-padding:"15px",
+border:"0",
 
-border:"none",
-
-borderRadius:"18px",
-
-background:
-
-"linear-gradient(135deg,#fff1a8,#d4af37)",
+background:"#d4af37",
 
 fontWeight:900,
 
 cursor:"pointer"
-
-
-};
-
-
-
-
-
-
-const message={
-
-
-padding:"40px",
-
-textAlign:"center" as const,
-
-fontSize:"20px",
-
-color:"#d4af37"
-
 
 };
