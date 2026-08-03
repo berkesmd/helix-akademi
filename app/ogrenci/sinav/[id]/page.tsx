@@ -1,35 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import {useEffect,useState} from "react";
+import {useParams,useRouter} from "next/navigation";
+import {createClient} from "@/lib/supabase/client";
 
 
-export default function SinavPage() {
-
-const supabase = createClient();
-
-const params = useParams();
-const router = useRouter();
-
-const id = params.id as string;
+export default function SinavPage(){
 
 
-const [sinav,setSinav] = useState<any>(null);
+const supabase=createClient();
 
-const [sorular,setSorular] = useState<any[]>([]);
+const params=useParams();
 
-const [aktifSoru,setAktifSoru] = useState(0);
+const router=useRouter();
 
-const [seciliCevap,setSeciliCevap] = useState("");
+const id=params.id as string;
 
-const [cevaplar,setCevaplar] = useState<any>({});
 
-const [loading,setLoading] = useState(true);
 
-const [bitti,setBitti] = useState(false);
+const [sinav,setSinav]=useState<any>(null);
 
-const [sonuc,setSonuc] = useState("");
+const [sorular,setSorular]=useState<any[]>([]);
+
+const [aktifSoru,setAktifSoru]=useState(0);
+
+const [cevaplar,setCevaplar]=useState<any>({});
+
+const [seciliCevap,setSeciliCevap]=useState("");
+
+const [loading,setLoading]=useState(true);
+
+const [bitti,setBitti]=useState(false);
+
+const [sonuc,setSonuc]=useState("");
 
 
 
@@ -49,10 +52,8 @@ verileriGetir();
 
 
 
-
-
-
 async function verileriGetir(){
+
 
 
 const {data:userData}=await supabase.auth.getUser();
@@ -67,8 +68,6 @@ router.push("/ogrenci-giris");
 return;
 
 }
-
-
 
 
 
@@ -90,9 +89,11 @@ const {data:eski}=await supabase
 if(eski){
 
 setSonuc(
-`Bu sınavı daha önce çözdünüz.
+
+`Bu sınav daha önce çözüldü.
 
 Puanınız: ${eski.score}/100`
+
 );
 
 setBitti(true);
@@ -102,9 +103,6 @@ setLoading(false);
 return;
 
 }
-
-
-
 
 
 
@@ -121,6 +119,7 @@ const {data:exam}=await supabase
 .single();
 
 
+
 setSinav(exam);
 
 
@@ -128,9 +127,7 @@ setSinav(exam);
 
 
 
-
-
-const {data:questions}=await supabase
+const {data:questions,error}=await supabase
 
 .from("questions")
 
@@ -141,6 +138,16 @@ const {data:questions}=await supabase
 .order("created_at",{ascending:true})
 
 .limit(10);
+
+
+
+if(error){
+
+console.log(error);
+
+}
+
+
 
 
 
@@ -160,21 +167,29 @@ setLoading(false);
 
 
 
+function cevapSec(cevap:string){
 
 
-function cevapSec(secenek:string){
+
+const soruId=sorular[aktifSoru]?.id;
 
 
-setSeciliCevap(secenek);
+
+if(!soruId)return;
 
 
-setCevaplar({
 
-...cevaplar,
+setSeciliCevap(cevap);
 
-[sorular[aktifSoru].id]:secenek
 
-});
+
+setCevaplar((onceki:any)=>({
+
+...onceki,
+
+[soruId]:cevap
+
+}));
 
 
 }
@@ -197,20 +212,24 @@ return;
 
 
 
+
 if(aktifSoru < sorular.length-1){
 
 
-const yeniIndex = aktifSoru + 1;
+
+const yeni=aktifSoru+1;
 
 
-setAktifSoru(yeniIndex);
+setAktifSoru(yeni);
+
 
 
 setSeciliCevap(
 
-cevaplar[sorular[yeniIndex].id] || ""
+cevaplar[sorular[yeni]?.id] || ""
 
 );
+
 
 
 }
@@ -229,7 +248,8 @@ cevaplar[sorular[yeniIndex].id] || ""
 async function sinaviBitir(){
 
 
-const yeniCevaplar={
+
+const sonCevaplar={
 
 ...cevaplar,
 
@@ -240,22 +260,43 @@ const yeniCevaplar={
 
 
 
+
 let dogru=0;
+
 
 
 
 sorular.forEach((soru)=>{
 
 
-if(
+const verilen=
 
-yeniCevaplar[soru.id] === soru.correct_answer
+String(sonCevaplar[soru.id] || "")
 
-){
+.trim()
+
+.toUpperCase();
+
+
+
+const dogruCevap=
+
+String(soru.correct_answer || "")
+
+.trim()
+
+.toUpperCase();
+
+
+
+
+
+if(verilen===dogruCevap){
 
 dogru++;
 
 }
+
 
 
 });
@@ -263,7 +304,13 @@ dogru++;
 
 
 
-const puan = dogru * 10;
+
+const puan=Math.round(
+
+(dogru / sorular.length) * 100
+
+);
+
 
 
 
@@ -272,6 +319,7 @@ const puan = dogru * 10;
 const {data:userData}=await supabase.auth.getUser();
 
 const user=userData.user;
+
 
 
 if(!user){
@@ -308,15 +356,24 @@ success:puan>=70
 
 
 
+
 if(error){
 
+
 setSonuc(
+
 "❌ Kayıt hatası: "+error.message
+
 );
+
 
 return;
 
+
 }
+
+
+
 
 
 
@@ -327,21 +384,22 @@ puan>=70
 
 ?
 
-`🎉 Başarılı
+`🎉 SINAVI GEÇTİNİZ
 
-Doğru: ${dogru}/10
+Doğru: ${dogru}/${sorular.length}
 
 Puan: ${puan}/100`
 
 :
 
-`❌ Başarısız
+`❌ SINAV BAŞARISIZ
 
-Doğru: ${dogru}/10
+Doğru: ${dogru}/${sorular.length}
 
 Puan: ${puan}/100`
 
 );
+
 
 
 
@@ -377,6 +435,9 @@ Yükleniyor...
 
 
 
+
+
+
 if(bitti){
 
 return(
@@ -398,6 +459,7 @@ return(
 )
 
 }
+
 
 
 
@@ -430,7 +492,9 @@ Soru bulunamadı.
 
 
 
-return (
+
+return(
+
 
 <main style={page}>
 
@@ -469,10 +533,17 @@ Soru {aktifSoru+1} / {sorular.length}
 
 
 
-{[
+
+{
+
+[
+
 ["A",soru.option_a],
+
 ["B",soru.option_b],
+
 ["C",soru.option_c],
+
 ["D",soru.option_d]
 
 ].map((item:any)=>(
@@ -507,9 +578,10 @@ onClick={()=>cevapSec(item[0])}
 </button>
 
 
-))}
+))
 
 
+}
 
 
 
@@ -519,11 +591,15 @@ onClick={()=>cevapSec(item[0])}
 
 
 
+
+
 {
 
 aktifSoru < sorular.length-1
 
+
 ?
+
 
 <button
 
@@ -558,6 +634,7 @@ onClick={sinaviBitir}
 
 
 
+
 </div>
 
 
@@ -566,6 +643,13 @@ onClick={sinaviBitir}
 )
 
 }
+
+
+
+
+
+
+
 const page={
 
 minHeight:"100vh",
@@ -573,6 +657,7 @@ minHeight:"100vh",
 padding:"20px",
 
 background:
+
 "radial-gradient(circle,#3b2600,#050505)",
 
 color:"white"
@@ -597,11 +682,9 @@ const title={
 
 textAlign:"center" as const,
 
-fontSize:"clamp(26px,6vw,42px)",
-
 color:"#d4af37",
 
-fontWeight:900
+fontSize:"clamp(26px,6vw,42px)"
 
 };
 
@@ -617,13 +700,9 @@ borderRadius:"20px",
 
 background:"rgba(212,175,55,.15)",
 
-border:"1px solid #d4af37",
-
 textAlign:"center" as const,
 
-fontWeight:900,
-
-fontSize:"18px"
+fontWeight:900
 
 };
 
@@ -661,13 +740,7 @@ border:"1px solid #d4af37",
 
 color:"white",
 
-fontSize:"16px",
-
-fontWeight:700,
-
-textAlign:"left" as const,
-
-cursor:"pointer"
+textAlign:"left" as const
 
 };
 
@@ -675,27 +748,11 @@ cursor:"pointer"
 
 const selected={
 
-width:"100%",
-
-marginTop:"15px",
-
-padding:"18px",
-
-borderRadius:"18px",
+...option,
 
 background:"#d4af37",
 
-border:"1px solid #d4af37",
-
-color:"#000",
-
-fontSize:"16px",
-
-fontWeight:900,
-
-textAlign:"left" as const,
-
-cursor:"pointer"
+color:"#000"
 
 };
 
@@ -711,17 +768,11 @@ padding:"18px",
 
 borderRadius:"20px",
 
-background:
-
-"linear-gradient(135deg,#fff1a6,#d4af37)",
+background:"#d4af37",
 
 border:"0",
 
-fontWeight:900,
-
-fontSize:"17px",
-
-cursor:"pointer"
+fontWeight:900
 
 };
 
