@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import {useEffect,useState} from "react";
+import {useParams,useRouter} from "next/navigation";
+import {createClient} from "@/lib/supabase/client";
 
 
 export default function EgitimPage(){
+
 
 const supabase=createClient();
 
@@ -16,15 +17,22 @@ const router=useRouter();
 const id=params.id as string;
 
 
+
 const [egitim,setEgitim]=useState<any>(null);
 
 const [dersler,setDersler]=useState<any[]>([]);
 
 const [tamamlanan,setTamamlanan]=useState(0);
 
+const [tamamlananDersler,setTamamlananDersler]=useState<string[]>([]);
+
 const [sinav,setSinav]=useState<any>(null);
 
 const [loading,setLoading]=useState(true);
+
+
+
+
 
 
 
@@ -42,10 +50,15 @@ getir();
 
 
 
+
+
+
 async function getir(){
 
 
+
 const {data:userData}=await supabase.auth.getUser();
+
 
 const user=userData.user;
 
@@ -64,7 +77,9 @@ return;
 
 
 
-// eğitim bilgisi
+
+
+// eğitim
 
 const {data:course}=await supabase
 
@@ -86,7 +101,10 @@ setEgitim(course);
 
 
 
-// dersleri getir
+
+
+
+// dersler
 
 const {data:lessons}=await supabase
 
@@ -101,6 +119,7 @@ const {data:lessons}=await supabase
 
 
 
+
 setDersler(lessons || []);
 
 
@@ -109,15 +128,20 @@ setDersler(lessons || []);
 
 
 
-// tamamlanan ders kontrol
 
-const dersIds=(lessons || []).map(
-(d:any)=>d.id
-);
+
+// tamamlanan dersler
+
+const dersIds=(lessons || [])
+
+.map((d:any)=>d.id);
+
+
 
 
 
 if(dersIds.length){
+
 
 
 const {data:progress}=await supabase
@@ -134,7 +158,23 @@ const {data:progress}=await supabase
 
 
 
-setTamamlanan(progress?.length || 0);
+
+
+setTamamlanan(
+
+progress?.length || 0
+
+);
+
+
+
+
+
+setTamamlananDersler(
+
+progress?.map((p:any)=>p.lesson_id) || []
+
+);
 
 
 
@@ -146,7 +186,9 @@ setTamamlanan(progress?.length || 0);
 
 
 
-// sınavı getir
+
+
+// sınav
 
 const {data:exam}=await supabase
 
@@ -165,10 +207,14 @@ setSinav(exam);
 
 
 
+
 setLoading(false);
 
 
+
 }
+
+
 
 
 
@@ -192,6 +238,7 @@ tamamlanan === dersler.length;
 
 if(loading){
 
+
 return(
 
 <main style={page}>
@@ -211,11 +258,14 @@ Yükleniyor...
 
 
 
-
 return(
 
 
 <main style={page}>
+
+
+
+
 
 
 <div style={header}>
@@ -237,13 +287,18 @@ return(
 
 
 
-<p style={gold}>
+<div style={progressBox}>
 
-📚 Tamamlanan Ders:
+📚 Ders İlerlemesi:
+
+<strong>
 
 {tamamlanan}/{dersler.length}
 
-</p>
+</strong>
+
+</div>
+
 
 
 </div>
@@ -286,10 +341,12 @@ Henüz ders bulunmuyor.
 
 
 
+
 :
 
 
 dersler.map((ders,index)=>(
+
 
 
 <div
@@ -301,7 +358,10 @@ style={card}
 >
 
 
-<div>
+
+
+
+<div style={{flex:1}}>
 
 
 <h2>
@@ -318,7 +378,39 @@ style={card}
 </p>
 
 
+
+{
+
+tamamlananDersler.includes(ders.id)
+
+
+?
+
+
+<p style={complete}>
+
+✅ Ders Tamamlandı
+
+</p>
+
+
+
+:
+
+
+<p style={waiting}>
+
+▶ İzlenebilir
+
+</p>
+
+
+}
+
+
+
 </div>
+
 
 
 
@@ -336,14 +428,16 @@ onClick={()=>router.push(
 
 >
 
-▶ DERSİ AÇ
+DERSİ AÇ
 
 </button>
 
 
 
 
+
 </div>
+
 
 
 ))
@@ -383,12 +477,12 @@ tumDerslerBitti && sinav ?
 
 <>
 
-
 <p>
 
-✅ Tüm dersleri tamamladınız.
+🎉 Tüm dersleri tamamladınız.
 
 </p>
+
 
 
 <button
@@ -413,20 +507,18 @@ onClick={()=>router.push(
 :
 
 
-
 <>
-
 
 <p>
 
-🔒 Sınav kilitli
+🔒 Sınav Kilitli
 
 </p>
 
 
 <p>
 
-Önce tüm dersleri tamamlayın.
+Tüm dersleri tamamladıktan sonra sınava girebilirsiniz.
 
 </p>
 
@@ -452,10 +544,7 @@ style={locked}
 
 
 
-
-
 </div>
-
 
 
 
@@ -476,11 +565,12 @@ style={locked}
 
 
 
+
 const page={
 
 minHeight:"100vh",
 
-padding:"30px",
+padding:"20px",
 
 color:"white"
 
@@ -492,7 +582,7 @@ color:"white"
 
 const header={
 
-padding:"35px",
+padding:"30px",
 
 borderRadius:"30px",
 
@@ -510,9 +600,9 @@ const title={
 
 marginTop:"40px",
 
-color:"#d4af37",
+fontSize:"35px",
 
-fontSize:"35px"
+color:"#d4af37"
 
 };
 
@@ -525,6 +615,22 @@ const gold={
 color:"#d4af37",
 
 fontWeight:900
+
+};
+
+
+
+
+
+const progressBox={
+
+marginTop:"20px",
+
+padding:"15px",
+
+borderRadius:"15px",
+
+background:"rgba(212,175,55,.15)"
 
 };
 
@@ -558,11 +664,11 @@ border:"1px solid rgba(212,175,55,.3)",
 
 display:"flex",
 
-justifyContent:"space-between",
-
 alignItems:"center",
 
-gap:"20px"
+gap:"20px",
+
+flexWrap:"wrap" as const
 
 };
 
@@ -583,6 +689,30 @@ background:"#d4af37",
 fontWeight:900,
 
 cursor:"pointer"
+
+};
+
+
+
+
+
+const complete={
+
+color:"#00ff88",
+
+fontWeight:900
+
+};
+
+
+
+
+
+const waiting={
+
+color:"#d4af37",
+
+fontWeight:900
 
 };
 

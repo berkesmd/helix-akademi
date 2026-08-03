@@ -1,38 +1,35 @@
 "use client";
 
-import {useEffect,useState} from "react";
-import {useParams,useRouter} from "next/navigation";
-import {createClient} from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 
-export default function SinavPage(){
+export default function SinavPage() {
+
+const supabase = createClient();
+
+const params = useParams();
+const router = useRouter();
+
+const id = params.id as string;
 
 
-const supabase=createClient();
+const [sinav,setSinav] = useState<any>(null);
 
-const params=useParams();
+const [sorular,setSorular] = useState<any[]>([]);
 
-const router=useRouter();
+const [aktifSoru,setAktifSoru] = useState(0);
 
+const [seciliCevap,setSeciliCevap] = useState("");
 
-const id=params.id as string;
+const [cevaplar,setCevaplar] = useState<any>({});
 
+const [loading,setLoading] = useState(true);
 
+const [bitti,setBitti] = useState(false);
 
-const [sinav,setSinav]=useState<any>(null);
-
-const [sorular,setSorular]=useState<any[]>([]);
-
-const [cevaplar,setCevaplar]=useState<any>({});
-
-const [loading,setLoading]=useState(true);
-
-const [sonuc,setSonuc]=useState("");
-
-const [bitti,setBitti]=useState(false);
-
-
-
+const [sonuc,setSonuc] = useState("");
 
 
 
@@ -40,13 +37,11 @@ const [bitti,setBitti]=useState(false);
 
 useEffect(()=>{
 
-
 if(id){
 
-getir();
+verileriGetir();
 
 }
-
 
 },[id]);
 
@@ -57,8 +52,61 @@ getir();
 
 
 
+async function verileriGetir(){
 
-async function getir(){
+
+const {data:userData}=await supabase.auth.getUser();
+
+const user=userData.user;
+
+
+if(!user){
+
+router.push("/ogrenci-giris");
+
+return;
+
+}
+
+
+
+
+
+
+const {data:eski}=await supabase
+
+.from("exam_results")
+
+.select("*")
+
+.eq("user_id",user.id)
+
+.eq("exam_id",id)
+
+.maybeSingle();
+
+
+
+if(eski){
+
+setSonuc(
+`Bu sınavı daha önce çözdünüz.
+
+Puanınız: ${eski.score}/100`
+);
+
+setBitti(true);
+
+setLoading(false);
+
+return;
+
+}
+
+
+
+
+
 
 
 
@@ -73,9 +121,9 @@ const {data:exam}=await supabase
 .single();
 
 
-
-
 setSinav(exam);
+
+
 
 
 
@@ -96,9 +144,9 @@ const {data:questions}=await supabase
 
 
 
-
-
 setSorular(questions || []);
+
+
 
 
 setLoading(false);
@@ -114,22 +162,58 @@ setLoading(false);
 
 
 
-function cevapSec(
+function cevapSec(secenek:string){
 
-soruId:string,
 
-cevap:string
-
-){
+setSeciliCevap(secenek);
 
 
 setCevaplar({
 
 ...cevaplar,
 
-[soruId]:cevap
+[sorular[aktifSoru].id]:secenek
 
 });
+
+
+}
+
+
+
+
+
+
+
+
+function sonrakiSoru(){
+
+
+if(!seciliCevap){
+
+return;
+
+}
+
+
+
+if(aktifSoru < sorular.length-1){
+
+
+const yeniIndex = aktifSoru + 1;
+
+
+setAktifSoru(yeniIndex);
+
+
+setSeciliCevap(
+
+cevaplar[sorular[yeniIndex].id] || ""
+
+);
+
+
+}
 
 
 }
@@ -145,23 +229,13 @@ setCevaplar({
 async function sinaviBitir(){
 
 
+const yeniCevaplar={
 
-if(Object.keys(cevaplar).length < sorular.length){
+...cevaplar,
 
+[sorular[aktifSoru].id]:seciliCevap
 
-setSonuc(
-
-"❌ Lütfen tüm soruları cevaplayın."
-
-);
-
-
-return;
-
-
-}
-
-
+};
 
 
 
@@ -170,14 +244,12 @@ let dogru=0;
 
 
 
-
-
 sorular.forEach((soru)=>{
 
 
 if(
 
-cevaplar[soru.id]===soru.correct_answer
+yeniCevaplar[soru.id] === soru.correct_answer
 
 ){
 
@@ -191,38 +263,23 @@ dogru++;
 
 
 
-
-
-
-const puan=dogru*10;
-
+const puan = dogru * 10;
 
 
 
 
 
+const {data:userData}=await supabase.auth.getUser();
 
-const {
-
-data:{
-user
-
-}
-
-}=await supabase.auth.getUser();
-
-
-
+const user=userData.user;
 
 
 if(!user){
-
 
 router.push("/ogrenci-giris");
 
 return;
 
-
 }
 
 
@@ -231,8 +288,7 @@ return;
 
 
 
-
-await supabase
+const {error}=await supabase
 
 .from("exam_results")
 
@@ -252,58 +308,44 @@ success:puan>=70
 
 
 
-
-
-
-if(puan>=70){
-
-
+if(error){
 
 setSonuc(
-
-`
-🎉 Başarılı oldunuz!
-
-Doğru:
-${dogru}/10
-
-Puan:
-${puan}/100
-
-`
-
+"❌ Kayıt hatası: "+error.message
 );
 
-
-
-}else{
-
-
-
-setSonuc(
-
-`
-❌ Başarısız
-
-Doğru:
-${dogru}/10
-
-Puan:
-${puan}/100
-
-`
-
-);
-
-
+return;
 
 }
 
 
 
 
-setBitti(true);
+setSonuc(
 
+puan>=70
+
+?
+
+`🎉 Başarılı
+
+Doğru: ${dogru}/10
+
+Puan: ${puan}/100`
+
+:
+
+`❌ Başarısız
+
+Doğru: ${dogru}/10
+
+Puan: ${puan}/100`
+
+);
+
+
+
+setBitti(true);
 
 
 }
@@ -318,7 +360,6 @@ setBitti(true);
 
 if(loading){
 
-
 return(
 
 <main style={page}>
@@ -329,6 +370,56 @@ Yükleniyor...
 
 )
 
+}
+
+
+
+
+
+
+if(bitti){
+
+return(
+
+<main style={page}>
+
+<div style={container}>
+
+<div style={result}>
+
+{sonuc}
+
+</div>
+
+</div>
+
+</main>
+
+)
+
+}
+
+
+
+
+
+
+
+const soru=sorular[aktifSoru];
+
+
+
+if(!soru){
+
+return(
+
+<main style={page}>
+
+Soru bulunamadı.
+
+</main>
+
+)
 
 }
 
@@ -339,9 +430,7 @@ Yükleniyor...
 
 
 
-
-return(
-
+return (
 
 <main style={page}>
 
@@ -356,115 +445,71 @@ return(
 </h1>
 
 
-<p style={puanText}>
 
-Toplam: 100 Puan | 10 Soru
+<div style={progress}>
 
-</p>
+Soru {aktifSoru+1} / {sorular.length}
 
-
-
+</div>
 
 
 
 
 
-{
-
-sorular.map((soru,index)=>(
+<div style={card}>
 
 
-<div
+<h2>
 
-key={soru.id}
+{soru.question}
 
-style={questionBox}
-
->
-
-
-<h3>
-
-{index+1}. {soru.question}
-
-</h3>
+</h2>
 
 
 
 
 
-
-
-
-{
-
-[
-
+{[
 ["A",soru.option_a],
-
 ["B",soru.option_b],
-
 ["C",soru.option_c],
-
 ["D",soru.option_d]
 
 ].map((item:any)=>(
 
 
-<label
+<button
 
 key={item[0]}
 
-style={option}
+style={
+
+seciliCevap===item[0]
+
+?
+
+selected
+
+:
+
+option
+
+}
+
+onClick={()=>cevapSec(item[0])}
 
 >
 
 
-<input
-
-type="radio"
-
-disabled={bitti}
-
-name={soru.id}
-
-checked={
-
-cevaplar[soru.id]===item[0]
-
-}
-
-onChange={()=>
+{item[0]}) {item[1]}
 
 
-cevapSec(
-
-soru.id,
-
-item[0]
-
-)
+</button>
 
 
-}
-
-/>
+))}
 
 
-
-{" "}
-
-<b>{item[0]})</b> {item[1]}
-
-
-
-</label>
-
-
-))
-
-
-}
 
 
 
@@ -472,51 +517,44 @@ item[0]
 
 
 
-))
 
 
-}
+{
+
+aktifSoru < sorular.length-1
+
+?
+
+<button
+
+style={button}
+
+onClick={sonrakiSoru}
+
+>
+
+SONRAKİ SORU ➜
+
+</button>
 
 
-
-
-
-
+:
 
 
 <button
 
 style={button}
 
-disabled={bitti}
-
 onClick={sinaviBitir}
 
 >
 
-✅ Sınavı Bitir
+✅ SINAVI BİTİR
 
 </button>
 
 
-
-
-
-
-
-{
-
-sonuc &&
-
-<div style={result}>
-
-{sonuc}
-
-</div>
-
 }
-
-
 
 
 
@@ -525,19 +563,9 @@ sonuc &&
 
 </main>
 
-
 )
 
 }
-
-
-
-
-
-
-
-
-
 const page={
 
 minHeight:"100vh",
@@ -545,7 +573,6 @@ minHeight:"100vh",
 padding:"20px",
 
 background:
-
 "radial-gradient(circle,#3b2600,#050505)",
 
 color:"white"
@@ -554,12 +581,11 @@ color:"white"
 
 
 
-
-
-
 const container={
 
-maxWidth:"850px",
+width:"100%",
+
+maxWidth:"600px",
 
 margin:"auto"
 
@@ -567,69 +593,79 @@ margin:"auto"
 
 
 
-
-
-
 const title={
-
-fontSize:"clamp(28px,5vw,42px)",
-
-color:"#d4af37",
-
-textAlign:"center" as const
-
-};
-
-
-
-
-
-
-const puanText={
 
 textAlign:"center" as const,
 
-color:"#ddd"
+fontSize:"clamp(26px,6vw,42px)",
+
+color:"#d4af37",
+
+fontWeight:900
 
 };
 
 
 
+const progress={
 
+marginTop:"25px",
 
-
-
-const questionBox={
-
-marginTop:"20px",
-
-padding:"20px",
+padding:"15px",
 
 borderRadius:"20px",
 
-background:"rgba(255,255,255,.06)",
+background:"rgba(212,175,55,.15)",
 
-border:"1px solid rgba(212,175,55,.3)"
+border:"1px solid #d4af37",
+
+textAlign:"center" as const,
+
+fontWeight:900,
+
+fontSize:"18px"
 
 };
 
 
 
+const card={
 
+marginTop:"25px",
+
+padding:"25px",
+
+borderRadius:"30px",
+
+background:"rgba(255,255,255,.06)",
+
+border:"1px solid rgba(212,175,55,.4)"
+
+};
 
 
 
 const option={
 
-display:"block",
+width:"100%",
 
-marginTop:"12px",
+marginTop:"15px",
 
-padding:"14px",
+padding:"18px",
 
-borderRadius:"12px",
+borderRadius:"18px",
 
-background:"rgba(212,175,55,.1)",
+background:"rgba(212,175,55,.12)",
+
+border:"1px solid #d4af37",
+
+color:"white",
+
+fontSize:"16px",
+
+fontWeight:700,
+
+textAlign:"left" as const,
 
 cursor:"pointer"
 
@@ -637,7 +673,31 @@ cursor:"pointer"
 
 
 
+const selected={
 
+width:"100%",
+
+marginTop:"15px",
+
+padding:"18px",
+
+borderRadius:"18px",
+
+background:"#d4af37",
+
+border:"1px solid #d4af37",
+
+color:"#000",
+
+fontSize:"16px",
+
+fontWeight:900,
+
+textAlign:"left" as const,
+
+cursor:"pointer"
+
+};
 
 
 
@@ -647,13 +707,15 @@ width:"100%",
 
 marginTop:"30px",
 
-padding:"16px",
+padding:"18px",
 
-borderRadius:"15px",
+borderRadius:"20px",
+
+background:
+
+"linear-gradient(135deg,#fff1a6,#d4af37)",
 
 border:"0",
-
-background:"#d4af37",
 
 fontWeight:900,
 
@@ -665,17 +727,13 @@ cursor:"pointer"
 
 
 
-
-
-
-
 const result={
 
-marginTop:"30px",
+marginTop:"100px",
 
-padding:"25px",
+padding:"30px",
 
-borderRadius:"20px",
+borderRadius:"25px",
 
 background:"rgba(212,175,55,.15)",
 
@@ -686,6 +744,8 @@ color:"#d4af37",
 fontSize:"22px",
 
 fontWeight:900,
+
+textAlign:"center" as const,
 
 whiteSpace:"pre-line" as const
 
