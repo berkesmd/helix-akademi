@@ -4,115 +4,290 @@ import {useEffect,useState} from "react";
 import {useParams,useRouter} from "next/navigation";
 import {createClient} from "@/lib/supabase/client";
 
+
 export default function DersPage(){
 
+
 const supabase=createClient();
+
 const params=useParams();
+
 const router=useRouter();
+
 
 const id=params.id as string;
 
+
+
 const [ders,setDers]=useState<any>(null);
+
 const [tamam,setTamam]=useState(false);
+
 const [loading,setLoading]=useState(true);
+
 const [mesaj,setMesaj]=useState("");
 
 
+
+
+
+
+
 useEffect(()=>{
+
 if(id) yukle();
+
 },[id]);
+
+
+
+
+
+
 
 
 async function yukle(){
 
+
+
 const {data}=await supabase
+
 .from("lessons")
+
 .select("*")
+
 .eq("id",id)
+
 .single();
+
+
 
 setDers(data);
 
 
+
+
+
 const {data:userData}=await supabase.auth.getUser();
+
+
 
 if(userData.user){
 
+
 const {data:kontrol}=await supabase
+
 .from("lesson_progress")
+
 .select("*")
+
 .eq("user_id",userData.user.id)
+
 .eq("lesson_id",id)
+
 .maybeSingle();
 
+
+
 if(kontrol?.completed){
+
 setTamam(true);
-}
 
 }
+
+
+
+}
+
+
+
 
 setLoading(false);
 
+
+
 }
+
+
+
+
+
+
 
 
 
 async function tamamla(){
 
+
+
 const {data:userData}=await supabase.auth.getUser();
 
+
+
 if(!userData.user){
+
 setMesaj("Giriş yapmanız gerekiyor.");
+
 return;
+
 }
+
+
+
+
+
 
 
 const {data:mevcut}=await supabase
+
 .from("lesson_progress")
+
 .select("*")
+
 .eq("user_id",userData.user.id)
+
 .eq("lesson_id",id)
+
 .maybeSingle();
 
 
+
+
+
 if(mevcut){
+
 setTamam(true);
+
 setMesaj("✅ Ders zaten tamamlandı.");
+
 return;
+
 }
+
+
+
+
+
 
 
 const {error}=await supabase
+
 .from("lesson_progress")
+
 .insert({
+
 user_id:userData.user.id,
+
 lesson_id:id,
+
 completed:true
+
 });
 
 
+
+
+
 if(error){
+
+console.log(error);
+
 setMesaj("❌ Ders tamamlanamadı.");
+
 return;
+
 }
+
+
 
 
 setTamam(true);
+
 setMesaj("🎉 Ders başarıyla tamamlandı.");
 
+
+
 }
+
+
+
+
+
+
 
 
 
 function youtube(url:string){
 
-if(!url)return "";
 
-if(url.includes("watch?v="))
-return url.split("watch?v=")[1];
 
-if(url.includes("youtu.be"))
-return url.split("youtu.be/")[1];
+if(!url) return "";
+
+
+
+try{
+
+
+
+if(url.includes("youtube.com/embed")){
+
+return url;
+
+}
+
+
+
+
+
+if(url.includes("watch?v=")){
+
+
+
+const videoId=
+
+new URL(url).searchParams.get("v");
+
+
+
+return `https://www.youtube.com/embed/${videoId}?rel=0`;
+
+
+
+}
+
+
+
+
+
+
+
+if(url.includes("youtu.be")){
+
+
+
+const id=
+
+url.split("youtu.be/")[1]
+
+.split("?")[0];
+
+
+
+return `https://www.youtube.com/embed/${id}?rel=0`;
+
+
+
+}
+
+
+
+
+
+return url;
+
+
+
+}catch{
 
 return "";
 
@@ -120,71 +295,165 @@ return "";
 
 
 
+}
+
+
+
+
+
+
+
+
+
 if(loading)
-return <main style={page}>Yükleniyor...</main>;
+
+return (
+
+<main style={page}>
+
+Yükleniyor...
+
+</main>
+
+);
+
+
+
+
+
 
 
 if(!ders)
-return <main style={page}>Ders bulunamadı.</main>;
+
+return (
+
+<main style={page}>
+
+Ders bulunamadı.
+
+</main>
+
+);
 
 
-const video=youtube(ders.video_url);
+
+
+
+
+
+
+
+const video= youtube(ders.video_url);
+
+
+
+
 
 
 
 return(
 
+
 <main style={page}>
+
 
 <div style={card}>
 
 
 <div style={topMenu}>
+
 ☰
+
 </div>
 
 
+
+
+
 <h1 style={title}>
+
 {ders.title}
+
 </h1>
 
 
+
+
+
 <p style={desc}>
+
 ▶ Ders içeriği
+
 </p>
 
 
-{video &&
+
+
+
+
+
+
+{
+
+video &&
+
 
 <iframe
 
-src={`https://www.youtube.com/embed/${video}`}
+
+src={video}
+
 
 style={videoBox}
 
+
 allowFullScreen
+
 
 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 
+
 frameBorder="0"
+
 
 />
 
+
 }
 
 
 
-{ders.pdf_url &&
+
+
+
+
+
+{
+
+ders.pdf_url &&
+
 
 <a
+
 href={ders.pdf_url}
+
 target="_blank"
+
 style={pdf}
+
 >
+
 📄 DERS NOTLARI
+
 </a>
 
+
 }
+
+
+
+
+
 
 
 
@@ -198,19 +467,49 @@ onClick={tamamla}
 
 >
 
-{tamam ? "✅ DERS TAMAMLANDI":"✓ DERSİ TAMAMLA"}
+
+{
+
+tamam
+
+?
+
+"✅ DERS TAMAMLANDI"
+
+:
+
+"✓ DERSİ TAMAMLA"
+
+}
+
 
 </button>
 
 
 
-{mesaj &&
+
+
+
+
+
+{
+
+mesaj &&
+
 
 <p style={message}>
+
 {mesaj}
+
 </p>
 
+
 }
+
+
+
+
+
 
 
 
@@ -227,13 +526,26 @@ onClick={()=>router.back()}
 </button>
 
 
+
+
+
+
+
 </div>
 
+
 </main>
+
 
 )
 
 }
+
+
+
+
+
+
 
 
 
@@ -250,15 +562,18 @@ color:"white"
 };
 
 
+
+
+
 const card={
 
 width:"100%",
 
-maxWidth:"430px",
+maxWidth:"700px",
 
 margin:"auto",
 
-padding:"20px",
+padding:"25px",
 
 borderRadius:"30px",
 
@@ -267,6 +582,9 @@ background:"rgba(255,255,255,.06)",
 border:"1px solid rgba(212,175,55,.4)"
 
 };
+
+
+
 
 
 const topMenu={
@@ -294,47 +612,49 @@ marginBottom:"20px"
 };
 
 
+
+
+
 const title={
 
-fontSize:"24px",
+fontSize:"26px",
 
 color:"#d4af37",
 
-lineHeight:"1.35",
-
-marginBottom:"10px"
+lineHeight:"1.35"
 
 };
 
 
-const desc={
 
-fontSize:"16px",
+
+
+const desc={
 
 color:"#ddd"
 
 };
 
 
+
+
+
 const videoBox={
 
 width:"100%",
 
-aspectRatio:"16 / 9",
-
-height:"auto",
-
-minHeight:"220px",
+aspectRatio:"16/9",
 
 borderRadius:"25px",
 
 border:"2px solid #d4af37",
 
-marginTop:"20px",
-
-display:"block"
+marginTop:"20px"
 
 };
+
+
+
 
 
 const pdf={
@@ -360,6 +680,9 @@ textDecoration:"none"
 };
 
 
+
+
+
 const tamamBtn={
 
 marginTop:"25px",
@@ -381,6 +704,9 @@ fontWeight:900
 };
 
 
+
+
+
 const geri={
 
 marginTop:"20px",
@@ -400,6 +726,9 @@ color:"#d4af37"
 };
 
 
+
+
+
 const message={
 
 color:"#d4af37",
@@ -409,4 +738,5 @@ textAlign:"center" as const,
 marginTop:"20px",
 
 fontWeight:900
+
 };
